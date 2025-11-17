@@ -45,6 +45,10 @@ jobs:
           output_location: "out" # Built app content directory - optional
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
+        env: 
+          NEXT_PUBLIC_BACK_API_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
+          NEXT_PUBLIC_AUTHORIZATION_NAME: ${{ secrets.NEXT_PUBLIC_AUTHORIZATION_NAME }}
+          NEXT_PUBLIC_AUTHORIZATION_PASSWORD: ${{ secrets.NEXT_PUBLIC_AUTHORIZATION_PASSWORD }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -56,3 +60,5 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
+
+
