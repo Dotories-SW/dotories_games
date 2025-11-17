@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "axios": "^1.13.2",
     "matter-js": "^0.20.0",
     "next": "15.5.3",
     "react": "19.1.0",

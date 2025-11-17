@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import { useParams } from "next/navigation";
 
 interface Question {
   text: string;
@@ -24,12 +26,70 @@ export default function ArithmeticGame() {
   const [inCorrectCount, setInCorrectCount] = useState<number>(0);
 
   const MAX_QUESTIONS = 10;
+  const [completedGames, setCompletedGames] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
 
   // 난이도별 설정
   const DIFFICULTY_CONFIGS = {
-    easy: { name: "쉬움", description: "덧셈, 뺄셈", coin: 5 },
-    normal: { name: "보통", description: "사칙연산", coin: 8 },
-    hard: { name: "어려움", description: "연속 계산", coin: 12 },
+    easy: {
+      name: "쉬움",
+      description: "덧셈, 뺄셈",
+      coin: 5,
+      localIndex: 0,
+      backendIndex: 0,
+    },
+    normal: {
+      name: "보통",
+      description: "사칙연산",
+      coin: 8,
+      localIndex: 1,
+      backendIndex: 1,
+    },
+    hard: {
+      name: "어려움",
+      description: "연속 계산",
+      coin: 12,
+      localIndex: 2,
+      backendIndex: 2,
+    },
+  };
+
+  const params = useParams();
+  const loginId: string = params.loginId
+    ? (params.loginId as string)
+    : "691a90ead813df88a787f905";
+
+  useEffect(() => {
+    const getCompleted = async () => {
+      const res = await getGameCompleted(loginId);
+      console.log(res);
+      let data = res.data;
+      if (typeof data === "string") {
+        data = JSON.parse(data);
+      }
+      setCompletedGames([
+        data[DIFFICULTY_CONFIGS.easy.backendIndex],
+        data[DIFFICULTY_CONFIGS.normal.backendIndex],
+        data[DIFFICULTY_CONFIGS.hard.backendIndex],
+      ]);
+    };
+    getCompleted();
+  }, [showDifficultySelect]);
+
+  const completedGame = async (
+    loginId: string,
+    index: number,
+    completed: boolean
+  ) => {
+    try {
+      const res = await patchCompletedGame(loginId, index, completed);
+      console.log(res);
+    } catch (error) {
+      console.error("게임 완료 업데이트 실패:", error);
+    }
   };
 
   // 랜덤 숫자 생성
@@ -301,6 +361,8 @@ export default function ArithmeticGame() {
                     className={`w-full p-4 rounded-2xl transition-all ${
                       selectedDifficulty === key
                         ? "bg-blue-400 border-2 border-blue-400"
+                        : completedGames[config.localIndex]
+                        ? "border-2 border-[#6ead79]"
                         : "bg-white border-2 border-gray-300 hover:border-gray-400"
                     } shadow-sm hover:shadow-md`}
                   >
@@ -318,10 +380,18 @@ export default function ArithmeticGame() {
                         className={`text-md ${
                           selectedDifficulty === key
                             ? "text-white"
+                            : completedGames[config.localIndex]
+                            ? "text-[#6ead79]"
                             : "text-gray-600"
                         }`}
                       >
-                        {config.description}
+                        {completedGames[config.localIndex] ? (
+                          <span className="text-sm">
+                            게임 진행은 가능하지만, 코인은 제공되지 않습니다.
+                          </span>
+                        ) : (
+                          config.description
+                        )}
                       </div>
                       <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-2">
                         <span className="text-lg">🪙</span>
@@ -365,6 +435,12 @@ export default function ArithmeticGame() {
 
   // 게임 완료 화면
   if (gameCompleted) {
+    completedGame(
+      loginId,
+      DIFFICULTY_CONFIGS[selectedDifficulty as keyof typeof DIFFICULTY_CONFIGS]
+        .backendIndex,
+      true
+    );
     return (
       <div
         className="min-h-screen flex items-center justify-center p-4"

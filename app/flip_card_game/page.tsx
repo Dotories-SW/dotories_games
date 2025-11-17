@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import data from "@/public/flip_card_game.json";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 
 // 타입 정의
 interface Card {
@@ -37,7 +39,11 @@ export default function FlipCardGame() {
   const [moveCount, setMoveCount] = useState(0);
 
   const gameBgmRef = useRef<HTMLAudioElement | null>(null);
-
+  const [completedGames, setCompletedGames] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
   // Audio 초기화
   useEffect(() => {
     gameBgmRef.current = new Audio("/sounds/flip_card/flip_card_bgm.mp3");
@@ -54,9 +60,40 @@ export default function FlipCardGame() {
 
   // 난이도별 설정
   const DIFFICULTY_CONFIGS = {
-    easy: { name: "쉬움", pairs: 4, cards: 8, coin: 5 },
-    normal: { name: "보통", pairs: 8, cards: 16, coin: 8 },
-    hard: { name: "어려움", pairs: 12, cards: 24, coin: 12 },
+    easy: { name: "쉬움", pairs: 4, cards: 8, coin: 5, localIndex: 0, backendIndex: 7 },
+    normal: { name: "보통", pairs: 8, cards: 16, coin: 8, localIndex: 1, backendIndex: 8 },
+    hard: { name: "어려움", pairs: 12, cards: 24, coin: 12, localIndex: 2, backendIndex: 9 },
+  };
+
+  const params = useParams();
+  const loginId: string = params.loginId
+    ? (params.loginId as string)
+    : "691a90ead813df88a787f905";
+
+  useEffect(() => {
+    const getCompleted = async () => {
+      const res = await getGameCompleted(loginId);
+      console.log(res);
+      let data = res.data;
+      if (typeof data === "string") {
+        data = JSON.parse(data);
+      }
+      setCompletedGames([data[DIFFICULTY_CONFIGS.easy.backendIndex], data[DIFFICULTY_CONFIGS.normal.backendIndex], data[DIFFICULTY_CONFIGS.hard.backendIndex]]);
+    };
+    getCompleted();
+  }, [showDifficultySelect]);
+
+  const completedGame = async (
+    loginId: string,
+    index: number,
+    completed: boolean
+  ) => {
+    try {
+      const res = await patchCompletedGame(loginId, index, completed);
+      console.log(res);
+    } catch (error) {
+      console.error("게임 완료 업데이트 실패:", error);
+    }
   };
 
   // 카드 섞기 함수
@@ -219,6 +256,8 @@ export default function FlipCardGame() {
                     className={`w-full p-4 rounded-2xl transition-all ${
                       selectedDifficulty === key
                         ? "bg-red-400 border-2 border-red-400"
+                        : completedGames[config.localIndex]
+                        ? "border-2 border-[#6ead79]"
                         : "bg-white border-2 border-gray-300 hover:border-gray-400"
                     } shadow-sm hover:shadow-md`}
                   >
@@ -227,6 +266,8 @@ export default function FlipCardGame() {
                         className={`font-bold text-xl ${
                           selectedDifficulty === key
                             ? "text-white"
+                            : completedGames[config.localIndex]
+                            ? "text-[#6ead79]"
                             : "text-gray-800"
                         }`}
                       >
@@ -236,10 +277,16 @@ export default function FlipCardGame() {
                         className={`text-md ${
                           selectedDifficulty === key
                             ? "text-white"
+                            : completedGames[config.localIndex]
+                            ? "text-[#6ead79]"
                             : "text-gray-600"
                         }`}
                       >
-                        {config.pairs}쌍 ({config.cards}장)
+                        {completedGames[config.localIndex] ? (
+                          <span className="text-sm">게임 진행은 가능하지만, 코인은 제공되지 않습니다.</span>
+                        ) : (
+                          `${config.pairs}쌍 (${config.cards}장)`
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-2">
@@ -248,6 +295,8 @@ export default function FlipCardGame() {
                         className={`${
                           selectedDifficulty === key
                             ? "text-white"
+                            : completedGames[config.localIndex]
+                            ? "text-[#6ead79]"
                             : "text-red-400"
                         }`}
                       >
@@ -264,7 +313,11 @@ export default function FlipCardGame() {
                   onClick={() =>
                     startGameWithDifficulty(selectedDifficulty as string)
                   }
-                  className="w-[90%] mx-auto block py-4 bg-red-400 text-white rounded-full font-bold text-lg hover:bg-red-500 transition-colors shadow-lg"
+                  className={`w-[90%] mx-auto block py-4 rounded-full font-bold text-lg transition-colors shadow-lg ${
+                    selectedDifficulty
+                      ? "bg-red-400 text-white hover:bg-red-500"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
                   게임 시작
                 </button>
@@ -281,6 +334,12 @@ export default function FlipCardGame() {
     if (gameBgmRef.current) {
       gameBgmRef.current.pause();
     }
+    completedGame(
+      loginId,
+      DIFFICULTY_CONFIGS[selectedDifficulty as keyof typeof DIFFICULTY_CONFIGS]
+        .backendIndex,
+      true
+    );
     return (
       <div
         className="min-h-screen flex items-center justify-center p-4"
