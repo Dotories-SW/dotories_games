@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
@@ -94,6 +93,7 @@ function CrosswordPuzzles() {
       }
     };
     getCompleted();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDifficultySelect]); // 난이도 선택 화면으로 돌아올 때마다 새로고침
 
   // 퍼즐 로드
@@ -318,31 +318,31 @@ function CrosswordPuzzles() {
           }
         `}</style>
 
-        <div className="max-w-md mx-auto p-4">
+        <div className="w-[90%] max-w-2xl mx-auto p-[2vh]">
           {/* 헤더 */}
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-200">
+          <div className="bg-white rounded-3xl p-[3vh] mb-[3vh] shadow-sm border border-gray-200">
             <div className="text-center">
-              <div className="w-20 h-20 bg-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="text-white text-2xl font-bold">가</div>
+              <div className="w-[16vw] h-[16vw] max-w-[80px] max-h-[80px] bg-purple-500 rounded-full mx-auto mb-[2vh] flex items-center justify-center">
+                <div className="text-white text-[7vw] font-bold">🧩</div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
                 가로세로 퍼즐
               </h1>
-              <p className="text-gray-600 text-sm mb-1">빈칸을 채워서</p>
-              <p className="text-gray-600 text-sm">단어를 완성해보세요!</p>
+              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">빈칸을 채워서</p>
+              <p className="text-gray-600 text-[3.5vw]">단어를 완성해보세요!</p>
             </div>
 
             {/* 난이도 선택 */}
-            <div className="mt-6">
-              <h2 className="text-lg font-bold text-gray-800 text-center mb-4">
+            <div className="mt-[3vh]">
+              <h2 className="text-[3.5vw] font-bold text-gray-800 text-center mb-[2vh]">
                 난이도 선택
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-[1.5vh]">
                 {Object.entries(DIFFICULTY_CONFIGS).map(([key, config]) => (
                   <button
                     key={key}
                     onClick={() => setSelectedDifficulty(key)}
-                    className={`w-full p-4 rounded-2xl transition-all ${
+                    className={`w-full p-[2vh] rounded-2xl transition-all ${
                       selectedDifficulty === key
                         ? "bg-purple-500 border-2 border-purple-500"
                         : completedGames[config.localIndex]
@@ -352,12 +352,12 @@ function CrosswordPuzzles() {
                   >
                     <div className="text-center">
                       <div
-                        className={`font-bold text-xl text-gray-800 ${
+                        className={`font-bold text-[4vw] text-gray-800 ${
                           selectedDifficulty === key ? "text-white" : ""
                         }`}
                       >
                         {config.name}
-                        <p className="text-xs">
+                        <p className="text-[2.5vw]">
                           {completedGames[config.localIndex] && (
                             <span
                               className={`${
@@ -371,10 +371,10 @@ function CrosswordPuzzles() {
                           )}
                         </p>
                       </div>
-                      <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-2">
-                        <span className="text-lg">🪙</span>
+                      <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-[1vh]">
+                        <span className="text-[3.5vw]">🪙</span>
                         <span
-                          className={`${
+                          className={`text-[3.5vw] ${
                             selectedDifficulty === key
                               ? "text-white"
                               : completedGames[config.localIndex]
@@ -391,12 +391,12 @@ function CrosswordPuzzles() {
               </div>
 
               {/* 게임 시작 버튼 */}
-              <div className="mt-6">
+              <div className="mt-[3vh]">
                 <button
                   onClick={() =>
                     startGameWithDifficulty(selectedDifficulty as string)
                   }
-                  className={`w-[90%] mx-auto block py-4 rounded-full font-bold text-lg transition-colors shadow-lg ${
+                  className={`w-[90%] mx-auto block py-[2vh] rounded-full font-bold text-[3.5vw] transition-colors shadow-lg ${
                     selectedDifficulty
                       ? "bg-purple-500 text-white hover:bg-purple-600"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -422,25 +422,25 @@ function CrosswordPuzzles() {
     );
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-4"
+        className="min-h-screen flex items-center justify-center p-[2vh]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
-        <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">완료!</h2>
-          <p className="text-lg mb-6 text-gray-600">
+        <div className="bg-white p-[4vh] rounded-2xl shadow-2xl text-center w-[90%] max-w-2xl">
+          <div className="text-[10vw] mb-[2vh]">🎉</div>
+          <h2 className="text-[5vw] font-bold text-gray-800 mb-[2vh]">완료!</h2>
+          <p className="text-[3vw] mb-[3vh] text-gray-600">
             모든 단어를 완성했습니다!
           </p>
-          <div className="space-y-3">
+          <div className="space-y-[1.5vh]">
             <button
               onClick={() => setShowDifficultySelect(true)}
-              className="w-full px-6 py-3 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors font-semibold"
+              className="w-full px-[3vw] py-[2vh] text-[3vw] bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors font-semibold"
             >
               다른 난이도 선택
             </button>
             <button
               onClick={() => (window.location.href = "/crossword_puzzles")}
-              className="w-full px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
+              className="w-full px-[3vw] py-[2vh] text-[3vw] bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
             >
               메인화면으로
             </button>
@@ -458,8 +458,8 @@ function CrosswordPuzzles() {
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">퍼즐을 준비하고 있어요...</p>
+          <div className="w-[10vw] h-[10vw] border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-[2vh]"></div>
+          <p className="text-[3vw] text-gray-600">퍼즐을 준비하고 있어요...</p>
         </div>
       </div>
     );
@@ -468,7 +468,7 @@ function CrosswordPuzzles() {
   // 게임 화면
   return (
     <div
-      className="min-h-screen p-4"
+      className="min-h-screen p-[2vh]"
       style={{
         backgroundColor: "#F5F1E8",
       }}
@@ -487,14 +487,14 @@ function CrosswordPuzzles() {
         }
       `}</style>
 
-      <div className="max-w-md mx-auto mt-6">
+      <div className="w-[90%] max-w-2xl mx-auto mt-[3vh]">
         {/* 게임 그리드 */}
-        <div className="bg-white rounded-2xl p-4 shadow-lg mb-6">
+        <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[3vh]">
           <div
-            className="grid gap-1 mx-auto"
+            className="grid gap-[0.5vw] mx-auto"
             style={{
               gridTemplateColumns: `repeat(${currentPuzzle?.size || 5}, 1fr)`,
-              maxWidth: "min(100%, 400px)",
+              maxWidth: "min(90vw, 600px)",
               width: "100%",
             }}
           >
@@ -517,7 +517,7 @@ function CrosswordPuzzles() {
                 return (
                   <div
                     key={`${rowIndex}-${colIndex}`}
-                    className={`crossword-cell aspect-square border-2 transition-all duration-150 rounded-lg flex items-center justify-center font-bold text-base relative ${
+                    className={`crossword-cell aspect-square border-2 transition-all duration-150 rounded-lg flex items-center justify-center font-bold text-[3vw] relative ${
                       isBlockedCell
                         ? "border-gray-500 bg-gray-500 cursor-default"
                         : isCorrect
@@ -534,7 +534,7 @@ function CrosswordPuzzles() {
                   >
                     {/* 시작 좌표 번호 표시 */}
                     {wordAtCell && (
-                      <span className="absolute top-[0%] left-[5%] text-xs text-purple-600 font-bold">
+                      <span className="absolute top-[0%] left-[5%] text-[1.5vw] text-purple-600 font-bold">
                         {wordAtCell.id}
                       </span>
                     )}
@@ -542,10 +542,10 @@ function CrosswordPuzzles() {
                     {isBlockedCell ? (
                       ""
                     ) : isFixed ? (
-                      <span className="text-gray-700">{cell}</span>
+                      <span className="text-gray-700 text-[3vw]">{cell}</span>
                     ) : (
                       <span
-                        className={`${
+                        className={`text-[3vw] ${
                           userCell
                             ? isCorrectAnswer(rowIndex, colIndex, userCell)
                               ? "text-green-600 font-bold"
@@ -564,9 +564,9 @@ function CrosswordPuzzles() {
         </div>
 
         {/* 글자 선택 패널 */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm mb-6">
+        <div className="bg-white rounded-2xl p-[2vh] shadow-sm mb-[3vh]">
           {/* 글자 후보군 */}
-          <div className="grid grid-cols-6 gap-2 mb-4">
+          <div className="grid grid-cols-6 gap-[1vw] mb-[2vh]">
             {availableLetters.map((letter, index) => {
               const isUsed = usedLetters.has(index);
               const canSelect =
@@ -581,7 +581,7 @@ function CrosswordPuzzles() {
                   <button
                     onClick={() => handleLetterSelect(letter, index)}
                     disabled={!canSelect || isUsed}
-                    className={`w-full h-full rounded-lg font-bold text-lg transition-all duration-300 ease-in-out transform ${
+                    className={`w-full h-full rounded-lg font-bold text-[3.5vw] transition-all duration-300 ease-in-out transform ${
                       isUsed
                         ? "scale-0 opacity-0 pointer-events-none"
                         : canSelect
@@ -599,28 +599,28 @@ function CrosswordPuzzles() {
 
         {/* 힌트 영역 */}
         {selectedWord && (
-          <div className="bg-purple-50 rounded-xl p-4 mb-3 border-2 border-purple-200">
-            <div className="flex items-center justify-between mb-2">
+          <div className="bg-purple-50 rounded-xl p-[2vh] mb-[1.5vh] border-2 border-purple-200">
+            <div className="flex items-center justify-between mb-[1vh]">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-purple-600 bg-purple-200 rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="text-[2vw] font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center">
                   {selectedWord.id}
                 </span>
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-[2.5vw] font-semibold text-gray-700">
                   {selectedWord.direction === "horizontal" ? "가로" : "세로"}
                 </span>
               </div>
               <button
                 onClick={() => setShowHint(!showHint)}
-                className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm font-semibold hover:bg-purple-600 transition-colors"
+                className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg text-[2.5vw] font-semibold hover:bg-purple-600 transition-colors"
               >
                 {showHint ? "힌트 숨기기" : "💡 힌트 보기"}
               </button>
             </div>
 
             {showHint && (
-              <div className="p-3 bg-white rounded-lg border border-purple-200">
-                <p className="text-sm text-gray-600 mb-1">💬 힌트</p>
-                <p className="text-base text-gray-700">{selectedWord.hint}</p>
+              <div className="p-[1.5vh] bg-white rounded-lg border border-purple-200">
+                <p className="text-[2.5vw] text-gray-600 mb-[0.5vh]">💬 힌트</p>
+                <p className="text-[3vw] text-gray-700">{selectedWord.hint}</p>
               </div>
             )}
           </div>
@@ -635,7 +635,7 @@ function CrosswordPuzzles() {
               currentPuzzle?.grid[selectedCell.row][selectedCell.col] !== "" &&
               currentPuzzle?.grid[selectedCell.row][selectedCell.col] !== "?")
           }
-          className={`w-full py-3 rounded-xl font-semibold transition-colors ${
+          className={`w-full py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors ${
             selectedCell &&
             (currentPuzzle?.grid[selectedCell.row][selectedCell.col] === "" ||
               currentPuzzle?.grid[selectedCell.row][selectedCell.col] === "?")
@@ -647,13 +647,13 @@ function CrosswordPuzzles() {
         </button>
         <button
           onClick={handleReset}
-          className="w-full mt-3 py-3 rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500"
+          className="w-full mt-[1.5vh] py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500"
         >
           🔄 전체 초기화
         </button>
       </div>
 
-      <div className="mt-12"></div>
+      <div className="mt-[5vh]"></div>
     </div>
   );
 }

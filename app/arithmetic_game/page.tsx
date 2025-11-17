@@ -76,6 +76,7 @@ export default function ArithmeticGame() {
       ]);
     };
     getCompleted();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDifficultySelect]);
 
   const completedGame = async (
@@ -332,31 +333,31 @@ export default function ArithmeticGame() {
           }
         `}</style>
 
-        <div className="max-w-md mx-auto p-4">
+        <div className="w-[90%] max-w-2xl mx-auto p-[2vh]">
           {/* 헤더 */}
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-200">
+          <div className="bg-white rounded-3xl p-[3vh] mb-[3vh] shadow-sm border border-gray-200">
             <div className="text-center">
-              <div className="w-20 h-20 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="text-white text-4xl">🧮</div>
+              <div className="w-[16vw] h-[16vw] max-w-[80px] max-h-[80px] bg-blue-500 rounded-full mx-auto mb-[2vh] flex items-center justify-center">
+                <div className="text-white text-[7vw]">🧮</div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
                 산수 게임
               </h1>
-              <p className="text-gray-600 text-sm mb-1">빠르게 계산하고</p>
-              <p className="text-gray-600 text-sm">정답을 맞춰보세요!</p>
+              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">빠르게 계산하고</p>
+              <p className="text-gray-600 text-[3.5vw]">정답을 맞춰보세요!</p>
             </div>
 
             {/* 난이도 선택 */}
-            <div className="mt-6">
-              <h2 className="text-lg font-bold text-gray-800 text-center mb-4">
+            <div className="mt-[3vh]">
+              <h2 className="text-[3.5vw] font-bold text-gray-800 text-center mb-[2vh]">
                 난이도 선택
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-[1.5vh]">
                 {Object.entries(DIFFICULTY_CONFIGS).map(([key, config]) => (
                   <button
                     key={key}
                     onClick={() => setSelectedDifficulty(key as Difficulty)}
-                    className={`w-full p-4 rounded-2xl transition-all ${
+                    className={`w-full p-[2vh] rounded-2xl transition-all ${
                       selectedDifficulty === key
                         ? "bg-blue-400 border-2 border-blue-400"
                         : completedGames[config.localIndex]
@@ -366,7 +367,7 @@ export default function ArithmeticGame() {
                   >
                     <div className="text-center">
                       <div
-                        className={`font-bold text-xl ${
+                        className={`font-bold text-[4vw] ${
                           selectedDifficulty === key
                             ? "text-white"
                             : "text-gray-800"
@@ -375,7 +376,7 @@ export default function ArithmeticGame() {
                         {config.name}
                       </div>
                       <div
-                        className={`text-md ${
+                        className={`text-[3vw] ${
                           selectedDifficulty === key
                             ? "text-white"
                             : completedGames[config.localIndex]
@@ -384,17 +385,17 @@ export default function ArithmeticGame() {
                         }`}
                       >
                         {completedGames[config.localIndex] ? (
-                          <span className="text-sm">
+                          <span className="text-[2.5vw]">
                             게임 진행은 가능하지만, 코인은 제공되지 않습니다.
                           </span>
                         ) : (
                           config.description
                         )}
                       </div>
-                      <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-2">
-                        <span className="text-lg">🪙</span>
+                      <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-[1vh]">
+                        <span className="text-[3.5vw]">🪙</span>
                         <span
-                          className={`${
+                          className={`text-[3.5vw] ${
                             selectedDifficulty === key
                               ? "text-white"
                               : "text-blue-400"
@@ -409,13 +410,13 @@ export default function ArithmeticGame() {
               </div>
 
               {/* 게임 시작 버튼 */}
-              <div className="mt-6">
+              <div className="mt-[3vh]">
                 <button
                   onClick={() =>
                     startGameWithDifficulty(selectedDifficulty as Difficulty)
                   }
                   disabled={!selectedDifficulty}
-                  className={`w-[90%] mx-auto block py-4 rounded-full font-bold text-lg transition-colors shadow-lg ${
+                  className={`w-[90%] mx-auto block py-[2vh] rounded-full font-bold text-[3.5vw] transition-colors shadow-lg ${
                     selectedDifficulty
                       ? "bg-blue-500 text-white hover:bg-blue-600"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -441,31 +442,31 @@ export default function ArithmeticGame() {
     );
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-4"
+        className="min-h-screen flex items-center justify-center p-[2vh]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
-        <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">완료!</h2>
-          <p className="text-lg mb-6 text-black-600">
+        <div className="bg-white p-[4vh] rounded-2xl shadow-2xl text-center w-[90%] max-w-2xl">
+          <div className="text-[10vw] mb-[2vh]">🎉</div>
+          <h2 className="text-[5vw] font-bold text-gray-800 mb-[2vh]">완료!</h2>
+          <p className="text-[3vw] mb-[3vh] text-black-600">
             틀린 문제 : {inCorrectCount}개
           </p>
-          <p className="text-lg mb-6 text-black-600">
+          <p className="text-[3vw] mb-[3vh] text-black-600">
             정답률 :{" "}
             <span className="text-green-600 font-bold">
               {Math.round((score / (MAX_QUESTIONS + inCorrectCount)) * 100)}%
             </span>
           </p>
-          <div className="space-y-3">
+          <div className="space-y-[1.5vh]">
             <button
               onClick={() => setShowDifficultySelect(true)}
-              className="w-full px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-semibold"
+              className="w-full px-[3vw] py-[2vh] text-[3vw] bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-semibold"
             >
               다른 난이도 선택
             </button>
             <button
               onClick={() => startGameWithDifficulty(difficulty)}
-              className="w-full px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
+              className="w-full px-[3vw] py-[2vh] text-[3vw] bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
             >
               같은 난이도 다시하기
             </button>
@@ -477,19 +478,19 @@ export default function ArithmeticGame() {
 
   // 게임 화면
   return (
-    <div className="min-h-screen p-4" style={{ backgroundColor: "#F5F1E8" }}>
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen p-[2vh]" style={{ backgroundColor: "#F5F1E8" }}>
+      <div className="w-[90%] max-w-2xl mx-auto">
         {/* 진행 상황 */}
-        <div className="mb-6 bg-white rounded-2xl p-4 shadow-sm">
+        <div className="mb-[3vh] bg-white rounded-2xl p-[2vh] shadow-sm">
           <div className="flex justify-between items-center">
-            <span className="text-gray-600 font-semibold">정답</span>
-            <span className="text-blue-600 font-bold text-lg">
+            <span className="text-gray-600 font-semibold text-[3vw]">정답</span>
+            <span className="text-blue-600 font-bold text-[3.5vw]">
               {score} / {MAX_QUESTIONS}
             </span>
           </div>
-          <div className="mt-2 bg-gray-200 rounded-full h-2">
+          <div className="mt-[1vh] bg-gray-200 rounded-full h-[1vh]">
             <div
-              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-500 h-[1vh] rounded-full transition-all duration-300"
               style={{
                 width: `${(score / MAX_QUESTIONS) * 100}%`,
               }}
@@ -499,15 +500,15 @@ export default function ArithmeticGame() {
 
         {/* 문제 */}
         {currentQuestion && (
-          <div className="bg-white rounded-2xl p-8 shadow-lg mb-6">
-            <div className="text-center mb-8">
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+          <div className="bg-white rounded-2xl p-[4vh] shadow-lg mb-[3vh]">
+            <div className="text-center mb-[4vh]">
+              <div className="text-[6vw] font-bold text-gray-800 mb-[2vh]">
                 {currentQuestion.text} = ?
               </div>
             </div>
 
             {/* 선택지 */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-[1.5vh]">
               {currentQuestion.choices.map((choice, index) => {
                 const isSelected = selectedAnswer === choice;
                 const isCorrect = choice === currentQuestion.answer;
@@ -519,7 +520,7 @@ export default function ArithmeticGame() {
                     key={index}
                     onClick={() => handleAnswerSelect(choice)}
                     disabled={showResult}
-                    className={`p-6 rounded-xl text-2xl font-bold transition-all ${
+                    className={`p-[3vh] rounded-xl text-[5vw] font-bold transition-all ${
                       showCorrectAnswer
                         ? "bg-green-500 text-white"
                         : showWrongAnswer
@@ -537,7 +538,7 @@ export default function ArithmeticGame() {
           </div>
         )}
 
-        <div className="mt-12"></div>
+        <div className="mt-[5vh]"></div>
       </div>
     </div>
   );

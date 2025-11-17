@@ -80,6 +80,7 @@ export default function FlipCardGame() {
       setCompletedGames([data[DIFFICULTY_CONFIGS.easy.backendIndex], data[DIFFICULTY_CONFIGS.normal.backendIndex], data[DIFFICULTY_CONFIGS.hard.backendIndex]]);
     };
     getCompleted();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDifficultySelect]);
 
   const completedGame = async (
@@ -227,31 +228,31 @@ export default function FlipCardGame() {
           }
         `}</style>
 
-        <div className="max-w-md mx-auto p-4">
+        <div className="w-[90%] max-w-2xl mx-auto p-[2vh]">
           {/* 헤더 */}
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-200">
+          <div className="bg-white rounded-3xl p-[3vh] mb-[3vh] shadow-sm border border-gray-200">
             <div className="text-center">
-              <div className="w-20 h-20 bg-red-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="text-white text-4xl">🎴</div>
+              <div className="w-[16vw] h-[16vw] max-w-[80px] max-h-[80px] bg-red-400 rounded-full mx-auto mb-[2vh] flex items-center justify-center">
+                <div className="text-white text-[7vw]">🎴</div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
                 카드 뒤집기 게임
               </h1>
-              <p className="text-gray-600 text-sm mb-1">같은 그림을 찾아서</p>
-              <p className="text-gray-600 text-sm">카드를 매칭해보세요!</p>
+              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">같은 그림을 찾아서</p>
+              <p className="text-gray-600 text-[3.5vw]">카드를 매칭해보세요!</p>
             </div>
 
             {/* 난이도 선택 */}
-            <div className="mt-6">
-              <h2 className="text-lg font-bold text-gray-800 text-center mb-4">
+            <div className="mt-[3vh]">
+              <h2 className="text-[3.5vw] font-bold text-gray-800 text-center mb-[2vh]">
                 난이도 선택
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-[1.5vh]">
                 {Object.entries(DIFFICULTY_CONFIGS).map(([key, config]) => (
                   <button
                     key={key}
                     onClick={() => setSelectedDifficulty(key)}
-                    className={`w-full p-4 rounded-2xl transition-all ${
+                    className={`w-full p-[2vh] rounded-2xl transition-all ${
                       selectedDifficulty === key
                         ? "bg-red-400 border-2 border-red-400"
                         : completedGames[config.localIndex]
@@ -261,7 +262,7 @@ export default function FlipCardGame() {
                   >
                     <div className="text-center">
                       <div
-                        className={`font-bold text-xl ${
+                        className={`font-bold text-[4vw] ${
                           selectedDifficulty === key
                             ? "text-white"
                             : completedGames[config.localIndex]
@@ -272,7 +273,7 @@ export default function FlipCardGame() {
                         {config.name}
                       </div>
                       <div
-                        className={`text-md ${
+                        className={`text-[3vw] ${
                           selectedDifficulty === key
                             ? "text-white"
                             : completedGames[config.localIndex]
@@ -281,16 +282,16 @@ export default function FlipCardGame() {
                         }`}
                       >
                         {completedGames[config.localIndex] ? (
-                          <span className="text-sm">게임 진행은 가능하지만, 코인은 제공되지 않습니다.</span>
+                          <span className="text-[2.5vw]">게임 진행은 가능하지만, 코인은 제공되지 않습니다.</span>
                         ) : (
                           `${config.pairs}쌍 (${config.cards}장)`
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-2">
-                      <span className="text-lg">🪙</span>
+                    <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-[1vh]">
+                      <span className="text-[3.5vw]">🪙</span>
                       <span
-                        className={`${
+                        className={`text-[3.5vw] ${
                           selectedDifficulty === key
                             ? "text-white"
                             : completedGames[config.localIndex]
@@ -306,12 +307,12 @@ export default function FlipCardGame() {
               </div>
 
               {/* 게임 시작 버튼 */}
-              <div className="mt-6">
+              <div className="mt-[3vh]">
                 <button
                   onClick={() =>
                     startGameWithDifficulty(selectedDifficulty as string)
                   }
-                  className={`w-[90%] mx-auto block py-4 rounded-full font-bold text-lg transition-colors shadow-lg ${
+                  className={`w-[90%] mx-auto block py-[2vh] rounded-full font-bold text-[3.5vw] transition-colors shadow-lg ${
                     selectedDifficulty
                       ? "bg-red-400 text-white hover:bg-red-500"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -340,22 +341,22 @@ export default function FlipCardGame() {
     );
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-4"
+        className="min-h-screen flex items-center justify-center p-[2vh]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
-        <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">완료!</h2>
-          <p className="text-lg mb-6 text-gray-600">
+        <div className="bg-white p-[4vh] rounded-2xl shadow-2xl text-center w-[90%] max-w-2xl">
+          <div className="text-[10vw] mb-[2vh]">🎉</div>
+          <h2 className="text-[5vw] font-bold text-gray-800 mb-[2vh]">완료!</h2>
+          <p className="text-[3vw] mb-[3vh] text-gray-600">
             모든 카드를 매칭했습니다!
           </p>
-          <p className="text-lg mb-6 text-gray-600">
+          <p className="text-[3vw] mb-[3vh] text-gray-600">
             시도 횟수 : {moveCount}
           </p>
-          <div className="space-y-3">
+          <div className="space-y-[1.5vh]">
             <button
               onClick={() => setShowDifficultySelect(true)}
-              className="w-full px-6 py-3 bg-red-400 text-white rounded-xl hover:bg-red-500 transition-colors font-semibold"
+              className="w-full px-[3vw] py-[2vh] text-[3vw] bg-red-400 text-white rounded-xl hover:bg-red-500 transition-colors font-semibold"
             >
               다른 난이도 선택
             </button>
@@ -369,15 +370,15 @@ export default function FlipCardGame() {
   const gridCols = 4; // 모든 난이도 4열로 통일
   const maxWidth =
     gameCards.length === 8
-      ? "400px"
+      ? "min(90vw, 500px)"
       : gameCards.length === 16
-      ? "450px"
-      : "300px"; // 어려움은 더 작게
-  const cardGap = gameCards.length === 24 ? "gap-1.5" : "gap-2"; // 어려움은 간격도 좁게
+      ? "min(90vw, 600px)"
+      : "min(90vw, 700px)"; // vw 단위로 반응형
+  const cardGap = gameCards.length === 24 ? "gap-[0.5vw]" : "gap-[1vw]"; // 어려움은 간격도 좁게
 
   return (
     <div
-      className="min-h-screen p-4 relative"
+      className="min-h-screen p-[2vh] relative"
       style={{ backgroundColor: "#F5F1E8" }}
     >
       <style jsx global>{`
@@ -388,6 +389,7 @@ export default function FlipCardGame() {
         }
         .flip-card {
           perspective: 1000px;
+          position: relative;
         }
         .flip-card-inner {
           position: relative;
@@ -409,6 +411,7 @@ export default function FlipCardGame() {
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
         }
         .flip-card-back {
           transform: rotateY(180deg);
@@ -418,12 +421,12 @@ export default function FlipCardGame() {
       {/* 안내 모달 */}
       {showPrepareModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl p-8 mx-4 max-w-sm text-center shadow-2xl animate-pulse">
-            <div className="text-6xl mb-4">🎴</div>
-            <p className="text-lg text-gray-600 mb-2">
+          <div className="bg-white rounded-3xl p-[4vh] mx-[2vw] w-[80%] max-w-md text-center shadow-2xl animate-pulse">
+            <div className="text-[10vw] mb-[2vh]">🎴</div>
+            <p className="text-[3.5vw] text-gray-600 mb-[1vh]">
               먼저 카드를 보고
             </p>
-            <p className="text-lg text-gray-600">
+            <p className="text-[3.5vw] text-gray-600">
               위치를 기억하세요!
             </p>
           </div>
@@ -433,7 +436,7 @@ export default function FlipCardGame() {
       {/* 카운트다운 오버레이 (투명 배경) */}
       {showingCards && countdown > 0 && (
         <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
-          <div className="text-9xl font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl">
+          <div className="text-[15vw] font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl">
             {countdown}
           </div>
         </div>
@@ -464,18 +467,17 @@ export default function FlipCardGame() {
                   <Image
                     src={gameData.backImage}
                     alt="back"
-                    width={100}
-                    height={100}
+                    fill
+                    className="object-cover"
                   />
                 </div>
 
                 <div className="flip-card-back bg-white">
                   <Image
-                    width={100}
-                    height={100}
+                    fill
                     src={card.src}
                     alt={card.name}
-                    className="w-full h-full object-cover"
+                    className="object-cover"
                   />
                 </div>
               </div>
@@ -483,7 +485,7 @@ export default function FlipCardGame() {
           ))}
         </div>
       </div>
-      <div className="mt-12"></div>
+      <div className="mt-[5vh]"></div>
     </div>
   );
 }
