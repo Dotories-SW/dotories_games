@@ -4,6 +4,7 @@ import data from "@/public/flip_card_game.json";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import LoadingSpinner from "../_component/LoadingSpinner";
 
 // 타입 정의
 interface Card {
@@ -24,10 +25,10 @@ interface GameData {
 
 export default function FlipCardPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <FlipCardGame />
     </Suspense>
-  )
+  );
 }
 
 function FlipCardGame() {

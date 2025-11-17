@@ -2,6 +2,7 @@
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect, Suspense } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import LoadingSpinner from "../_component/LoadingSpinner";
 
 // 게임 타입 정의
 interface Word {
@@ -25,10 +26,10 @@ interface Puzzle {
 
 export default function CrosswordPuzzlesPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <CrosswordPuzzles />
     </Suspense>
-  )
+  );
 }
 
 function CrosswordPuzzles() {

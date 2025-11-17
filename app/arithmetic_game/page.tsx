@@ -2,6 +2,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import { useSearchParams } from "next/navigation";
+import LoadingSpinner from "../_component/LoadingSpinner";
 
 interface Question {
   text: string;
@@ -13,10 +14,10 @@ type Difficulty = "easy" | "normal" | "hard";
 
 export default function ArithmeticPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <ArithmeticGame />
     </Suspense>
-  )
+  );
 }
 
 function ArithmeticGame() {
