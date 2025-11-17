@@ -133,7 +133,7 @@ function CrosswordPuzzles() {
   const params = useSearchParams();
   const loginId: string = params.get("loginId")
     ? (params.get("loginId") as string)
-    : "691a90ead813df88a787f905";
+    : "691a90ead813df88a787f904";
 
   const completedGame = async (
     loginId: string,
