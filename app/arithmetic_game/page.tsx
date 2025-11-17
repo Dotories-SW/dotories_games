@@ -65,7 +65,6 @@ export default function ArithmeticGame() {
   useEffect(() => {
     const getCompleted = async () => {
       const res = await getGameCompleted(loginId);
-      console.log(res);
       let data = res.data;
       if (typeof data === "string") {
         data = JSON.parse(data);
@@ -85,8 +84,7 @@ export default function ArithmeticGame() {
     completed: boolean
   ) => {
     try {
-      const res = await patchCompletedGame(loginId, index, completed);
-      console.log(res);
+      await patchCompletedGame(loginId, index, completed);
     } catch (error) {
       console.error("게임 완료 업데이트 실패:", error);
     }

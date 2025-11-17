@@ -70,8 +70,7 @@ function CrosswordPuzzles() {
     completed: boolean
   ) => {
     try {
-      const res = await patchCompletedGame(loginId, index, completed);
-      console.log(res);
+      await patchCompletedGame(loginId, index, completed);
     } catch (error) {
       console.error("게임 완료 업데이트 실패:", error);
     }
@@ -81,7 +80,6 @@ function CrosswordPuzzles() {
     const getCompleted = async () => {
       try {
         const res = await getGameCompleted(loginId);
-        console.log(res);
         let data = res.data;
         if (typeof data === "string") {
           data = JSON.parse(data);
@@ -98,7 +96,6 @@ function CrosswordPuzzles() {
     getCompleted();
   }, [showDifficultySelect]); // 난이도 선택 화면으로 돌아올 때마다 새로고침
 
-  console.log("completedGames", completedGames);
   // 퍼즐 로드
   useEffect(() => {
     fetch("/crossword_puzzles.json")
