@@ -1,5 +1,6 @@
 import axios from "axios";
-const apiUrl = process.env.NEXT_PUBLIC_BACK_API_LOCAL_URL;
+//const localApiUrl = process.env.NEXT_PUBLIC_BACK_API_LOCAL_URL;
+const apiUrl = process.env.NEXT_PUBLIC_BACK_API_URL;
 const AuthorizationName = process.env.NEXT_PUBLIC_AUTHORIZATION_NAME;
 const AuthorizationPassword = process.env.NEXT_PUBLIC_AUTHORIZATION_PASSWORD;
 

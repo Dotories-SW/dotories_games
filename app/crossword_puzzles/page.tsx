@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 
@@ -49,6 +49,70 @@ function CrosswordPuzzles() {
     false,
     false,
   ]); // [easy, medium, hard]
+  const [totalWords, setTotalWords] = useState<number>(0);
+  const [correctCount, setCorrectCount] = useState<number>(0); // 정답 칸 개수
+  const [totalBlanks, setTotalBlanks] = useState<number>(0); // 전체 빈칸 개수
+
+  // 퍼즐 시작 시 총 빈칸 개수 계산 (한 번만)
+  useEffect(() => {
+    if (!currentPuzzle) return;
+
+    setTotalWords(currentPuzzle.solo_words.length);
+
+    // 전체 빈칸 개수 계산
+    let count = 0;
+    currentPuzzle.grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell === "" || cell === "?") {
+          count++;
+        }
+      });
+    });
+    setTotalBlanks(count);
+    setCorrectCount(0); // 정답 카운트 초기화
+  }, [currentPuzzle]);
+
+  // 진행률 계산 (0 ~ 100)
+  const progress = totalBlanks > 0 ? Math.round((correctCount / totalBlanks) * 100) : 0;
+
+  // 실행 취소를 위한 히스토리 타입 정의
+  interface HistoryState {
+    userGrid: string[][];
+    usedLetters: Set<number>;
+    cellToLetterIndex: Map<string, number>;
+    correctCount: number;
+  }
+
+  const [history, setHistory] = useState<HistoryState[]>([]);
+
+  // 현재 상태를 히스토리에 저장
+  const saveHistory = () => {
+    setHistory([
+      ...history,
+      {
+        userGrid: userGrid.map((row) => [...row]), // 깊은 복사
+        usedLetters: new Set(usedLetters), // Set 복사
+        cellToLetterIndex: new Map(cellToLetterIndex), // Map 복사
+        correctCount: correctCount, // 정답 카운트 저장
+      },
+    ]);
+  };
+
+  // 실행 취소 (이전 상태로 복원)
+  const undo = () => {
+    if (history.length > 0) {
+      const previousState = history[history.length - 1];
+
+      // 이전 상태로 복원
+      setUserGrid(previousState.userGrid.map((row) => [...row]));
+      setUsedLetters(new Set(previousState.usedLetters));
+      setCellToLetterIndex(new Map(previousState.cellToLetterIndex));
+      setCorrectCount(previousState.correctCount); // 정답 카운트 복원
+
+      // 히스토리에서 마지막 항목 제거
+      setHistory(history.slice(0, -1));
+    }
+  };
 
   // 난이도별 설정
   const DIFFICULTY_CONFIGS = {
@@ -56,11 +120,10 @@ function CrosswordPuzzles() {
     medium: { name: "보통", coins: 8, localIndex: 1, backendIndex: 5 },
     hard: { name: "어려움", coins: 12, localIndex: 2, backendIndex: 6 },
   };
-  const params = useParams();
 
-  //있으면 로그인아이디, 아니면 패스워드
-  const loginId: string = params.loginId
-    ? (params.loginId as string)
+  const params = useSearchParams();
+  const loginId: string = params.get("loginId")
+    ? (params.get("loginId") as string)
     : "691a90ead813df88a787f905";
 
   const completedGame = async (
@@ -130,6 +193,7 @@ function CrosswordPuzzles() {
     setCellToLetterIndex(new Map());
     setSelectedWord(null);
     setShowHint(false);
+    setHistory([]); // 히스토리 초기화
   };
 
   // 사용자 그리드 초기화
@@ -211,11 +275,19 @@ function CrosswordPuzzles() {
 
     // 빈 칸에만 글자 입력 가능
     if (originalCell === "" || originalCell === "?") {
+      // 🔥 글자 입력 전에 현재 상태 저장 (실행 취소용)
+      saveHistory();
+
       const cellKey = `${row}-${col}`;
 
       // 이미 해당 칸에 글자가 있다면 이전 글자를 복구
       const existingLetter = userGrid[row][col];
       if (existingLetter) {
+        // 기존 글자가 정답이었으면 correctCount 감소
+        if (isCorrectAnswer(row, col, existingLetter)) {
+          setCorrectCount((prev) => prev - 1);
+        }
+
         const previousLetterIndex = cellToLetterIndex.get(cellKey);
         if (previousLetterIndex !== undefined) {
           setUsedLetters((prev) => {
@@ -229,6 +301,11 @@ function CrosswordPuzzles() {
       const newGrid = [...userGrid];
       newGrid[row][col] = letter;
       setUserGrid(newGrid);
+
+      // 새로운 글자가 정답이면 correctCount 증가
+      if (isCorrectAnswer(row, col, letter)) {
+        setCorrectCount((prev) => prev + 1);
+      }
 
       // 새로운 글자 사용 처리
       setUsedLetters((prev) => new Set([...prev, letterIndex]));
@@ -247,6 +324,19 @@ function CrosswordPuzzles() {
 
     // 빈 칸에서만 삭제 가능
     if (originalCell === "" || originalCell === "?") {
+      const existingLetter = userGrid[row][col];
+
+      // 셀에 글자가 있을 때만 히스토리 저장
+      if (existingLetter) {
+        // 🔥 삭제 전에 현재 상태 저장 (실행 취소용)
+        saveHistory();
+
+        // 삭제하는 글자가 정답이면 correctCount 감소
+        if (isCorrectAnswer(row, col, existingLetter)) {
+          setCorrectCount((prev) => prev - 1);
+        }
+      }
+
       const cellKey = `${row}-${col}`;
       const letterIndex = cellToLetterIndex.get(cellKey);
 
@@ -302,6 +392,8 @@ function CrosswordPuzzles() {
       setCellToLetterIndex(new Map());
       setSelectedWord(null);
       setShowHint(false);
+      setHistory([]); // 히스토리 초기화
+      setCorrectCount(0); // 정답 카운트 초기화
     }
   };
   // 난이도 선택 화면
@@ -328,7 +420,9 @@ function CrosswordPuzzles() {
               <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
                 가로세로 퍼즐
               </h1>
-              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">빈칸을 채워서</p>
+              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">
+                빈칸을 채워서
+              </p>
               <p className="text-gray-600 text-[3.5vw]">단어를 완성해보세요!</p>
             </div>
 
@@ -488,6 +582,29 @@ function CrosswordPuzzles() {
       `}</style>
 
       <div className="w-[90%] max-w-2xl mx-auto mt-[3vh]">
+        {/* 프로그레스바 */}
+        <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[2vh]">
+          <div className="flex items-center justify-between mb-[1vh]">
+            <div className="flex items-center gap-[1vw]">
+              <span className="text-[3vw] font-bold text-gray-700">진행률</span>
+              <span className="text-[2.5vw] text-gray-500">
+                {correctCount} / {totalBlanks}
+              </span>
+            </div>
+            <span className="text-[3.5vw] font-bold text-purple-600">
+              {progress}%
+            </span>
+          </div>
+          
+          {/* 프로그레스 바 */}
+          <div className="w-full h-[2vh] bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
         {/* 게임 그리드 */}
         <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[3vh]">
           <div
@@ -626,31 +743,54 @@ function CrosswordPuzzles() {
           </div>
         )}
 
-        {/* 삭제 버튼 */}
-        <button
-          onClick={handleLetterDelete}
-          disabled={
-            !selectedCell ||
-            (selectedCell &&
-              currentPuzzle?.grid[selectedCell.row][selectedCell.col] !== "" &&
-              currentPuzzle?.grid[selectedCell.row][selectedCell.col] !== "?")
-          }
-          className={`w-full py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors ${
-            selectedCell &&
-            (currentPuzzle?.grid[selectedCell.row][selectedCell.col] === "" ||
-              currentPuzzle?.grid[selectedCell.row][selectedCell.col] === "?")
-              ? "bg-red-400 text-white hover:bg-red-500"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          🗑️ 지우기
-        </button>
-        <button
-          onClick={handleReset}
-          className="w-full mt-[1.5vh] py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500"
-        >
-          🔄 전체 초기화
-        </button>
+        {/* 버튼 영역 */}
+        <div className="space-y-[1.5vh]">
+          {/* 삭제 버튼 */}
+          <div className="flex flex-row gap-[2vw] justify-center">
+            <button
+              onClick={handleLetterDelete}
+              disabled={
+                !selectedCell ||
+                (selectedCell &&
+                  currentPuzzle?.grid[selectedCell.row][selectedCell.col] !==
+                    "" &&
+                  currentPuzzle?.grid[selectedCell.row][selectedCell.col] !==
+                    "?")
+              }
+              className={`w-[45%] py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors ${
+                selectedCell &&
+                (currentPuzzle?.grid[selectedCell.row][selectedCell.col] ===
+                  "" ||
+                  currentPuzzle?.grid[selectedCell.row][selectedCell.col] ===
+                    "?")
+                  ? "bg-red-400 text-white hover:bg-red-500"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              🗑️ 지우기
+            </button>
+
+            {/* 실행 취소 버튼 */}
+            <button
+              onClick={undo}
+              disabled={history.length === 0}
+              className={`w-[45%] py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors ${
+                history.length > 0
+                  ? "border-red-400 border-2 text-black hover:bg-red-400 hover:text-white"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              ↩️ 실행 취소
+            </button>
+          </div>
+          {/* 전체 초기화 버튼 */}
+          <button
+            onClick={handleReset}
+            className="w-full py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500"
+          >
+            🔄 전체 초기화
+          </button>
+        </div>
       </div>
 
       <div className="mt-[5vh]"></div>

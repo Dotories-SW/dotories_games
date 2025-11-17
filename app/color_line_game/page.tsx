@@ -67,7 +67,7 @@ function generateFlowFreePuzzleFromConfig(config: PuzzleConfig): PuzzleData {
   return { grid, pairs };
 }
 
-function FlowFreeGame2() {
+function ColorLineGame() {
   const [puzzles, setPuzzles] = useState<PuzzleConfig[]>([]);
   const [currentPuzzle, setCurrentPuzzle] = useState<PuzzleConfig | null>(null);
   const [puzzleData, setPuzzleData] = useState<PuzzleData | null>(null);
@@ -700,4 +700,4 @@ function FlowFreeGame2() {
   );
 }
 
-export default FlowFreeGame2;
+export default ColorLineGame;

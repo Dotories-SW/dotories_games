@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import data from "@/public/flip_card_game.json";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 
 // 타입 정의
@@ -49,7 +49,7 @@ export default function FlipCardGame() {
     gameBgmRef.current = new Audio("/sounds/flip_card/flip_card_bgm.mp3");
     gameBgmRef.current.loop = true;
     gameBgmRef.current.volume = 0.3;
-    
+
     return () => {
       if (gameBgmRef.current) {
         gameBgmRef.current.pause();
@@ -60,14 +60,35 @@ export default function FlipCardGame() {
 
   // 난이도별 설정
   const DIFFICULTY_CONFIGS = {
-    easy: { name: "쉬움", pairs: 4, cards: 8, coin: 5, localIndex: 0, backendIndex: 7 },
-    normal: { name: "보통", pairs: 8, cards: 16, coin: 8, localIndex: 1, backendIndex: 8 },
-    hard: { name: "어려움", pairs: 12, cards: 24, coin: 12, localIndex: 2, backendIndex: 9 },
+    easy: {
+      name: "쉬움",
+      pairs: 4,
+      cards: 8,
+      coin: 5,
+      localIndex: 0,
+      backendIndex: 7,
+    },
+    normal: {
+      name: "보통",
+      pairs: 8,
+      cards: 16,
+      coin: 8,
+      localIndex: 1,
+      backendIndex: 8,
+    },
+    hard: {
+      name: "어려움",
+      pairs: 12,
+      cards: 24,
+      coin: 12,
+      localIndex: 2,
+      backendIndex: 9,
+    },
   };
 
-  const params = useParams();
-  const loginId: string = params.loginId
-    ? (params.loginId as string)
+  const params = useSearchParams();
+  const loginId: string = params.get("loginId")
+    ? (params.get("loginId") as string)
     : "691a90ead813df88a787f905";
 
   useEffect(() => {
@@ -77,7 +98,11 @@ export default function FlipCardGame() {
       if (typeof data === "string") {
         data = JSON.parse(data);
       }
-      setCompletedGames([data[DIFFICULTY_CONFIGS.easy.backendIndex], data[DIFFICULTY_CONFIGS.normal.backendIndex], data[DIFFICULTY_CONFIGS.hard.backendIndex]]);
+      setCompletedGames([
+        data[DIFFICULTY_CONFIGS.easy.backendIndex],
+        data[DIFFICULTY_CONFIGS.normal.backendIndex],
+        data[DIFFICULTY_CONFIGS.hard.backendIndex],
+      ]);
     };
     getCompleted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,11 +136,11 @@ export default function FlipCardGame() {
       gameData.difficulty[difficulty as keyof typeof gameData.difficulty];
     const selectedCards = gameData.cards.slice(0, pairCount * 2);
     const shuffled = shuffleCards(selectedCards);
-    
+
     if (gameBgmRef.current) {
       gameBgmRef.current.play();
     }
-    
+
     setGameCards(shuffled);
     setFlippedCards([]);
     setMatchedCards([]);
@@ -238,7 +263,9 @@ export default function FlipCardGame() {
               <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
                 카드 뒤집기 게임
               </h1>
-              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">같은 그림을 찾아서</p>
+              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">
+                같은 그림을 찾아서
+              </p>
               <p className="text-gray-600 text-[3.5vw]">카드를 매칭해보세요!</p>
             </div>
 
@@ -282,7 +309,9 @@ export default function FlipCardGame() {
                         }`}
                       >
                         {completedGames[config.localIndex] ? (
-                          <span className="text-[2.5vw]">게임 진행은 가능하지만, 코인은 제공되지 않습니다.</span>
+                          <span className="text-[2.5vw]">
+                            게임 진행은 가능하지만, 코인은 제공되지 않습니다.
+                          </span>
                         ) : (
                           `${config.pairs}쌍 (${config.cards}장)`
                         )}
@@ -426,9 +455,7 @@ export default function FlipCardGame() {
             <p className="text-[3.5vw] text-gray-600 mb-[1vh]">
               먼저 카드를 보고
             </p>
-            <p className="text-[3.5vw] text-gray-600">
-              위치를 기억하세요!
-            </p>
+            <p className="text-[3.5vw] text-gray-600">위치를 기억하세요!</p>
           </div>
         </div>
       )}

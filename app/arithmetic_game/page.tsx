@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface Question {
   text: string;
@@ -57,9 +57,9 @@ export default function ArithmeticGame() {
     },
   };
 
-  const params = useParams();
-  const loginId: string = params.loginId
-    ? (params.loginId as string)
+  const params = useSearchParams();
+  const loginId: string = params.get("loginId")
+    ? (params.get("loginId") as string)
     : "691a90ead813df88a787f905";
 
   useEffect(() => {
