@@ -96,9 +96,9 @@ function FlipCardGame() {
   };
 
   const params = useSearchParams();
-  const loginId: string = params.get("loginId")
-    ? (params.get("loginId") as string)
-    : "691a90ead813df88a787f905";
+  const loginId: string = params.get("id")
+    ? (params.get("id") as string)
+    : "691a90ead813df88a787f904";
 
   useEffect(() => {
     const getCompleted = async () => {

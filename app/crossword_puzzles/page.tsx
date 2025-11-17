@@ -131,8 +131,8 @@ function CrosswordPuzzles() {
   };
 
   const params = useSearchParams();
-  const loginId: string = params.get("loginId")
-    ? (params.get("loginId") as string)
+  const loginId: string = params.get("id")
+    ? (params.get("id") as string)
     : "691a90ead813df88a787f904";
 
   const completedGame = async (
