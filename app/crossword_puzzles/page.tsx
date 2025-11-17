@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 
 // 게임 타입 정의
@@ -21,6 +21,14 @@ interface Puzzle {
   grid: string[][];
   solution: string[][];
   solo_words: string[];
+}
+
+export default function CrosswordPuzzlesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CrosswordPuzzles />
+    </Suspense>
+  )
 }
 
 function CrosswordPuzzles() {
@@ -798,4 +806,3 @@ function CrosswordPuzzles() {
   );
 }
 
-export default CrosswordPuzzles;

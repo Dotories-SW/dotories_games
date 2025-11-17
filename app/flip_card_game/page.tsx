@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import data from "@/public/flip_card_game.json";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -22,7 +22,15 @@ interface GameData {
   };
 }
 
-export default function FlipCardGame() {
+export default function FlipCardPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FlipCardGame />
+    </Suspense>
+  )
+}
+
+function FlipCardGame() {
   const gameData = data as GameData;
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import { useSearchParams } from "next/navigation";
 
@@ -11,7 +11,15 @@ interface Question {
 
 type Difficulty = "easy" | "normal" | "hard";
 
-export default function ArithmeticGame() {
+export default function ArithmeticPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ArithmeticGame />
+    </Suspense>
+  )
+}
+
+function ArithmeticGame() {
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty | null>(null);
