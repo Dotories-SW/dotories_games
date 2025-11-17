@@ -377,7 +377,6 @@ function FlipCardGame() {
         .backendIndex,
       true
     );
-    alert("카드뒤집기 게임완료");
     return (
       <div
         className="min-h-screen flex items-center justify-center p-[2vh]"

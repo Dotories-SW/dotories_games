@@ -523,7 +523,6 @@ function CrosswordPuzzles() {
         .backendIndex,
       true
     );
-    alert("가로세로 퍼즐 게임완료");
     return (
       <div
         className="min-h-screen flex items-center justify-center p-[2vh]"

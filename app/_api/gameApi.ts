@@ -5,6 +5,7 @@ const AuthorizationName = process.env.NEXT_PUBLIC_AUTHORIZATION_NAME;
 const AuthorizationPassword = process.env.NEXT_PUBLIC_AUTHORIZATION_PASSWORD;
 
 const getGameCompleted = async (loginId: string) => {
+  console.log(apiUrl);
   const res = await axios.get(`${apiUrl}/game-complete`, {
     headers: {
       "login-id": loginId,
@@ -21,6 +22,7 @@ const patchCompletedGame = async (
   index: number,
   completed: boolean
 ) => {
+  console.log(apiUrl);
   const res = await axios.patch(
     `${apiUrl}/game-complete`,
     { 
