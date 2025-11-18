@@ -48,6 +48,14 @@ function Home() {
             카드 뒤집기 게임
           </span>
         </Link>
+
+        <Link href="/doughnut_game" className="group block p-5 sm:p-6 bg-white/95 backdrop-blur-sm rounded-2xl text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-white active:translate-y-0 border border-white/20">
+          <span className="block text-2xl sm:text-3xl mb-2">🍩</span>
+          <span className="block text-gray-800 font-semibold text-base sm:text-lg">
+            도넛 쌓기 게임
+          </span>
+        </Link>
+
       </div>
     </div>
   );

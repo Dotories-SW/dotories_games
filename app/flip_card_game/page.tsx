@@ -32,6 +32,7 @@ export default function FlipCardPage() {
 }
 
 function FlipCardGame() {
+  const flipCardEffect = new Audio("/sounds/flip_card/flip_card_effect.mp3");
   const gameData = data as GameData;
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
@@ -57,7 +58,7 @@ function FlipCardGame() {
   useEffect(() => {
     gameBgmRef.current = new Audio("/sounds/flip_card/flip_card_bgm.mp3");
     gameBgmRef.current.loop = true;
-    gameBgmRef.current.volume = 0.3;
+    gameBgmRef.current.volume = 0.1;
 
     return () => {
       if (gameBgmRef.current) {
@@ -87,8 +88,8 @@ function FlipCardGame() {
     },
     hard: {
       name: "어려움",
-      pairs: 12,
-      cards: 24,
+      pairs: 10,
+      cards: 20,
       coin: 12,
       localIndex: 2,
       backendIndex: 9,
@@ -200,7 +201,6 @@ function FlipCardGame() {
     }
 
     // 조건을 통과한 경우에만 오디오 재생
-    const flipCardEffect = new Audio("/sounds/flip_card/flip_card_effect.mp3");
     flipCardEffect.play();
 
     const newFlipped = [...flippedCards, cardId];
@@ -411,12 +411,12 @@ function FlipCardGame() {
       ? "min(90vw, 500px)"
       : gameCards.length === 16
       ? "min(90vw, 600px)"
-      : "min(90vw, 700px)"; // vw 단위로 반응형
+      : "min(90vw, 500px)"; // vw 단위로 반응형
   const cardGap = gameCards.length === 24 ? "gap-[0.5vw]" : "gap-[1vw]"; // 어려움은 간격도 좁게
 
   return (
     <div
-      className="min-h-screen p-[2vh] relative"
+      className="h-screen overflow-hidden p-[2vh] relative"
       style={{ backgroundColor: "#F5F1E8" }}
     >
       <style jsx global>{`
@@ -424,6 +424,7 @@ function FlipCardGame() {
           margin: 0;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
             sans-serif;
+          overflow: hidden;
         }
         .flip-card {
           perspective: 1000px;
@@ -472,13 +473,13 @@ function FlipCardGame() {
       {/* 카운트다운 오버레이 (투명 배경) */}
       {showingCards && countdown > 0 && (
         <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
-          <div className="text-[15vw] font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl">
+          <div className="text-[20vw] font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl">
             {countdown}
           </div>
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto flex justify-center items-center min-h-screen">
+      <div className="max-w-2xl mx-auto flex justify-center items-center h-full">
         {/* 카드 그리드 */}
         <div
           className={`grid ${cardGap}`}
@@ -521,7 +522,6 @@ function FlipCardGame() {
           ))}
         </div>
       </div>
-      <div className="mt-[5vh]"></div>
     </div>
   );
 }
