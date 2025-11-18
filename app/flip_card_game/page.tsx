@@ -32,7 +32,6 @@ export default function FlipCardPage() {
 }
 
 function FlipCardGame() {
-  const flipCardEffect = new Audio("/sounds/flip_card/flip_card_effect.mp3");
   const gameData = data as GameData;
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
@@ -49,21 +48,28 @@ function FlipCardGame() {
   const [moveCount, setMoveCount] = useState(0);
 
   const gameBgmRef = useRef<HTMLAudioElement | null>(null);
+  const flipCardEffectRef = useRef<HTMLAudioElement | null>(null);
   const [completedGames, setCompletedGames] = useState<boolean[]>([
     false,
     false,
     false,
   ]);
+  
   // Audio 초기화
   useEffect(() => {
     gameBgmRef.current = new Audio("/sounds/flip_card/flip_card_bgm.mp3");
     gameBgmRef.current.loop = true;
     gameBgmRef.current.volume = 0.1;
 
+    flipCardEffectRef.current = new Audio("/sounds/flip_card/flip_card_effect.mp3");
+
     return () => {
       if (gameBgmRef.current) {
         gameBgmRef.current.pause();
         gameBgmRef.current = null;
+      }
+      if (flipCardEffectRef.current) {
+        flipCardEffectRef.current = null;
       }
     };
   }, []);
@@ -201,7 +207,9 @@ function FlipCardGame() {
     }
 
     // 조건을 통과한 경우에만 오디오 재생
-    flipCardEffect.play();
+    if (flipCardEffectRef.current) {
+      flipCardEffectRef.current.play();
+    }
 
     const newFlipped = [...flippedCards, cardId];
     setFlippedCards(newFlipped);
