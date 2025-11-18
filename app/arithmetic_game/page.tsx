@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import { useSearchParams } from "next/navigation";
 import LoadingSpinner from "../_component/LoadingSpinner";
@@ -70,6 +70,25 @@ function ArithmeticGame() {
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
     : "691a90ead813df88a787f904";
+
+  const successSoundRef = useRef<HTMLAudioElement | null>(null);
+  const failSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    successSoundRef.current = new Audio("/sounds/arithmetic/success.mp3");
+    failSoundRef.current = new Audio("/sounds/arithmetic/fail.mp3");
+
+    return () => {
+      if (successSoundRef.current) {
+        successSoundRef.current.pause();
+        successSoundRef.current = null;
+      }
+      if (failSoundRef.current) {
+        failSoundRef.current.pause();
+        failSoundRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const getCompleted = async () => {
@@ -295,6 +314,9 @@ function ArithmeticGame() {
 
     const isCorrect = answer === currentQuestion?.answer;
     if (isCorrect) {
+      if (successSoundRef.current) {
+        successSoundRef.current.play();
+      }
       setScore((prev) => prev + 1);
 
       // 다음 문제에 전달할 이전 답 (어려움 난이도일 때만)
@@ -316,6 +338,9 @@ function ArithmeticGame() {
         }
       }, 1500);
     } else {
+      if (failSoundRef.current) {
+        failSoundRef.current.play();
+      }
       // 틀렸을 때는 3초 후 새로운 문제 생성 (이전 답 초기화)
       setTimeout(() => {
         const newQuestion = generateQuestion(difficulty, null);
@@ -352,7 +377,9 @@ function ArithmeticGame() {
               <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
                 산수 게임
               </h1>
-              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">빠르게 계산하고</p>
+              <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">
+                빠르게 계산하고
+              </p>
               <p className="text-gray-600 text-[3.5vw]">정답을 맞춰보세요!</p>
             </div>
 
@@ -487,7 +514,10 @@ function ArithmeticGame() {
 
   // 게임 화면
   return (
-    <div className="min-h-screen p-[2vh]" style={{ backgroundColor: "#F5F1E8" }}>
+    <div
+      className="min-h-screen p-[2vh]"
+      style={{ backgroundColor: "#F5F1E8" }}
+    >
       <div className="w-[90%] max-w-2xl mx-auto">
         {/* 진행 상황 */}
         <div className="mb-[3vh] bg-white rounded-2xl p-[2vh] shadow-sm">
