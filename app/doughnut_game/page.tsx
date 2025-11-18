@@ -51,6 +51,8 @@ function DoughnutGame() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStarted]);
 
+  
+
   useEffect(() => {
     if (!gameStarted || !canvasRef.current) return;
 
@@ -79,6 +81,7 @@ function DoughnutGame() {
         background: "transparent",
       },
     });
+    
 
     // 바닥 생성
     const ground = Matter.Bodies.rectangle(
@@ -157,8 +160,8 @@ function DoughnutGame() {
           render: {
             sprite: {
               texture: "/doughnut/doughnut.png",
-              xScale: 0.25,
-              yScale: 0.15,
+              xScale: 0.28,
+              yScale: 0.28,
             },
           },
           label: "movingDoughnut",
@@ -675,8 +678,9 @@ function DoughnutGame() {
         render: {
           sprite: {
             texture: "/doughnut/doughnut.png",
-            xScale: 0.25,
-            yScale: 0.15,
+            xScale: 0.28,
+            yScale: 0.28,
+            
           },
         },
         label: "movingDoughnut", // 충돌 감지용
