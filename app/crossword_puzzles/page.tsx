@@ -431,7 +431,7 @@ function CrosswordPuzzles() {
                 <div className="text-white text-[7vw] font-bold">🧩</div>
               </div>
               <h1 className="text-[6vw] font-bold text-gray-800 mb-[1vh]">
-                가로세로 퍼즐
+                낱말 퀴즈
               </h1>
               <p className="text-gray-600 text-[3.5vw] mb-[0.5vh]">
                 빈칸을 채워서
@@ -594,13 +594,13 @@ function CrosswordPuzzles() {
         }
       `}</style>
 
-      <div className="w-[90%] max-w-2xl mx-auto mt-[3vh]">
+      <div className="w-full max-w-2xl mx-auto mt-[1vh]">
         {/* 프로그레스바 */}
-        <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[2vh]">
+        <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[1vh]">
           <div className="flex items-center justify-between mb-[1vh]">
             <div className="flex items-center gap-[1vw]">
-              <span className="text-[3vw] font-bold text-gray-700">진행률</span>
-              <span className="text-[2.5vw] text-gray-500">
+              <span className="text-[4vw] font-bold text-gray-700">진행률</span>
+              <span className="text-[3.5vw] text-gray-500">
                 {correctCount} / {totalBlanks}
               </span>
             </div>
@@ -619,7 +619,7 @@ function CrosswordPuzzles() {
         </div>
 
         {/* 게임 그리드 */}
-        <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[3vh]">
+        <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[1vh]">
           <div
             className="grid gap-[0.5vw] mx-auto"
             style={{
@@ -664,7 +664,7 @@ function CrosswordPuzzles() {
                   >
                     {/* 시작 좌표 번호 표시 (교차점인 경우 모든 ID 표시) */}
                     {wordsAtCell.length > 0 && (
-                      <span className="absolute top-[0%] left-[5%] text-[1.5vw] text-purple-600 font-bold">
+                      <span className="absolute top-[0%] left-[5%] text-[2vw] text-purple-600 font-semibold">
                         {wordsAtCell.map(w => w.id).join(',')}
                       </span>
                     )}
@@ -672,10 +672,10 @@ function CrosswordPuzzles() {
                     {isBlockedCell ? (
                       ""
                     ) : isFixed ? (
-                      <span className="text-gray-700 text-[3vw]">{cell}</span>
+                      <span className="text-gray-700 text-[5vw]">{cell}</span>
                     ) : (
                       <span
-                        className={`text-[3vw] ${
+                        className={`text-[5vw] ${
                           userCell
                             ? isCorrectAnswer(rowIndex, colIndex, userCell)
                               ? "text-green-600 font-bold"
@@ -694,7 +694,7 @@ function CrosswordPuzzles() {
         </div>
 
         {/* 글자 선택 패널 */}
-        <div className="bg-white rounded-2xl p-[2vh] shadow-sm mb-[3vh]">
+        <div className="bg-white rounded-2xl p-[2vh] shadow-sm mb-[1vh]">
           {/* 글자 후보군 */}
           <div className="grid grid-cols-6 gap-[1vw] mb-[2vh]">
             {availableLetters.map((letter, index) => {
@@ -711,7 +711,7 @@ function CrosswordPuzzles() {
                   <button
                     onClick={() => handleLetterSelect(letter, index)}
                     disabled={!canSelect || isUsed}
-                    className={`w-full h-full rounded-lg font-bold text-[3.5vw] transition-all duration-300 ease-in-out transform ${
+                    className={`w-full h-full rounded-lg font-bold text-[5vw] transition-all duration-300 ease-in-out transform ${
                       isUsed
                         ? "scale-0 opacity-0 pointer-events-none"
                         : canSelect
@@ -729,10 +729,10 @@ function CrosswordPuzzles() {
 
         {/* 힌트 영역 */}
         {selectedWords.length > 0 && (
-          <div className="bg-purple-50 rounded-xl p-[2vh] mb-[1.5vh] border-2 border-purple-200">
+          <div className="bg-purple-50 rounded-xl p-[2vh] mb-[1vh] border-2 border-purple-200">
             {/* 교차점인 경우 방향 선택 버튼 */}
             {selectedWords.length > 1 && (
-              <div className="flex gap-[1vw] mb-[1.5vh]">
+              <div className="flex gap-[1vw] mb-[2vh]">
                 {selectedWords.map((word) => (
                   <button
                     key={word.id}
@@ -740,7 +740,7 @@ function CrosswordPuzzles() {
                       setSelectedDirection(word.direction);
                       setShowHint(false); // 방향 변경 시 힌트 숨김
                     }}
-                    className={`flex-1 py-[1.5vh] rounded-lg font-semibold text-[2.5vw] transition-all ${
+                    className={`flex-1 py-[1.5vh] rounded-lg font-semibold text-[4vw] transition-all ${
                       selectedDirection === word.direction
                         ? "bg-purple-500 text-white shadow-md"
                         : "bg-white text-gray-600 hover:bg-purple-100"
@@ -763,16 +763,16 @@ function CrosswordPuzzles() {
                 <>
                   <div className="flex items-center justify-between mb-[1vh]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[2vw] font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center">
+                      <span className="text-[3vw] font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center">
                         {currentWord.id}
                       </span>
-                      <span className="text-[2.5vw] font-semibold text-gray-700">
+                      <span className="text-[3.5vw] font-semibold text-gray-700">
                         {currentWord.direction === "horizontal" ? "가로" : "세로"}
                       </span>
                     </div>
                     <button
                       onClick={() => setShowHint(!showHint)}
-                      className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg text-[2.5vw] font-semibold hover:bg-purple-600 transition-colors"
+                      className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg text-[3.5vw] font-semibold hover:bg-purple-600 transition-colors"
                     >
                       {showHint ? "힌트 숨기기" : "💡 힌트 보기"}
                     </button>
@@ -780,8 +780,8 @@ function CrosswordPuzzles() {
 
                   {showHint && (
                     <div className="p-[1.5vh] bg-white rounded-lg border border-purple-200">
-                      <p className="text-[2.5vw] text-gray-600 mb-[0.5vh]">💬 힌트</p>
-                      <p className="text-[3vw] text-gray-700">{currentWord.hint}</p>
+                      <p className="text-[3.5vw] text-gray-600 mb-[0.5vh]">💬 힌트</p>
+                      <p className="text-[4vw] text-gray-700">{currentWord.hint}</p>
                     </div>
                   )}
                 </>
@@ -804,14 +804,14 @@ function CrosswordPuzzles() {
                   currentPuzzle?.grid[selectedCell.row][selectedCell.col] !==
                     "?")
               }
-              className={`w-[45%] py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors ${
+              className={`w-full py-[2vh] text-[4vw] rounded-xl font-semibold transition-colors ${
                 selectedCell &&
                 (currentPuzzle?.grid[selectedCell.row][selectedCell.col] ===
                   "" ||
                   currentPuzzle?.grid[selectedCell.row][selectedCell.col] ===
                     "?")
                   ? "bg-red-400 text-white hover:bg-red-500"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-300 text-gray-400 cursor-not-allowed"
               }`}
             >
               🗑️ 지우기
@@ -821,10 +821,10 @@ function CrosswordPuzzles() {
             <button
               onClick={undo}
               disabled={history.length === 0}
-              className={`w-[45%] py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors ${
+              className={`w-full py-[2vh] text-[4vw] rounded-xl font-semibold transition-colors ${
                 history.length > 0
                   ? "border-red-400 border-2 text-black hover:bg-red-400 hover:text-white"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-300 text-gray-400 cursor-not-allowed"
               }`}
             >
               ↩️ 실행 취소
@@ -833,7 +833,7 @@ function CrosswordPuzzles() {
           {/* 전체 초기화 버튼 */}
           <button
             onClick={handleReset}
-            className="w-full py-[2vh] text-[3vw] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500"
+            className="w-full mx-auto py-[2vh] text-[4.5vw] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500 block"
           >
             🔄 전체 초기화
           </button>
