@@ -51,22 +51,20 @@ function CrosswordPuzzles() {
   const [cellToLetterIndex, setCellToLetterIndex] = useState<
     Map<string, number>
   >(new Map());
-  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [selectedWords, setSelectedWords] = useState<Word[]>([]);
   const [showHint, setShowHint] = useState(false);
+  const [selectedDirection, setSelectedDirection] = useState<"horizontal" | "vertical" | null>(null);
   const [completedGames, setCompletedGames] = useState<boolean[]>([
     false,
     false,
     false,
   ]); // [easy, medium, hard]
-  const [totalWords, setTotalWords] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0); // 정답 칸 개수
   const [totalBlanks, setTotalBlanks] = useState<number>(0); // 전체 빈칸 개수
 
   // 퍼즐 시작 시 총 빈칸 개수 계산 (한 번만)
   useEffect(() => {
     if (!currentPuzzle) return;
-
-    setTotalWords(currentPuzzle.solo_words.length);
 
     // 전체 빈칸 개수 계산
     let count = 0;
@@ -200,8 +198,9 @@ function CrosswordPuzzles() {
     setSelectedCell(null);
     setUsedLetters(new Set());
     setCellToLetterIndex(new Map());
-    setSelectedWord(null);
+    setSelectedWords([]);
     setShowHint(false);
+    setSelectedDirection(null);
     setHistory([]); // 히스토리 초기화
   };
 
@@ -246,10 +245,10 @@ function CrosswordPuzzles() {
     }
   };
 
-  // 시작 좌표인지 확인
-  const isStartCell = (row: number, col: number) => {
-    if (!currentPuzzle) return null;
-    return currentPuzzle.words.find(
+  // 시작 좌표인지 확인 (모든 매칭 단어 반환)
+  const getWordsAtCell = (row: number, col: number): Word[] => {
+    if (!currentPuzzle) return [];
+    return currentPuzzle.words.filter(
       (word) => word.start_row === row && word.start_col === col
     );
   };
@@ -263,14 +262,18 @@ function CrosswordPuzzles() {
     if (originalCell !== "X") {
       setSelectedCell({ row, col });
 
-      // 시작 좌표인지 확인
-      const wordAtStart = isStartCell(row, col);
-      if (wordAtStart) {
-        setSelectedWord(wordAtStart);
+      // 시작 좌표인지 확인 (모든 매칭 단어)
+      const wordsAtStart = getWordsAtCell(row, col);
+      if (wordsAtStart.length > 0) {
+        setSelectedWords(wordsAtStart);
         setShowHint(false); // 힌트는 초기화
+        // 기본 방향 설정 (가로 우선, 없으면 세로)
+        const hasHorizontal = wordsAtStart.some(w => w.direction === "horizontal");
+        setSelectedDirection(hasHorizontal ? "horizontal" : "vertical");
       } else {
-        setSelectedWord(null);
+        setSelectedWords([]);
         setShowHint(false);
+        setSelectedDirection(null);
       }
     }
   };
@@ -399,8 +402,9 @@ function CrosswordPuzzles() {
       setSelectedCell(null);
       setUsedLetters(new Set());
       setCellToLetterIndex(new Map());
-      setSelectedWord(null);
+      setSelectedWords([]);
       setShowHint(false);
+      setSelectedDirection(null);
       setHistory([]); // 히스토리 초기화
       setCorrectCount(0); // 정답 카운트 초기화
     }
@@ -638,7 +642,7 @@ function CrosswordPuzzles() {
                   isBlank &&
                   isCorrectAnswer(rowIndex, colIndex, userCell);
 
-                const wordAtCell = isStartCell(rowIndex, colIndex);
+                const wordsAtCell = getWordsAtCell(rowIndex, colIndex);
 
                 return (
                   <div
@@ -658,10 +662,10 @@ function CrosswordPuzzles() {
                     }`}
                     onClick={() => handleCellClick(rowIndex, colIndex)}
                   >
-                    {/* 시작 좌표 번호 표시 */}
-                    {wordAtCell && (
+                    {/* 시작 좌표 번호 표시 (교차점인 경우 모든 ID 표시) */}
+                    {wordsAtCell.length > 0 && (
                       <span className="absolute top-[0%] left-[5%] text-[1.5vw] text-purple-600 font-bold">
-                        {wordAtCell.id}
+                        {wordsAtCell.map(w => w.id).join(',')}
                       </span>
                     )}
 
@@ -724,31 +728,65 @@ function CrosswordPuzzles() {
         </div>
 
         {/* 힌트 영역 */}
-        {selectedWord && (
+        {selectedWords.length > 0 && (
           <div className="bg-purple-50 rounded-xl p-[2vh] mb-[1.5vh] border-2 border-purple-200">
-            <div className="flex items-center justify-between mb-[1vh]">
-              <div className="flex items-center gap-2">
-                <span className="text-[2vw] font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center">
-                  {selectedWord.id}
-                </span>
-                <span className="text-[2.5vw] font-semibold text-gray-700">
-                  {selectedWord.direction === "horizontal" ? "가로" : "세로"}
-                </span>
-              </div>
-              <button
-                onClick={() => setShowHint(!showHint)}
-                className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg text-[2.5vw] font-semibold hover:bg-purple-600 transition-colors"
-              >
-                {showHint ? "힌트 숨기기" : "💡 힌트 보기"}
-              </button>
-            </div>
-
-            {showHint && (
-              <div className="p-[1.5vh] bg-white rounded-lg border border-purple-200">
-                <p className="text-[2.5vw] text-gray-600 mb-[0.5vh]">💬 힌트</p>
-                <p className="text-[3vw] text-gray-700">{selectedWord.hint}</p>
+            {/* 교차점인 경우 방향 선택 버튼 */}
+            {selectedWords.length > 1 && (
+              <div className="flex gap-[1vw] mb-[1.5vh]">
+                {selectedWords.map((word) => (
+                  <button
+                    key={word.id}
+                    onClick={() => {
+                      setSelectedDirection(word.direction);
+                      setShowHint(false); // 방향 변경 시 힌트 숨김
+                    }}
+                    className={`flex-1 py-[1.5vh] rounded-lg font-semibold text-[2.5vw] transition-all ${
+                      selectedDirection === word.direction
+                        ? "bg-purple-500 text-white shadow-md"
+                        : "bg-white text-gray-600 hover:bg-purple-100"
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      <span>{word.direction === "horizontal" ? "가로" : "세로"}</span>
+                    </div>
+                  </button>
+                ))}
               </div>
             )}
+
+            {/* 선택된 방향의 단어 정보 */}
+            {(() => {
+              const currentWord = selectedWords.find(w => w.direction === selectedDirection);
+              if (!currentWord) return null;
+
+              return (
+                <>
+                  <div className="flex items-center justify-between mb-[1vh]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[2vw] font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center">
+                        {currentWord.id}
+                      </span>
+                      <span className="text-[2.5vw] font-semibold text-gray-700">
+                        {currentWord.direction === "horizontal" ? "가로" : "세로"}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setShowHint(!showHint)}
+                      className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg text-[2.5vw] font-semibold hover:bg-purple-600 transition-colors"
+                    >
+                      {showHint ? "힌트 숨기기" : "💡 힌트 보기"}
+                    </button>
+                  </div>
+
+                  {showHint && (
+                    <div className="p-[1.5vh] bg-white rounded-lg border border-purple-200">
+                      <p className="text-[2.5vw] text-gray-600 mb-[0.5vh]">💬 힌트</p>
+                      <p className="text-[3vw] text-gray-700">{currentWord.hint}</p>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
