@@ -61,15 +61,21 @@ function DoughnutGame() {
     const height = window.innerHeight;
     const GROUND_HEIGHT = height * 0.08; // 화면 높이의 8%
     
-    // 화면 크기에 따른 도넛 크기 조절 (최소 25, 최대 50)
-    const baseRadius = Math.min(width, height) * 0.05; // 화면 크기의 5%
-    const DOUGHNUT_RADIUS = Math.max(25, Math.min(50, baseRadius));
+    // 화면 크기에 따른 도넛 크기 조절 (가로로 넓은 사각형)
+    const baseSize = Math.min(width, height) * 0.05; // 화면 크기의 5%
+    const DOUGHNUT_WIDTH = Math.max(60, Math.min(100, baseSize * 2.4)); // 가로: 더 넓게 (2.4배)
+    const DOUGHNUT_HEIGHT = Math.max(25, Math.min(50, baseSize)); // 세로: 원래 크기
+    const DOUGHNUT_RADIUS = DOUGHNUT_WIDTH / 2; // 호환성을 위해 반지름 계산 (사용 안 함)
     doughnutRadiusRef.current = DOUGHNUT_RADIUS;
     const MOVE_SPEED = width * 0.006; // 화면 크기에 비례한 이동 속도
+    
+    // 원본 이미지 크기 (일반적으로 200x200 또는 100x100, 실제 이미지 크기에 맞게 조정 필요)
+    // 스프라이트 스케일은 원본 이미지 픽셀 크기에 대한 배율
+    const SPRITE_IMAGE_SIZE = 200; // 원본 도넛 이미지의 픽셀 크기 (가정)
 
     // 엔진 생성 (기본 중력, 높이에 따라 조절됨)
     const engine = Matter.Engine.create({
-      gravity: { x: 0, y: 0.8 }, // 기본 중력
+      gravity: { x: 0, y: 1.2 }, // 기본 중력 (더 빠르게 떨어지도록 증가)
     });
     engineRef.current = engine;
 
@@ -125,11 +131,11 @@ function DoughnutGame() {
         currentXRef.current += directionRef.current * MOVE_SPEED;
 
         // 화면 끝에 닿으면 방향 전환
-        if (currentXRef.current <= DOUGHNUT_RADIUS) {
-          currentXRef.current = DOUGHNUT_RADIUS;
+        if (currentXRef.current <= DOUGHNUT_WIDTH / 2) {
+          currentXRef.current = DOUGHNUT_WIDTH / 2;
           directionRef.current = 1; // 오른쪽으로
-        } else if (currentXRef.current >= width - DOUGHNUT_RADIUS) {
-          currentXRef.current = width - DOUGHNUT_RADIUS;
+        } else if (currentXRef.current >= width - DOUGHNUT_WIDTH / 2) {
+          currentXRef.current = width - DOUGHNUT_WIDTH / 2;
           directionRef.current = -1; // 왼쪽으로
         }
 
@@ -150,10 +156,11 @@ function DoughnutGame() {
       currentXRef.current = width / 2;
       directionRef.current = 1;
 
-      const newDoughnut = Matter.Bodies.circle(
+      const newDoughnut = Matter.Bodies.rectangle(
         currentXRef.current,
         initialY,
-        DOUGHNUT_RADIUS,
+        DOUGHNUT_WIDTH,
+        DOUGHNUT_HEIGHT,
         {
           isStatic: true, // 고정 상태
           restitution: 0.2, // 약간 튕기도록 (자연스러운 쌓임)
@@ -163,8 +170,8 @@ function DoughnutGame() {
           render: {
             sprite: {
               texture: "/doughnut/doughnut.png",
-              xScale: (DOUGHNUT_RADIUS * 2) / width * 1.2, // 도넛 크기에 비례
-              yScale: (DOUGHNUT_RADIUS * 2) / height * 1.2,
+              xScale: DOUGHNUT_WIDTH / SPRITE_IMAGE_SIZE * 1.2, // 물리 크기(픽셀) / 원본 이미지 크기
+              yScale: DOUGHNUT_HEIGHT / SPRITE_IMAGE_SIZE * 2.4, // 물리 크기(픽셀) / 원본 이미지 크기
             },
           },
           label: "movingDoughnut",
@@ -255,16 +262,39 @@ function DoughnutGame() {
             // label 변경 (다음 충돌 감지에서 구분하기 위해)
             fallingDoughnut.label = "stackedDoughnut";
 
-            // 충돌 즉시 고정하지 않고, 물리력을 적용하여 안정화 대기
-            // 자연스러운 쌓임을 위한 물리 속성 조정
-            fallingDoughnut.friction = 1.5; // 적절한 마찰력
-            fallingDoughnut.restitution = 0.2; // 약간 튕기도록
-            Matter.Body.setDensity(fallingDoughnut, 0.001);
-            fallingDoughnut.frictionAir = 0.05; // 적절한 공기 저항
-            // inertia를 높여서 회전을 줄임 (안정적이지만 너무 딱딱하지 않게)
-            Matter.Body.setInertia(fallingDoughnut, 10000);
+            // 첫 번째 도넛은 물리력 없이 바로 고정, 두 번째부터는 물리력 적용
+            if (isFirstDoughnut) {
+              // 첫 번째 도넛: 바로 고정 (물리력 없음)
+              Matter.Body.setStatic(fallingDoughnut, true);
+              Matter.Body.setVelocity(fallingDoughnut, { x: 0, y: 0 });
+              Matter.Body.setAngularVelocity(fallingDoughnut, 0);
+              
+              // 첫 번째 도넛은 점수 증가 후 새 도넛 생성 (안정화 체크 없음)
+              setScore(stackedDoughnutsRef.current.length);
+              
+              setTimeout(() => {
+                if (
+                  !gameOver &&
+                  engineRef.current &&
+                  createNewDoughnutRef.current
+                ) {
+                  createNewDoughnutRef.current();
+                }
+              }, 500);
+              
+              return; // 첫 번째 도넛은 여기서 종료
+            } else {
+              // 두 번째 도넛부터: 물리력을 적용하여 안정화 대기
+              // 자연스러운 쌓임을 위한 물리 속성 조정
+              fallingDoughnut.friction = 1.5; // 적절한 마찰력
+              fallingDoughnut.restitution = 0.2; // 약간 튕기도록
+              Matter.Body.setDensity(fallingDoughnut, 0.001);
+              fallingDoughnut.frictionAir = 0.05; // 적절한 공기 저항
+              // inertia를 높여서 회전을 줄임 (안정적이지만 너무 딱딱하지 않게)
+              Matter.Body.setInertia(fallingDoughnut, 10000);
+            }
 
-            // 속도 감소 (충돌 후 안정화)
+            // 속도 감소 (충돌 후 안정화) - 두 번째 도넛부터만
             Matter.Body.setVelocity(fallingDoughnut, {
               x: fallingDoughnut.velocity.x * 0.1,
               y: fallingDoughnut.velocity.y * 0.1,
@@ -274,7 +304,7 @@ function DoughnutGame() {
               fallingDoughnut.angularVelocity * 0.1
             );
 
-            // 연속적으로 안정화 상태를 체크 (여러 번 검증)
+            // 연속적으로 안정화 상태를 체크 (여러 번 검증) - 두 번째 도넛부터만
             let stableCheckCount = 0;
             const requiredStableChecks = 3; // 연속 3번 안정화 상태여야 고정
 
@@ -398,17 +428,18 @@ function DoughnutGame() {
       
       // 떨어지는 도넛의 높이에 따라 중력 조절
       if (doughnutRef.current && !doughnutRef.current.isStatic) {
+        // 모든 도넛은 중력 받음
         const fallingY = doughnutRef.current.position.y;
         const availableHeight = currentHeight - groundY;
         const heightFromGround = fallingY - groundY;
         const heightRatio = Math.max(0, Math.min(1, heightFromGround / availableHeight));
-        // 높을수록 중력 증가 (최소 0.8, 최대 1.5)
+        // 높을수록 중력 증가 (최소 1.2, 최대 2.0)
         // heightRatio가 1에 가까울수록 (높을수록) 중력이 커짐
-        const dynamicGravity = 0.8 + heightRatio * 0.7;
+        const dynamicGravity = 1.2 + heightRatio * 0.8;
         engine.gravity.y = dynamicGravity;
       } else {
         // 떨어지는 도넛이 없으면 기본 중력
-        engine.gravity.y = 0.8;
+        engine.gravity.y = 1.2;
       }
 
       // 쌓인 도넛들이 무너졌는지 체크
@@ -536,8 +567,8 @@ function DoughnutGame() {
           const dy = doughnut2.position.y - doughnut1.position.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          // 도넛 반지름의 3배 이상 떨어져 있으면 무너진 것으로 간주
-          if (distance > DOUGHNUT_RADIUS * 3) {
+          // 도넛 너비의 1.5배 이상 떨어져 있으면 무너진 것으로 간주
+          if (distance > DOUGHNUT_WIDTH * 1.5) {
             if (!gameOver) {
               setGameMessage("💥 도넛이 무너졌습니다!");
               setGameOver(true);
@@ -681,25 +712,34 @@ function DoughnutGame() {
     Matter.World.remove(engineRef.current.world, oldDoughnut);
     doughnutRef.current = null;
 
+    // 첫 번째 도넛인지 확인
+    const isFirstDoughnut = stackedDoughnutsRef.current.length === 0;
+    
     // 같은 위치에 새로운 동적 도넛 생성 (떨어지는 도넛)
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const fallingDoughnut = Matter.Bodies.circle(
+    // 도넛 크기 계산 (useEffect 외부이므로 현재 화면 크기로 계산)
+    const currentWidth = window.innerWidth;
+    const currentHeight = window.innerHeight;
+    const baseSize = Math.min(currentWidth, currentHeight) * 0.05;
+    const doughnutWidth = Math.max(60, Math.min(100, baseSize * 2.4));
+    const doughnutHeight = Math.max(25, Math.min(50, baseSize));
+    
+    const fallingDoughnut = Matter.Bodies.rectangle(
       currentX,
       currentY,
-      doughnutRadiusRef.current,
+      doughnutWidth,
+      doughnutHeight,
       {
         isStatic: false, // 동적 상태
         restitution: 0.2, // 약간 튕기도록 (자연스러운 쌓임)
-        friction: 1.2, // 적절한 마찰력
-        density: 0.001, // 가벼움
-        frictionAir: 0.01,
+        friction: isFirstDoughnut ? 0 : 1.2, // 첫 번째 도넛은 마찰력 없음
+        density: 0.001, // 모든 도넛은 중력 받음
+        frictionAir: isFirstDoughnut ? 0 : 0.01, // 첫 번째 도넛은 공기 저항 없음
         // inertia: Infinity 제거 - 좌우 이동 허용
         render: {
           sprite: {
             texture: "/doughnut/doughnut.png",
-            xScale: (doughnutRadiusRef.current * 2) / width * 1.2, // 도넛 크기에 비례
-            yScale: (doughnutRadiusRef.current * 2) / height * 1.2,
+            xScale: doughnutWidth / 200 * 1.2, // 물리 크기(픽셀) / 원본 이미지 크기
+            yScale: doughnutHeight / 200 * 2.4, // 물리 크기(픽셀) / 원본 이미지 크기
           },
         },
         label: "movingDoughnut", // 충돌 감지용
