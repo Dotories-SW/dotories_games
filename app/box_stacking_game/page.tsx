@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import planck, { Vec2, World, Body } from "planck-js";
+import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import LoadingSpinner from "../_component/LoadingSpinner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const SCALE = 40; // 1 meter = 40 px
 const TIME_STEP = 1 / 60;
@@ -37,6 +40,14 @@ interface DustEffect {
   life: number;
 }
 
+export default function BoxStackingGame() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <BoxStacking />
+    </Suspense>
+  );
+}
+
 function BoxStacking() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boxSizeRef = useRef<number>(3.3);
@@ -46,6 +57,26 @@ function BoxStacking() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [resetToken, setResetToken] = useState(0);
+  const [isEnding, setIsEnding] = useState(false);
+
+  const params = useSearchParams();
+  const loginId: string = params.get("id")
+    ? (params.get("id") as string)
+    : "691c2ca7e90f06e920804f4a";
+
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  useEffect(() => {
+    const getCompleted = async () => {
+      const res = await getGameCompleted(loginId);
+      let data = res.data;
+      if (typeof data === "string") {
+        data = JSON.parse(data);
+      }
+      setIsCompleted(data[3]);
+    };
+    getCompleted();
+  }, [loginId]);
 
   // 내부 상태 (ref로 관리)
   const worldRef = useRef<World | null>(null);
@@ -66,6 +97,8 @@ function BoxStacking() {
   const dustFramesRef = useRef<HTMLImageElement[]>([]);
   const pendingFailRef = useRef<boolean>(false); // ❗ 실패 예정 플래그
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  const router = useRouter();
 
   // gameOver 상태 ref 동기화
   useEffect(() => {
@@ -141,7 +174,7 @@ function BoxStacking() {
       const pos = current.body.getPosition();
       const BOX_SIZE = boxSizeRef.current ?? 3.3; // 반응형 박스 사이즈 ref
 
-      if(fallingSoundRef.current){
+      if (fallingSoundRef.current) {
         fallingSoundRef.current.play();
       }
 
@@ -348,7 +381,7 @@ function BoxStacking() {
         const pos = body.getPosition();
         const lastBody = lastPlacedBoxRef.current;
 
-        // 🔹 1) 실패 예정인 경우: 충분히 떨어졌으면 그때 진짜 실패
+        // 1) 실패 예정인 경우: 많이 빗나가서 밑으로 떨어지는 케이스
         if (pendingFailRef.current && lastBody) {
           const worldHeight = window.innerHeight / SCALE;
           const cameraY = cameraYRef.current;
@@ -360,25 +393,29 @@ function BoxStacking() {
           if (belowStack || outOfView) {
             pendingFailRef.current = false;
             current.isDropping = false;
-
             setGameOver(true);
             gameOverRef.current = true;
             return;
           }
         }
 
-        // 🔹 2) 완전히 멈췄을 때만 "성공적으로 쌓였는지" 처리 (더 엄격한 기준)
         const SETTLE_SPEED = 0.05;
 
+        // 2) 착지해서 거의 멈춘 상태
         if (speed < SETTLE_SPEED && Math.abs(angVel) < 0.05) {
           current.isDropping = false;
 
-          // 실패 예정이면 여기선 성공 처리 안 하고 그냥 return
+          // ❌ 실패 예정이었고, 그냥 옆에 서버린 경우 → 여기서 바로 게임오버
           if (pendingFailRef.current) {
+            pendingFailRef.current = false;
+            setGameOver(true);
+            gameOverRef.current = true;
             return;
           }
 
-          // ✅ 여기까지 왔으면 “성공적으로 위에 올라간 것”
+          // ✅ 여기까지 오면 “성공적으로 위에 올라간 것”
+          pendingFailRef.current = false; // 혹시 남아있을지도 모르는 플래그 초기화
+
           lastPlacedBoxRef.current = body;
 
           setScore((prev) => {
@@ -658,6 +695,38 @@ function BoxStacking() {
     setResetToken((v) => v + 1);
   };
 
+  const handleEndGame = async (loginId: string) => {
+    if (isEnding) return; // 중복 클릭 방지
+
+    setIsEnding(true); // 👉 이제부터는 게임 화면 대신 "종료중" 화면 렌더
+    setGameOver(true);
+    fallingSoundRef.current?.pause();
+
+    const acquiredCoin = Math.max(0, score - 10);
+
+    if (!isCompleted) {
+      try {
+        await patchCompletedGame(loginId, 3, true, acquiredCoin);
+      } catch (e) {
+        console.error("patchCompletedGame error", e);
+      }
+    }
+    router.back();
+  };
+
+  if (isEnding) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+        <div className="bg-white rounded-3xl p-[4vh] w-[90%] max-w-md shadow-2xl text-center">
+          <div className="text-[6vw] mb-[2vh]">⏳</div>
+          <h2 className="text-[4.5vw] font-bold text-gray-800 mb-[1vh]">
+            오늘의 도전을 종료하는 중이에요
+          </h2>
+          <p className="text-[3.5vw] text-gray-600">잠시만 기다려 주세요...</p>
+        </div>
+      </div>
+    );
+  }
   // 게임 시작 화면
   if (!gameStarted) {
     return (
@@ -688,6 +757,12 @@ function BoxStacking() {
               </p>
             </div>
           </div>
+
+          {isCompleted && (
+            <span className="text-[3.5vw] text-gray-600 mb-[2vh]">
+              이미 클리어하여 코인은 지급되지 않습니다.
+            </span>
+          )}
 
           <button
             onClick={handleStartGame}
@@ -745,11 +820,39 @@ function BoxStacking() {
             >
               다시 하기
             </button>
+            <button
+              className="w-full py-[2.5vh] border border-blue-500 text-black rounded-xl
+              font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[2vh] hover:text-white"
+              onClick={() => {
+                if (isCompleted) {
+                  router.back();
+                  return;
+                }
+                handleEndGame(loginId);
+              }}
+            >
+              {isCompleted ? (
+                <div>
+                  <span className="text-[3.5vw]">
+                    이미 오늘 코인을 수령하여 <br /> 코인을 받을 수 없습니다.
+                  </span>
+                  <br />
+                  <span className="text-[3.5vw]">
+                    오늘의 도전을 종료합니다.
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  <span className="text-[3.5vw]">
+                    {Math.max(0, score - 10)}
+                  </span>
+                  <span>코인 받고 오늘의 도전 종료하기</span>
+                </div>
+              )}
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 }
-
-export default BoxStacking;

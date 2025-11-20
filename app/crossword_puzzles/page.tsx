@@ -139,23 +139,24 @@ function CrosswordPuzzles() {
 
   // 난이도별 설정
   const DIFFICULTY_CONFIGS = {
-    easy: { name: "쉬움", coins: 5, localIndex: 0, backendIndex: 4 },
-    medium: { name: "보통", coins: 8, localIndex: 1, backendIndex: 5 },
-    hard: { name: "어려움", coins: 12, localIndex: 2, backendIndex: 6 },
+    easy: { name: "쉬움", coin: 5, localIndex: 0, backendIndex: 4 },
+    medium: { name: "보통", coin: 8, localIndex: 1, backendIndex: 5 },
+    hard: { name: "어려움", coin: 12, localIndex: 2, backendIndex: 6 },
   };
 
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691a90ead813df88a787f904";
+    : "691c2ca7e90f06e920804f4a";
 
   const completedGame = async (
     loginId: string,
     index: number,
-    completed: boolean
+    completed: boolean,
+    mode: "easy" | "medium" | "hard",
   ) => {
     try {
-      await patchCompletedGame(loginId, index, completed);
+      await patchCompletedGame(loginId, index, completed, DIFFICULTY_CONFIGS[mode].coin);
     } catch (error) {
       console.error("게임 완료 업데이트 실패:", error);
     }
@@ -505,7 +506,7 @@ function CrosswordPuzzles() {
                               : "text-red-400"
                           }`}
                         >
-                          {config.coins}
+                          {config.coin}
                         </span>
                       </div>
                     </div>
@@ -541,7 +542,8 @@ function CrosswordPuzzles() {
       loginId,
       DIFFICULTY_CONFIGS[selectedDifficulty as keyof typeof DIFFICULTY_CONFIGS]
         .backendIndex,
-      true
+      true,
+      selectedDifficulty as "easy" | "medium" | "hard"
     );
     if(crosswordSoundRef.current){
       crosswordSoundRef.current.pause();

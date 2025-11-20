@@ -69,7 +69,7 @@ function ArithmeticGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691a90ead813df88a787f904";
+    : "691c2ca7e90f06e920804f4a";
 
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
   const failSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -118,10 +118,11 @@ function ArithmeticGame() {
   const completedGame = async (
     loginId: string,
     index: number,
-    completed: boolean
+    completed: boolean,
+    mode: "easy" | "normal" | "hard",
   ) => {
     try {
-      await patchCompletedGame(loginId, index, completed);
+      await patchCompletedGame(loginId, index, completed, DIFFICULTY_CONFIGS[mode].coin);
     } catch (error) {
       console.error("게임 완료 업데이트 실패:", error);
     }
@@ -485,7 +486,8 @@ function ArithmeticGame() {
       loginId,
       DIFFICULTY_CONFIGS[selectedDifficulty as keyof typeof DIFFICULTY_CONFIGS]
         .backendIndex,
-      true
+      true,
+      selectedDifficulty as "easy" | "normal" | "hard"
     );
 
     if(arithmeticSoundRef.current){
