@@ -73,10 +73,14 @@ function ArithmeticGame() {
 
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
   const failSoundRef = useRef<HTMLAudioElement | null>(null);
+  const arithmeticSoundRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     successSoundRef.current = new Audio("/sounds/arithmetic/success.mp3");
     failSoundRef.current = new Audio("/sounds/arithmetic/fail.mp3");
+    arithmeticSoundRef.current = new Audio("/sounds/arithmetic/arithmetic_bgm.mp3");
+    arithmeticSoundRef.current.loop = true;
+    arithmeticSoundRef.current.volume = 0.1;
 
     return () => {
       if (successSoundRef.current) {
@@ -86,6 +90,10 @@ function ArithmeticGame() {
       if (failSoundRef.current) {
         failSoundRef.current.pause();
         failSoundRef.current = null;
+      }
+      if (arithmeticSoundRef.current) {
+        arithmeticSoundRef.current.pause();
+        arithmeticSoundRef.current = null;
       }
     };
   }, []);
@@ -284,6 +292,9 @@ function ArithmeticGame() {
     setCurrentQuestionNumber(1);
     setShowResult(false);
     setSelectedAnswer(null);
+
+    //브금 시작
+    arithmeticSoundRef.current?.play();
   };
 
   // 다음 문제
@@ -476,6 +487,10 @@ function ArithmeticGame() {
         .backendIndex,
       true
     );
+
+    if(arithmeticSoundRef.current){
+      arithmeticSoundRef.current.pause();
+    }
     return (
       <div
         className="min-h-screen flex items-center justify-center p-[2vh]"
