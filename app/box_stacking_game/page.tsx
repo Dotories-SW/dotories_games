@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import planck, { Vec2, World, Body } from "planck-js";
 
 const SCALE = 40; // 1 meter = 40 px
-const BOX_SIZE = 3.3; // 상자 크기
 const TIME_STEP = 1 / 60;
 
 // 반응형 기준값 (필요하면 조정)
@@ -22,12 +21,13 @@ interface BoxInfo {
   spriteIndex: number;
   settled: boolean;
   frozen?: boolean;
-  stableTime? : number;
+  stableTime?: number;
 }
 
 interface CurrentBox {
   body: Body;
   isDropping: boolean;
+  hasLanded?: boolean;
 }
 
 interface DustEffect {
@@ -39,6 +39,7 @@ interface DustEffect {
 
 function BoxStacking() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const boxSizeRef = useRef<number>(3.3);
 
   // 게임 상태 (React state)
   const [gameStarted, setGameStarted] = useState(false);
@@ -64,6 +65,7 @@ function BoxStacking() {
   const dustEffectsRef = useRef<DustEffect[]>([]);
   const dustFramesRef = useRef<HTMLImageElement[]>([]);
   const pendingFailRef = useRef<boolean>(false); // ❗ 실패 예정 플래그
+  const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
 
   // gameOver 상태 ref 동기화
   useEffect(() => {
@@ -73,6 +75,9 @@ function BoxStacking() {
   // 메인 게임 세팅 & 루프
   useEffect(() => {
     if (!gameStarted) return;
+
+    fallingSoundRef.current = new Audio("/sounds/box_stacking/falling_box.mp3");
+    fallingSoundRef.current.volume = 0.3;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -92,6 +97,9 @@ function BoxStacking() {
       canvas.style.height = `${height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
+
+      const shorterSide = Math.min(width, height);
+      const boxPixelSize = shorterSide * 0.16;
 
       // 화면 높이 비율 기반으로 스폰 위치 / 카메라 기준 계산
       // 예: 스폰은 화면 위에서 1/3 지점, 마지막 박스는 최소 40% 지점보다 아래
@@ -116,6 +124,38 @@ function BoxStacking() {
       gravity: Vec2(0, gravityValue),
     });
     worldRef.current = world;
+
+    world.on("begin-contact", (contact) => {
+      const current = currentBoxRef.current;
+      if (!current || !current.isDropping || current.hasLanded) return;
+
+      const fixtureA = contact.getFixtureA();
+      const fixtureB = contact.getFixtureB();
+      const bodyA = fixtureA.getBody();
+      const bodyB = fixtureB.getBody();
+
+      // 지금 떨어지고 있는 박스가 부딪혔는지 확인
+      if (bodyA !== current.body && bodyB !== current.body) return;
+
+      // ✅ "딱 닿은 프레임"에서 위치 가져와서 먼지 생성
+      const pos = current.body.getPosition();
+      const BOX_SIZE = boxSizeRef.current ?? 3.3; // 반응형 박스 사이즈 ref
+
+      if(fallingSoundRef.current){
+        fallingSoundRef.current.play();
+      }
+
+      dustEffectsRef.current.push({
+        x: pos.x,
+        y: pos.y + BOX_SIZE / 2,
+        frame: 0,
+        life: 1,
+      });
+
+      fallingSoundRef.current?.play();
+
+      current.hasLanded = true; // 다시는 안 나오도록
+    });
 
     // 월드 크기 (화면 크기 기반)
     const getWorldSize = () => {
@@ -183,18 +223,35 @@ function BoxStacking() {
     const freezeOldBoxes = () => {
       const boxes = boxesRef.current;
 
-      const settledBoxes = boxes.filter((b) => b.settled);
+      // 충분히 안정된 settled 박스만 후보
+      const settledBoxes = boxes.filter(
+        (b) => b.settled && !b.frozen && (b.stableTime || 0) > 0.5
+      );
       if (settledBoxes.length <= 2) return;
 
+      // y 오름차순: 위 → 아래
       settledBoxes.sort(
         (a, b) => a.body.getPosition().y - b.body.getPosition().y
       );
 
-      //const keepDynamic = settledBoxes.slice(-2);
+      // 위에 2개는 dynamic 유지, 그 아래부터 얼리기
       const freezeTargets = settledBoxes.slice(2);
+
+      const SNAP_LIMIT = (5 * Math.PI) / 180; // 5도 이내면 "거의 수평"으로 간주
 
       for (const box of freezeTargets) {
         if (box.frozen) continue;
+
+        const angle = box.body.getAngle();
+
+        // 아직 많이 기울어져 있으면 다음 라운드까지 기다렸다가 얼리자
+        if (Math.abs(angle) > SNAP_LIMIT) {
+          continue;
+        }
+
+        // ✅ 얼릴 때는 아예 각도를 0 으로 스냅해서 평평하게
+        const pos = box.body.getPosition();
+        box.body.setTransform(pos, 0);
 
         box.body.setType("static");
         box.body.setLinearVelocity(Vec2(0, 0));
@@ -207,6 +264,7 @@ function BoxStacking() {
 
     // 새 상자 생성 (위에서 좌우로 움직이는 kinematic 바디)
     const spawnBox = () => {
+      const BOX_SIZE = boxSizeRef.current;
       const camY = cameraYRef.current;
       const spawnOffsetScreen =
         spawnOffsetScreenRef.current || window.innerHeight * 0.33;
@@ -238,9 +296,10 @@ function BoxStacking() {
         spriteIndex,
         settled: false,
         frozen: false,
+        stableTime: 0,
       };
       boxesRef.current.push(info);
-      currentBoxRef.current = { body, isDropping: false };
+      currentBoxRef.current = { body, isDropping: false, hasLanded: false };
     };
 
     spawnBox();
@@ -280,7 +339,9 @@ function BoxStacking() {
         currentBoxRef.current.isDropping &&
         !gameOverRef.current
       ) {
-        const body = currentBoxRef.current.body;
+        const BOX_SIZE = boxSizeRef.current;
+        const current = currentBoxRef.current;
+        const body = current.body;
         const v = body.getLinearVelocity();
         const speed = Math.sqrt(v.x * v.x + v.y * v.y);
         const angVel = body.getAngularVelocity();
@@ -293,12 +354,12 @@ function BoxStacking() {
           const cameraY = cameraYRef.current;
           const lastY = lastBody.getPosition().y;
 
-          const belowStack = pos.y > lastY + BOX_SIZE * 1.2; // 스택보다 한 칸 이상 아래로 떨어짐
-          const outOfView = pos.y - cameraY > worldHeight + BOX_SIZE; // 화면 아래로 완전 나감
+          const belowStack = pos.y > lastY + BOX_SIZE * 1.2;
+          const outOfView = pos.y - cameraY > worldHeight + BOX_SIZE;
 
           if (belowStack || outOfView) {
             pendingFailRef.current = false;
-            currentBoxRef.current.isDropping = false;
+            current.isDropping = false;
 
             setGameOver(true);
             gameOverRef.current = true;
@@ -306,22 +367,14 @@ function BoxStacking() {
           }
         }
 
-        // 🔹 2) 정상 케이스: 완전히 멈췄을 때만 "성공적으로 쌓였는지" 처리
-        if (speed < 0.05 && Math.abs(angVel) < 0.05) {
-          const pos = body.getPosition();
-          dustEffectsRef.current.push({
-            x: pos.x,
-            y: pos.y + BOX_SIZE / 2,
-            frame: 0,
-            life: 1,
-          });
+        // 🔹 2) 완전히 멈췄을 때만 "성공적으로 쌓였는지" 처리 (더 엄격한 기준)
+        const SETTLE_SPEED = 0.05;
 
-          currentBoxRef.current.isDropping = false;
+        if (speed < SETTLE_SPEED && Math.abs(angVel) < 0.05) {
+          current.isDropping = false;
 
-          // ❗ 실패 예정이었던 박스면, 여기서는 그냥 아무 것도 안 하고
-          // 위의 "충분히 떨어졌을 때" 로직에서만 실패를 내도록 한다
+          // 실패 예정이면 여기선 성공 처리 안 하고 그냥 return
           if (pendingFailRef.current) {
-            // 여기서는 return만 (성공 처리 안 함)
             return;
           }
 
@@ -384,29 +437,48 @@ function BoxStacking() {
         }
       }
 
+      // DUST 업데이트
+      dustEffectsRef.current = dustEffectsRef.current.filter((d) => d.life > 0);
+      for (const d of dustEffectsRef.current) {
+        // 전체 수명 (1 → 0)만 관리
+        d.life = Math.max(0, d.life - 0.012); // 숫자 조절해서 느리게/빠르게
+
+        d.y -= 0.005;
+      }
+
       if (!gameOverRef.current) {
+        // 약간 여유 있는 기준값들
+        const STABLE_SPEED = 0.08; // 이 정도 이하면 "거의 멈춘 것"
+        const STABLE_ANG = 0.08;
+        const RESET_SPEED = 0.4; // 이 이상으로 흔들리면 다시 불안정으로 리셋
+        const RESET_ANG = 0.4;
+
         for (const box of boxes) {
-          if (!box.settled) continue;
+          if (box.frozen) continue; // 이미 static으로 얼린 애들은 무시
 
           const vel = box.body.getLinearVelocity();
           const angVel = box.body.getAngularVelocity();
           const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y);
 
-          const isStable = Math.sqrt(vel.x * vel.x + vel.y * vel.y) < 0.05;
-
-          if(isStable){
-            box.stableTime = (box.stableTime || 0) + TIME_STEP;
-
-            if(box.stableTime > 0.8){
-                box.settled = true;
-            }
-          }
-          else {
+          // 1) stableTime 갱신
+          if (speed < STABLE_SPEED && Math.abs(angVel) < STABLE_ANG) {
+            // 충분히 느리면 시간 누적
+            box.stableTime = (box.stableTime ?? 0) + TIME_STEP;
+          } else if (speed > RESET_SPEED || Math.abs(angVel) > RESET_ANG) {
+            // 크게 다시 흔들리면 시간 초기화
             box.stableTime = 0;
           }
+          // 그 사이 애매한 흔들림은 stableTime 유지 → 결국엔 settled 됨
 
-          // 아직 막 흔들리고 있는 중이면 일단 패스
-          if (speed > 0.15 || Math.abs(angVel) > 0.15) continue;
+          const stableTime = box.stableTime ?? 0;
+
+          // 2) 일정 시간 동안(예: 0.5초) 거의 안 움직였으면 settled 판정
+          if (stableTime > 0.5) {
+            box.settled = true;
+          }
+
+          // 아직 완전히 안정된 박스만 기울기 체크
+          if (!box.settled) continue;
 
           const angle = Math.abs(box.body.getAngle());
           if (angle > TILT_LIMIT) {
@@ -416,19 +488,11 @@ function BoxStacking() {
           }
         }
       }
-
-      // DUST 업데이트
-      dustEffectsRef.current = dustEffectsRef.current.filter((d) => d.life > 0);
-      for (const d of dustEffectsRef.current) {
-        // 전체 수명 (1 → 0)만 관리
-        d.life = Math.max(0, d.life - 0.012); // 숫자 조절해서 느리게/빠르게
-
-        d.y -= 0.005;
-      }
     };
 
     // 그리기
     const renderScene = (ctx: CanvasRenderingContext2D) => {
+      const BOX_SIZE = boxSizeRef.current;
       const currentWidth = window.innerWidth;
       const currentHeight = window.innerHeight;
       ctx.clearRect(0, 0, currentWidth, currentHeight);
@@ -549,6 +613,7 @@ function BoxStacking() {
   }, [gameStarted, resetToken]);
 
   const handleClick = () => {
+    const BOX_SIZE = boxSizeRef.current;
     const world = worldRef.current;
     if (!world) return;
 
