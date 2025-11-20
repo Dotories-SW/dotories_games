@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import LoadingSpinner from "../_component/LoadingSpinner";
 
@@ -62,6 +62,21 @@ function CrosswordPuzzles() {
   const [correctCount, setCorrectCount] = useState<number>(0); // 정답 칸 개수
   const [totalBlanks, setTotalBlanks] = useState<number>(0); // 전체 빈칸 개수
 
+  const crosswordSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    crosswordSoundRef.current = new Audio("/sounds/crossword/crossword_bgm.mp3");
+    crosswordSoundRef.current.loop = true;
+    crosswordSoundRef.current.volume = 0.1;
+
+    return () => {
+      if(crosswordSoundRef.current){
+        crosswordSoundRef.current.pause();
+        crosswordSoundRef.current = null;
+      }
+    }
+  }, [])
+
   // 퍼즐 시작 시 총 빈칸 개수 계산 (한 번만)
   useEffect(() => {
     if (!currentPuzzle) return;
@@ -77,6 +92,7 @@ function CrosswordPuzzles() {
     });
     setTotalBlanks(count);
     setCorrectCount(0); // 정답 카운트 초기화
+    crosswordSoundRef.current?.play();
   }, [currentPuzzle]);
 
   // 진행률 계산 (0 ~ 100)
@@ -527,6 +543,9 @@ function CrosswordPuzzles() {
         .backendIndex,
       true
     );
+    if(crosswordSoundRef.current){
+      crosswordSoundRef.current.pause();
+    }
     return (
       <div
         className="min-h-screen flex items-center justify-center p-[2vh]"
