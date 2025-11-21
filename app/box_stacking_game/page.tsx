@@ -132,7 +132,8 @@ function BoxStacking() {
       ctx.scale(dpr, dpr);
 
       const shorterSide = Math.min(width, height);
-      const boxPixelSize = shorterSide * 0.16;
+      const boxPixelSize = shorterSide * 0.008;
+      boxSizeRef.current = boxPixelSize;
 
       // 화면 높이 비율 기반으로 스폰 위치 / 카메라 기준 계산
       // 예: 스폰은 화면 위에서 1/3 지점, 마지막 박스는 최소 40% 지점보다 아래
@@ -740,20 +741,15 @@ function BoxStacking() {
             상자 쌓기 게임
           </h1>
 
-          <div className="bg-blue-50 rounded-[2vh] p-[3vh] mb-[3vh] space-y-[1.5vh]">
-            <div className="flex items-center justify-center gap-[2vw]">
+          <div className="bg-blue-50 rounded-[2vh] p-[3vh] mb-[3vh]">
+            <div className="flex items-center justify-center">
               <p className="text-[3.5vw] md:text-[16px] text-gray-700">
-                상자를 무너뜨리지 않고 최대한 많이 쌓으세요!
+                상자를 최대한 많이 쌓으세요!
               </p>
             </div>
-            <div className="flex items-center justify-center gap-[2vw]">
+            <div className="flex items-center justify-center">
               <p className="text-[3.5vw] md:text-[16px] text-gray-700">
                 화면을 클릭하면 상자가 떨어집니다.
-              </p>
-            </div>
-            <div className="flex items-center justify-center gap-[2vw]">
-              <p className="text-[3.5vw] md:text-[16px] text-gray-700">
-                마지막 상자와 너무 벗어나면 실패합니다.
               </p>
             </div>
           </div>
@@ -766,7 +762,7 @@ function BoxStacking() {
 
           <button
             onClick={handleStartGame}
-            className="w-full py-[2vh] bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-[2vh] font-bold text-[4.5vw] md:text-[20px] hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="w-full py-[2vh] bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-[2vh] font-bold text-[4.5vw] md:text-[20px] hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 mt-[2vh]"
           >
             게임 시작하기
           </button>
