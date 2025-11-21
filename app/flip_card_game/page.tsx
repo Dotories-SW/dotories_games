@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import LoadingSpinner from "../_component/LoadingSpinner";
+import ExitModal from "../_component/ExitModal";
+import { useExitModal } from "../_hooks/useExitModal";
 
 // 타입 정의
 interface Card {
@@ -49,6 +51,7 @@ function FlipCardGame() {
 
   const gameBgmRef = useRef<HTMLAudioElement | null>(null);
   const flipCardEffectRef = useRef<HTMLAudioElement | null>(null);
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]); // setTimeout ID 추적
   const [completedGames, setCompletedGames] = useState<boolean[]>([
     false,
     false,
@@ -230,10 +233,11 @@ function FlipCardGame() {
         setIsChecking(false);
       } else {
         // 매칭 실패 - 1초 후 다시 뒤집기
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setFlippedCards([]);
           setIsChecking(false);
         }, 1000);
+        timeoutRefs.current.push(timeoutId);
       }
       setMoveCount((prev) => prev + 1);
     }
@@ -256,6 +260,41 @@ function FlipCardGame() {
       matchedCards.includes(cardId)
     );
   };
+
+  // 게임 종료 시 정리 함수
+  const cleanupGame = async () => {
+    // 1. 모든 타이머 정리
+    timeoutRefs.current.forEach((timeoutId) => {
+      clearTimeout(timeoutId);
+    });
+    timeoutRefs.current = [];
+
+    // 2. 오디오 정지
+    gameBgmRef.current?.pause();
+    gameBgmRef.current = null;
+    flipCardEffectRef.current?.pause();
+    flipCardEffectRef.current = null;
+
+    // 3. 게임 상태 초기화
+    setShowDifficultySelect(true);
+    setSelectedDifficulty(null);
+    setGameCards([]);
+    setFlippedCards([]);
+    setMatchedCards([]);
+    setIsChecking(false);
+    setGameCompleted(false);
+    setShowPrepareModal(false);
+    setShowingCards(false);
+    setCountdown(5);
+    setMoveCount(0);
+  };
+
+  // 뒤로가기 감지 훅 사용 (게임 진행 중일 때만 활성화)
+  const isGameActive = !showDifficultySelect && !gameCompleted && gameCards.length > 0;
+  const { showModal, handleExit, handleClose } = useExitModal({
+    onExit: cleanupGame,
+    enabled: isGameActive,
+  });
 
   // 난이도 선택 화면
   if (showDifficultySelect) {
@@ -532,6 +571,13 @@ function FlipCardGame() {
           ))}
         </div>
       </div>
+
+      {/* ExitModal - 뒤로가기 감지 */}
+      <ExitModal
+        isOpen={showModal}
+        onClose={handleClose}
+        onExit={handleExit}
+      />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import React, { Suspense, useEffect, useRef, useState } from "react";
 import planck, { Vec2, World, Body } from "planck-js";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import LoadingSpinner from "../_component/LoadingSpinner";
+import ExitModal from "../_component/ExitModal";
+import { useExitModal } from "../_hooks/useExitModal";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const SCALE = 40; // 1 meter = 40 px
@@ -97,6 +99,7 @@ function BoxStacking() {
   const dustFramesRef = useRef<HTMLImageElement[]>([]);
   const pendingFailRef = useRef<boolean>(false); // ❗ 실패 예정 플래그
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
+  const animationIdRef = useRef<number | undefined>(undefined); // 애니메이션 ID 추적
 
   const router = useRouter();
 
@@ -174,11 +177,7 @@ function BoxStacking() {
       // ✅ "딱 닿은 프레임"에서 위치 가져와서 먼지 생성
       const pos = current.body.getPosition();
       const BOX_SIZE = boxSizeRef.current ?? 3.3; // 반응형 박스 사이즈 ref
-
-      if (fallingSoundRef.current) {
-        fallingSoundRef.current.play();
-      }
-
+      
       dustEffectsRef.current.push({
         x: pos.x,
         y: pos.y + BOX_SIZE / 2,
@@ -342,6 +341,7 @@ function BoxStacking() {
 
     const loop = () => {
       animationId = requestAnimationFrame(loop);
+      animationIdRef.current = animationId; // ref에 저장
 
       if (!worldRef.current) return;
 
@@ -644,11 +644,40 @@ function BoxStacking() {
     loop();
 
     return () => {
-      if (animationId !== undefined) cancelAnimationFrame(animationId);
+      if (animationId !== undefined) {
+        cancelAnimationFrame(animationId);
+        animationIdRef.current = undefined;
+      }
       window.removeEventListener("resize", handleResize);
       worldRef.current = null;
     };
   }, [gameStarted, resetToken]);
+
+  // 게임 종료 시 정리 함수
+  const cleanupGame = async () => {
+    // 1. 애니메이션 루프 정지
+    if (animationIdRef.current !== undefined) {
+      cancelAnimationFrame(animationIdRef.current);
+      animationIdRef.current = undefined;
+    }
+
+    // 2. 오디오 정지
+    fallingSoundRef.current?.pause();
+    fallingSoundRef.current = null;
+
+    // 3. 물리 엔진 정리
+    worldRef.current = null;
+
+    // 4. 게임 상태 초기화
+    setGameOver(true);
+    gameOverRef.current = true;
+  };
+
+  // 뒤로가기 감지 훅 사용
+  const { showModal, handleExit, handleClose } = useExitModal({
+    onExit: cleanupGame,
+    enabled: gameStarted, // 게임이 시작된 경우에만 활성화
+  });
 
   const handleClick = () => {
     const BOX_SIZE = boxSizeRef.current;
@@ -849,6 +878,13 @@ function BoxStacking() {
           </div>
         </div>
       )}
+
+      {/* ExitModal - 뒤로가기 감지 */}
+      <ExitModal
+        isOpen={showModal}
+        onClose={handleClose}
+        onExit={handleExit}
+      />
     </div>
   );
 }

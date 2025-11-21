@@ -3,6 +3,8 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import { useSearchParams } from "next/navigation";
 import LoadingSpinner from "../_component/LoadingSpinner";
+import ExitModal from "../_component/ExitModal";
+import { useExitModal } from "../_hooks/useExitModal";
 
 interface Question {
   text: string;
@@ -74,6 +76,7 @@ function ArithmeticGame() {
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
   const failSoundRef = useRef<HTMLAudioElement | null>(null);
   const arithmeticSoundRef = useRef<HTMLAudioElement | null>(null);
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]); // setTimeout ID 추적
 
   useEffect(() => {
     successSoundRef.current = new Audio("/sounds/arithmetic/success.mp3");
@@ -317,6 +320,43 @@ function ArithmeticGame() {
     setPreviousAnswer(prevAns);
   };
 
+  // 게임 종료 시 정리 함수
+  const cleanupGame = async () => {
+    // 1. 모든 타이머 정리
+    timeoutRefs.current.forEach((timeoutId) => {
+      clearTimeout(timeoutId);
+    });
+    timeoutRefs.current = [];
+
+    // 2. 오디오 정지
+    arithmeticSoundRef.current?.pause();
+    arithmeticSoundRef.current = null;
+    successSoundRef.current?.pause();
+    successSoundRef.current = null;
+    failSoundRef.current?.pause();
+    failSoundRef.current = null;
+
+    // 3. 게임 상태 초기화
+    setShowDifficultySelect(true);
+    setSelectedDifficulty(null);
+    setDifficulty("easy");
+    setCurrentQuestion(null);
+    setScore(0);
+    setCurrentQuestionNumber(0);
+    setShowResult(false);
+    setSelectedAnswer(null);
+    setGameCompleted(false);
+    setPreviousAnswer(null);
+    setInCorrectCount(0);
+  };
+
+  // 뒤로가기 감지 훅 사용 (게임 진행 중일 때만 활성화)
+  const isGameActive = !showDifficultySelect && !gameCompleted;
+  const { showModal, handleExit, handleClose } = useExitModal({
+    onExit: cleanupGame,
+    enabled: isGameActive,
+  });
+
   // 답 선택
   const handleAnswerSelect = (answer: number) => {
     if (showResult) return;
@@ -342,19 +382,20 @@ function ArithmeticGame() {
       const newScore = score + 1;
 
       // 1.5초 후 다음 문제 (정답일 때만)
-      setTimeout(() => {
+      const timeoutId1 = setTimeout(() => {
         if (newScore >= MAX_QUESTIONS) {
           setGameCompleted(true);
         } else {
           nextQuestion(difficulty, nextPrevAnswer, currentNum);
         }
       }, 1500);
+      timeoutRefs.current.push(timeoutId1);
     } else {
       if (failSoundRef.current) {
         failSoundRef.current.play();
       }
-      // 틀렸을 때는 3초 후 새로운 문제 생성 (이전 답 초기화)
-      setTimeout(() => {
+      // 틀렸을 때는 1.5초 후 새로운 문제 생성 (이전 답 초기화)
+      const timeoutId2 = setTimeout(() => {
         const newQuestion = generateQuestion(difficulty, null);
         setCurrentQuestion(newQuestion);
         setShowResult(false);
@@ -362,6 +403,7 @@ function ArithmeticGame() {
         setPreviousAnswer(null);
         setInCorrectCount((prev) => prev + 1);
       }, 1500);
+      timeoutRefs.current.push(timeoutId2);
     }
   };
 
@@ -596,6 +638,13 @@ function ArithmeticGame() {
 
         <div className="mt-[5vh]"></div>
       </div>
+
+      {/* ExitModal - 뒤로가기 감지 */}
+      <ExitModal
+        isOpen={showModal}
+        onClose={handleClose}
+        onExit={handleExit}
+      />
     </div>
   );
 }

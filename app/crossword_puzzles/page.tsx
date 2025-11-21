@@ -3,6 +3,8 @@ import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect, Suspense, useRef } from "react";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import LoadingSpinner from "../_component/LoadingSpinner";
+import ExitModal from "../_component/ExitModal";
+import { useExitModal } from "../_hooks/useExitModal";
 
 // 게임 타입 정의
 interface Word {
@@ -426,6 +428,37 @@ function CrosswordPuzzles() {
       setCorrectCount(0); // 정답 카운트 초기화
     }
   };
+
+  // 게임 종료 시 정리 함수
+  const cleanupGame = async () => {
+    // 1. 오디오 정지
+    crosswordSoundRef.current?.pause();
+    crosswordSoundRef.current = null;
+
+    // 2. 게임 상태 초기화
+    setShowDifficultySelect(true);
+    setSelectedDifficulty(null);
+    setCurrentPuzzle(null);
+    setUserGrid([]);
+    setGameCompleted(false);
+    setSelectedCell(null);
+    setAvailableLetters([]);
+    setUsedLetters(new Set());
+    setCellToLetterIndex(new Map());
+    setSelectedWords([]);
+    setShowHint(false);
+    setSelectedDirection(null);
+    setHistory([]);
+    setCorrectCount(0);
+    setTotalBlanks(0);
+  };
+
+  // 뒤로가기 감지 훅 사용 (게임 진행 중일 때만 활성화)
+  const isGameActive = !showDifficultySelect && !gameCompleted && currentPuzzle !== null;
+  const { showModal, handleExit, handleClose } = useExitModal({
+    onExit: cleanupGame,
+    enabled: isGameActive,
+  });
   // 난이도 선택 화면
   if (showDifficultySelect) {
     return (
@@ -507,7 +540,7 @@ function CrosswordPuzzles() {
                           }`}
                         >
                           {config.coin}
-                        </span>
+                        </span> 
                       </div>
                     </div>
                   </button>
@@ -862,6 +895,13 @@ function CrosswordPuzzles() {
       </div>
 
       <div className="mt-[5vh]"></div>
+
+      {/* ExitModal - 뒤로가기 감지 */}
+      <ExitModal
+        isOpen={showModal}
+        onClose={handleClose}
+        onExit={handleExit}
+      />
     </div>
   );
 }
