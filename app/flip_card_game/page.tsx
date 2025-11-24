@@ -1,27 +1,12 @@
+// flip-card/FlipCardPage.tsx
 "use client";
-import { useState, useEffect, useRef, Suspense } from "react";
-import data from "@/public/game_json/flip_card_game/flip_card_game.json";
+
+import React, { Suspense } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import LoadingSpinner from "../_component/LoadingSpinner";
-
-// 타입 정의
-interface Card {
-  id: number;
-  name: string;
-  src: string;
-}
-
-interface GameData {
-  backImage: string;
-  cards: Card[];
-  difficulty: {
-    easy: number;
-    normal: number;
-    hard: number;
-  };
-}
+import { useFlipCardGame } from "./useFlipCardGame";
+import { DIFFICULTY_CONFIGS } from "./utils";
+import type { Difficulty } from "./types";
 
 export default function FlipCardPage() {
   return (
@@ -32,230 +17,24 @@ export default function FlipCardPage() {
 }
 
 function FlipCardGame() {
-  const gameData = data as GameData;
-  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
-    null
-  );
-  const [gameCards, setGameCards] = useState<Card[]>([]);
-  const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  const [matchedCards, setMatchedCards] = useState<number[]>([]);
-  const [isChecking, setIsChecking] = useState(false);
-  const [gameCompleted, setGameCompleted] = useState(false);
-  const [showPrepareModal, setShowPrepareModal] = useState(false); // 안내 모달
-  const [showingCards, setShowingCards] = useState(false); // 카드 보여주기
-  const [countdown, setCountdown] = useState(5); // 카운트다운
-  const [moveCount, setMoveCount] = useState(0);
-
-  const gameBgmRef = useRef<HTMLAudioElement | null>(null);
-  const flipCardEffectRef = useRef<HTMLAudioElement | null>(null);
-  const [completedGames, setCompletedGames] = useState<boolean[]>([
-    false,
-    false,
-    false,
-  ]);
-  
-  // Audio 초기화
-  useEffect(() => {
-    gameBgmRef.current = new Audio("/sounds/flip_card/flip_card_bgm.mp3");
-    gameBgmRef.current.loop = true;
-    gameBgmRef.current.volume = 0.1;
-
-    flipCardEffectRef.current = new Audio("/sounds/flip_card/flip_card_effect.mp3");
-
-    return () => {
-      if (gameBgmRef.current) {
-        gameBgmRef.current.pause();
-        gameBgmRef.current = null;
-      }
-      if (flipCardEffectRef.current) {
-        flipCardEffectRef.current = null;
-      }
-    };
-  }, []);
-
-  // 난이도별 설정
-  const DIFFICULTY_CONFIGS = {
-    easy: {
-      name: "쉬움",
-      pairs: 4,
-      cards: 8,
-      coin: 5,
-      localIndex: 0,
-      backendIndex: 7,
-    },
-    normal: {
-      name: "보통",
-      pairs: 8,
-      cards: 16,
-      coin: 8,
-      localIndex: 1,
-      backendIndex: 8,
-    },
-    hard: {
-      name: "어려움",
-      pairs: 10,
-      cards: 20,
-      coin: 12,
-      localIndex: 2,
-      backendIndex: 9,
-    },
-  };
-
-  const params = useSearchParams();
-  const loginId: string = params.get("id")
-    ? (params.get("id") as string)
-    : "691c2ca7e90f06e920804f4a";
-
-  useEffect(() => {
-    const getCompleted = async () => {
-      const res = await getGameCompleted(loginId);
-      let data = res.data;
-      if (typeof data === "string") {
-        data = JSON.parse(data);
-      }
-      setCompletedGames([
-        data[DIFFICULTY_CONFIGS.easy.backendIndex],
-        data[DIFFICULTY_CONFIGS.normal.backendIndex],
-        data[DIFFICULTY_CONFIGS.hard.backendIndex],
-      ]);
-    };
-    getCompleted();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDifficultySelect]);
-
-  const completedGame = async (
-    loginId: string,
-    index: number,
-    completed: boolean,
-    mode: "easy" | "normal" | "hard",
-  ) => {
-    try {
-      await patchCompletedGame(loginId, index, completed, DIFFICULTY_CONFIGS[mode].coin);
-    } catch (error) {
-      console.error("게임 완료 업데이트 실패:", error);
-    }
-  };
-
-  // 카드 섞기 함수
-  const shuffleCards = (cards: Card[]) => {
-    const shuffled = [...cards];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
-  // 게임 시작
-  const startGameWithDifficulty = (difficulty: string) => {
-    const pairCount =
-      gameData.difficulty[difficulty as keyof typeof gameData.difficulty];
-    const selectedCards = gameData.cards.slice(0, pairCount * 2);
-    const shuffled = shuffleCards(selectedCards);
-
-    if (gameBgmRef.current) {
-      gameBgmRef.current.play();
-    }
-
-    setGameCards(shuffled);
-    setFlippedCards([]);
-    setMatchedCards([]);
-    setIsChecking(false);
-    setGameCompleted(false);
-    setShowDifficultySelect(false);
-    setShowPrepareModal(true); // 먼저 안내 모달 표시
-    setShowingCards(false);
-    setCountdown(3);
-    setMoveCount(0);
-  };
-
-  // 안내 모달 표시 후 카드 보여주기 시작
-  useEffect(() => {
-    if (showPrepareModal) {
-      const timer = setTimeout(() => {
-        setShowPrepareModal(false);
-        setShowingCards(true); // 카드 보여주기 시작
-        setCountdown(5); // 카운트다운 초기화
-      }, 1500); // 1.5초 후 모달 닫기
-      return () => clearTimeout(timer);
-    }
-  }, [showPrepareModal]);
-
-  // 카운트다운 및 카드 숨기기 로직
-  useEffect(() => {
-    if (showingCards && countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (showingCards && countdown === 0) {
-      setShowingCards(false);
-    }
-  }, [showingCards, countdown]);
-
-  // 카드 클릭 처리
-  const handleCardClick = (cardId: number) => {
-    // 미리보기 중이거나, 이미 뒤집힌 카드거나, 매칭된 카드거나, 체크 중이면 무시
-    if (
-      showingCards ||
-      flippedCards.includes(cardId) ||
-      matchedCards.includes(cardId) ||
-      isChecking ||
-      flippedCards.length >= 2
-    ) {
-      return;
-    }
-
-    // 조건을 통과한 경우에만 오디오 재생
-    if (flipCardEffectRef.current) {
-      flipCardEffectRef.current.play();
-    }
-
-    const newFlipped = [...flippedCards, cardId];
-    setFlippedCards(newFlipped);
-
-    // 두 장을 선택했을 때
-    if (newFlipped.length === 2) {
-      setIsChecking(true);
-      const [firstId, secondId] = newFlipped;
-      const firstCard = gameCards.find((c) => c.id === firstId);
-      const secondCard = gameCards.find((c) => c.id === secondId);
-
-      // 같은 카드인지 확인 (name으로 비교)
-      if (firstCard?.name === secondCard?.name) {
-        // 매칭 성공
-        setMatchedCards([...matchedCards, firstId, secondId]);
-        setFlippedCards([]);
-        setIsChecking(false);
-      } else {
-        // 매칭 실패 - 1초 후 다시 뒤집기
-        setTimeout(() => {
-          setFlippedCards([]);
-          setIsChecking(false);
-        }, 1000);
-      }
-      setMoveCount((prev) => prev + 1);
-    }
-  };
-
-  // 게임 완료 체크
-  useEffect(() => {
-    if (gameCards.length > 0 && matchedCards.length === gameCards.length) {
-      setTimeout(() => {
-        setGameCompleted(true);
-      }, 500);
-    }
-  }, [matchedCards, gameCards]);
-
-  // 카드가 뒤집혀있는지 확인
-  const isCardFlipped = (cardId: number) => {
-    return (
-      showingCards ||
-      flippedCards.includes(cardId) ||
-      matchedCards.includes(cardId)
-    );
-  };
+  const {
+    showDifficultySelect,
+    setShowDifficultySelect,
+    selectedDifficulty,
+    setSelectedDifficulty,
+    gameCards,
+    gameCompleted,
+    showPrepareModal,
+    showingCards,
+    countdown,
+    moveCount,
+    completedGames,
+    backImage,
+    startGameWithDifficulty,
+    handleCardClick,
+    isCardFlipped,
+    handleEndGame,
+  } = useFlipCardGame();
 
   // 난이도 선택 화면
   if (showDifficultySelect) {
@@ -272,7 +51,6 @@ function FlipCardGame() {
         `}</style>
 
         <div className="w-[90%] max-w-2xl mx-auto p-[2vh]">
-          {/* 헤더 */}
           <div className="bg-white rounded-3xl p-[3vh] mb-[3vh] shadow-sm border border-gray-200">
             <div className="text-center">
               <div className="w-[16vw] h-[16vw] max-w-[80px] max-h-[80px] bg-red-400 rounded-full mx-auto mb-[2vh] flex items-center justify-center">
@@ -287,13 +65,17 @@ function FlipCardGame() {
               <p className="text-gray-600 text-[3.5vw]">카드를 매칭해보세요!</p>
             </div>
 
-            {/* 난이도 선택 */}
             <div className="mt-[3vh]">
               <h2 className="text-[3.5vw] font-bold text-gray-800 text-center mb-[2vh]">
                 난이도 선택
               </h2>
               <div className="space-y-[1.5vh]">
-                {Object.entries(DIFFICULTY_CONFIGS).map(([key, config]) => (
+                {(
+                  Object.entries(DIFFICULTY_CONFIGS) as [
+                    Difficulty,
+                    (typeof DIFFICULTY_CONFIGS)[Difficulty]
+                  ][]
+                ).map(([key, config]) => (
                   <button
                     key={key}
                     onClick={() => setSelectedDifficulty(key)}
@@ -353,17 +135,17 @@ function FlipCardGame() {
                 ))}
               </div>
 
-              {/* 게임 시작 버튼 */}
               <div className="mt-[3vh]">
                 <button
                   onClick={() =>
-                    startGameWithDifficulty(selectedDifficulty as string)
+                    startGameWithDifficulty(selectedDifficulty as Difficulty)
                   }
                   className={`w-[90%] mx-auto block py-[2vh] rounded-full font-bold text-[3.5vw] transition-colors shadow-lg ${
                     selectedDifficulty
                       ? "bg-red-400 text-white hover:bg-red-500"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
+                  disabled={!selectedDifficulty}
                 >
                   게임 시작
                 </button>
@@ -377,16 +159,6 @@ function FlipCardGame() {
 
   // 게임 완료 화면
   if (gameCompleted) {
-    if (gameBgmRef.current) {
-      gameBgmRef.current.pause();
-    }
-    completedGame(
-      loginId,
-      DIFFICULTY_CONFIGS[selectedDifficulty as keyof typeof DIFFICULTY_CONFIGS]
-        .backendIndex,
-      true,
-      selectedDifficulty as "easy" | "normal" | "hard"
-    );
     return (
       <div
         className="min-h-screen flex items-center justify-center p-[2vh]"
@@ -408,21 +180,59 @@ function FlipCardGame() {
             >
               다른 난이도 선택
             </button>
+            <div className="flex flex-row justify-between">
+              <button
+                className="w-full mr-[1vw] py-[2vh] border border-red-400 text-black rounded-xl font-bold text-[4vw] hover:bg-red-500 transition-colors mt-[1vh] hover:text-white"
+                onClick={() =>
+                  handleEndGame(
+                    "noAds",
+                    DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin
+                  )
+                }
+              >
+                {completedGames[
+                  DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty]
+                    .localIndex
+                ] ? (
+                  <div className="text-[3.5vw]">
+                    <span>
+                      오늘 코인을 수령하여 <br /> 더 받을 수 없습니다.
+                    </span>
+                  </div>
+                ) : (
+                  <span>
+                    {DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin}{" "}
+                    코인 받기
+                  </span>
+                )}
+              </button>
+              {!completedGames[
+                DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+              ] && (
+                <button
+                  className="w-full ml-[1vw] py-[2vh] border border-red-400 text-black rounded-xl font-bold text-[4vw] hover:bg-red-500 transition-colors mt-[1vh] hover:text-white"
+                  onClick={() =>
+                    handleEndGame(
+                      "ads",
+                      DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin
+                    )
+                  }
+                >
+                  <div className="text-[3.5vw]">
+                    <span>
+                      <span>광고 보고</span>
+                      <br />
+                      <span>코인 두배로 받기</span>
+                    </span>
+                  </div>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
     );
   }
-
-  // 게임 화면
-  const gridCols = 4; // 모든 난이도 4열로 통일
-  const maxWidth =
-    gameCards.length === 8
-      ? "min(90vw, 500px)"
-      : gameCards.length === 16
-      ? "min(90vw, 600px)"
-      : "min(90vw, 500px)"; // vw 단위로 반응형
-  const cardGap = gameCards.length === 24 ? "gap-[0.5vw]" : "gap-[1vw]"; // 어려움은 간격도 좁게
 
   return (
     <div
@@ -480,7 +290,7 @@ function FlipCardGame() {
         </div>
       )}
 
-      {/* 카운트다운 오버레이 (투명 배경) */}
+      {/* 카운트다운 */}
       {showingCards && countdown > 0 && (
         <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
           <div className="text-[20vw] font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl">
@@ -490,12 +300,17 @@ function FlipCardGame() {
       )}
 
       <div className="max-w-2xl mx-auto flex justify-center items-center h-full">
-        {/* 카드 그리드 */}
         <div
-          className={`grid ${cardGap}`}
+          className={`grid gap-[1vw]`}
           style={{
-            gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-            maxWidth: maxWidth,
+            gridTemplateColumns: `repeat(${gameCards.length / 2}, 1fr)`,
+            maxWidth: `min(90vw, ${
+              gameCards.length === 8
+                ? "500px"
+                : gameCards.length === 16
+                ? "600px"
+                : "500px"
+            })`,
             width: "100%",
           }}
         >
@@ -509,10 +324,10 @@ function FlipCardGame() {
               onClick={() => handleCardClick(card.id)}
             >
               <div className="flip-card-inner">
-                {/* 앞면 (뒷면 이미지) */}
+                {/* 앞면: 공통 뒷면 이미지 */}
                 <div className="flip-card-front">
                   <Image
-                    src={gameData.backImage}
+                    src={backImage}
                     alt="back"
                     fill
                     className="object-cover"
