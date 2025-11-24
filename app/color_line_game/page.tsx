@@ -68,11 +68,12 @@ function generateFlowFreePuzzleFromConfig(config: PuzzleConfig): PuzzleData {
 }
 
 function ColorLineGame() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [puzzles, setPuzzles] = useState<PuzzleConfig[]>([]);
   const [currentPuzzle, setCurrentPuzzle] = useState<PuzzleConfig | null>(null);
   const [puzzleData, setPuzzleData] = useState<PuzzleData | null>(null);
   const [gameGrid, setGameGrid] = useState<GameCell[][]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentColor, setCurrentColor] = useState<Color | null>(null);
   const [currentPath, setCurrentPath] = useState<Array<[number, number]>>([]);
@@ -80,50 +81,61 @@ function ColorLineGame() {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [completionTime, setCompletionTime] = useState<number>(0);
+  const [completedColors, setCompletedColors] = useState<Set<Color>>(new Set());
+
   // 레벨 설정
   const LEVEL_CONFIGS = [
-    { level: 1, name: "Lv.1", size: "4×4", cost: 10 },
-    { level: 2, name: "Lv.2", size: "5×5", cost: 15 },
-    { level: 3, name: "Lv.3", size: "6×6", cost: 20 },
-    { level: 4, name: "Lv.4", size: "7×7", cost: 25 },
+    { level: 1, name: "easy", size: "5×5", cost: 5 },
+    { level: 2, name: "normal", size: "6×6", cost: 8 },
+    { level: 3, name: "hard", size: "7×7", cost: 12 },
   ];
 
   const [showLevelSelect, setShowLevelSelect] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<number>(1);
-
-  // 퍼즐 로드
-  useEffect(() => {
-    fetch("/color_line_game.json")
-      .then((response) => response.json())
-      .then((data: PuzzleConfig[]) => {
-        setPuzzles(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("퍼즐 로딩 실패:", error);
-        setLoading(false);
-      });
-  }, []);
 
   // 레벨 선택 (게임 시작 안함)
   const selectLevel = (level: number) => {
     setSelectedLevel(level);
   };
 
-  // 게임 시작
+  // 게임 시작 - 선택된 난이도에 맞는 JSON 파일 로드
   const startGame = () => {
-    const puzzle = puzzles.find((p) => p.puzzle_id === selectedLevel);
-    if (!puzzle) return;
+    const levelConfig = LEVEL_CONFIGS.find((config) => config.level === selectedLevel);
+    if (!levelConfig) return;
 
-    setCurrentPuzzle(puzzle);
-    const puzzleData = generateFlowFreePuzzleFromConfig(puzzle);
-    setPuzzleData(puzzleData);
-    setGameGrid(puzzleData.grid);
-    setShowLevelSelect(false);
-    setGameCompleted(false);
-    setIsDrawing(false);
-    setCurrentColor(null);
-    setCurrentPath([]);
+    setLoading(true);
+    const difficultyFileName = `color_line_game_${levelConfig.name}.json`;
+
+    fetch(`/game_json/color_line_game/${difficultyFileName}`)
+      .then((response) => response.json())
+      .then((data: PuzzleConfig[]) => {
+        setPuzzles(data);
+        
+        // 랜덤하게 하나의 퍼즐 선택
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const puzzle = data[randomIndex];
+        
+        if (!puzzle) {
+          console.error("퍼즐을 찾을 수 없습니다.");
+          setLoading(false);
+          return;
+        }
+
+        setCurrentPuzzle(puzzle);
+        const puzzleData = generateFlowFreePuzzleFromConfig(puzzle);
+        setPuzzleData(puzzleData);
+        setGameGrid(puzzleData.grid);
+        setShowLevelSelect(false);
+        setGameCompleted(false);
+        setIsDrawing(false);
+        setCurrentColor(null);
+        setCurrentPath([]);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("퍼즐 로딩 실패:", error);
+        setLoading(false);
+      });
   };
 
   // 실시간 타이머
@@ -179,57 +191,74 @@ function ColorLineGame() {
   );
 
   // BFS로 실제 경로 연결 확인
-  const checkPathConnectionBFS = (
-    dot1: [number, number],
-    dot2: [number, number],
-    color: Color,
-    grid: GameCell[][]
-  ): boolean => {
-    const [startR, startC] = dot1;
-    const [endR, endC] = dot2;
+  const checkPathConnectionBFS = useCallback(
+    (
+      dot1: [number, number],
+      dot2: [number, number],
+      color: Color,
+      grid: GameCell[][]
+    ): boolean => {
+      const [startR, startC] = dot1;
+      const [endR, endC] = dot2;
 
-    const queue: Array<[number, number]> = [[startR, startC]];
-    const visited = new Set<string>();
-    visited.add(`${startR},${startC}`);
+      const queue: Array<[number, number]> = [[startR, startC]];
+      const visited = new Set<string>();
+      visited.add(`${startR},${startC}`);
 
-    while (queue.length > 0) {
-      const [r, c] = queue.shift()!;
+      while (queue.length > 0) {
+        const [r, c] = queue.shift()!;
 
-      // 목적지 도달
-      if (r === endR && c === endC) {
-        return true;
-      }
+        // 목적지 도달
+        if (r === endR && c === endC) {
+          return true;
+        }
 
-      // 인접한 셀 탐색
-      const adjacentCells = getAdjacentCells(r, c);
-      for (const [nr, nc] of adjacentCells) {
-        const key = `${nr},${nc}`;
-        if (visited.has(key)) continue;
+        // 인접한 셀 탐색
+        const adjacentCells = getAdjacentCells(r, c);
+        for (const [nr, nc] of adjacentCells) {
+          const key = `${nr},${nc}`;
+          if (visited.has(key)) continue;
 
-        const cell = grid[nr][nc];
-        // 같은 색의 경로나 점만 따라가기
-        if (
-          (cell.type === "path" && cell.color === color) ||
-          (cell.type === "dot" && cell.color === color)
-        ) {
-          visited.add(key);
-          queue.push([nr, nc]);
+          const cell = grid[nr][nc];
+          // 같은 색의 경로나 점만 따라가기
+          if (
+            (cell.type === "path" && cell.color === color) ||
+            (cell.type === "dot" && cell.color === color)
+          ) {
+            visited.add(key);
+            queue.push([nr, nc]);
+          }
         }
       }
-    }
 
-    return false;
-  };
+      return false;
+    },
+    [getAdjacentCells]
+  );
 
   // 게임 완료 체크
   const checkGameCompletion = useCallback(() => {
     if (!puzzleData || !currentPuzzle) return;
 
+    const connectedColors = new Set<Color>();
+
     // 모든 페어가 연결되었는지 확인 (BFS 사용)
     const connectedCount = puzzleData.pairs.filter((pair) => {
       const [dot1, dot2] = pair.dots;
-      return checkPathConnectionBFS(dot1, dot2, pair.color, gameGrid);
+      const connected = checkPathConnectionBFS(
+        dot1,
+        dot2,
+        pair.color,
+        gameGrid
+      );
+      if (connected) {
+        connectedColors.add(pair.color);
+      }
+      return connected;
     }).length;
+
+    // 어떤 색들이 완성됐는지 상태로 저장
+    setCompletedColors(connectedColors);
 
     // 모든 셀이 채워졌는지 확인
     const totalCells = currentPuzzle.size * currentPuzzle.size;
@@ -244,7 +273,7 @@ function ColorLineGame() {
       setCompletionTime(currentTime);
       setGameCompleted(true);
     }
-  }, [puzzleData, currentPuzzle, gameGrid, currentTime, getAdjacentCells]);
+  }, [puzzleData, currentPuzzle, gameGrid, currentTime, checkPathConnectionBFS]);
 
   // 이동 처리
   const handleMove = useCallback(
@@ -339,7 +368,7 @@ function ColorLineGame() {
   const getTouchCellPosition = useCallback(
     (touch: React.Touch, gridElement: HTMLElement): [number, number] | null => {
       if (!currentPuzzle) return null;
-      
+
       const rect = gridElement.getBoundingClientRect();
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
@@ -351,12 +380,7 @@ function ColorLineGame() {
       const col = Math.floor(x / cellSize);
       const row = Math.floor(y / cellSize);
 
-      if (
-        row >= 0 &&
-        row < gridSize &&
-        col >= 0 &&
-        col < gridSize
-      ) {
+      if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
         return [row, col];
       }
       return null;
@@ -382,20 +406,28 @@ function ColorLineGame() {
   const clearPathsBeforeStart = (startingColor: Color) => {
     if (!puzzleData) return;
 
-    const newGrid = gameGrid.map(row => row.map(cell => ({ ...cell })));
+    const newGrid = gameGrid.map((row) => row.map((cell) => ({ ...cell })));
 
     // 1. 모든 색상의 경로 확인하고 미완성 경로는 제거
     puzzleData.pairs.forEach((pair) => {
       const [dot1, dot2] = pair.dots;
-      
+
       // BFS로 두 점이 실제로 연결되어 있는지 확인
-      const isConnected = checkPathConnectionBFS(dot1, dot2, pair.color, newGrid);
+      const isConnected = checkPathConnectionBFS(
+        dot1,
+        dot2,
+        pair.color,
+        newGrid
+      );
 
       // 연결되지 않은 경로는 제거
       if (!isConnected) {
         for (let r = 0; r < newGrid.length; r++) {
           for (let c = 0; c < newGrid[r].length; c++) {
-            if (newGrid[r][c].type === "path" && newGrid[r][c].color === pair.color) {
+            if (
+              newGrid[r][c].type === "path" &&
+              newGrid[r][c].color === pair.color
+            ) {
               newGrid[r][c] = { type: "empty" as CellType };
             }
           }
@@ -406,7 +438,10 @@ function ColorLineGame() {
     // 2. 시작하려는 색상의 경로도 제거 (완성된 경로라도)
     for (let r = 0; r < newGrid.length; r++) {
       for (let c = 0; c < newGrid[r].length; c++) {
-        if (newGrid[r][c].type === "path" && newGrid[r][c].color === startingColor) {
+        if (
+          newGrid[r][c].type === "path" &&
+          newGrid[r][c].color === startingColor
+        ) {
           newGrid[r][c] = { type: "empty" as CellType };
         }
       }
@@ -552,20 +587,20 @@ function ColorLineGame() {
               완성도: <span className="text-green-500">100%</span>
             </p>
           </div>
-           <div className="space-y-3">
-             <button
-               onClick={() => setShowLevelSelect(true)}
-               className="w-full px-6 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-colors font-semibold"
-             >
-               레벨 선택
-             </button>
-             <button
-               onClick={() => window.history.back()}
-               className="w-full px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
-             >
-               메인화면으로
-             </button>
-           </div>
+          <div className="space-y-3">
+            <button
+              onClick={() => setShowLevelSelect(true)}
+              className="w-full px-6 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-colors font-semibold"
+            >
+              레벨 선택
+            </button>
+            <button
+              onClick={() => window.history.back()}
+              className="w-full px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
+            >
+              메인화면으로
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -670,8 +705,16 @@ function ColorLineGame() {
                   onTouchStart={() => handleStart(rowIndex, colIndex)}
                   onTouchEnd={handleEnd}
                 >
-                  {cell.type === "dot" && (
-                    <div className="w-6 h-6 rounded-full bg-white border-2 border-gray-800 shadow-lg" />
+                  {cell.type === "dot" && cell.color && (
+                    <div
+                      className="w-6 h-6 rounded-full border-2 shadow-lg"
+                      style={{
+                        backgroundColor: completedColors.has(cell.color)
+                          ? "#111827" // 완료: 검은색
+                          : "#ffffff", // 미완료: 흰색
+                        borderColor: "#111827",
+                      }}
+                    />
                   )}
                 </div>
               ))
@@ -688,6 +731,7 @@ function ColorLineGame() {
                 setIsDrawing(false);
                 setCurrentColor(null);
                 setCurrentPath([]);
+                setCompletedColors(new Set());
               }
             }}
             className="bg-white text-gray-700 px-8 py-3 rounded-xl font-semibold shadow-sm hover:shadow-md transition-shadow"

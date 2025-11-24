@@ -1,0 +1,1392 @@
+[
+  {
+    "puzzle_id": 7,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "방사능",
+        "hint": "방사성 원소가 방사선을 내는 성질",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 1
+      },
+      {
+        "id": 2,
+        "word": "고육지계",
+        "hint": "적을 속이기 위하여 제 몸을 해치는 계책",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 3,
+        "word": "마이동풍",
+        "hint": "남의 말을 귀담아듣지 않고 지나쳐 버림",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 4,
+        "word": "사교육",
+        "hint": "공교육의 상대어로 학교 밖에서 하는 교육",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 1
+      },
+      {
+        "id": 5,
+        "word": "이자",
+        "hint": "남에게 돈이나 물건을 빌려 주고 그 대가로 받는 돈이나 물건",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 5
+      },
+      {
+        "id": 6,
+        "word": "제방",
+        "hint": "물의 범람을 막기 위하여 강이나 호수 따위의 가장자리에 쌓은 둑",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "계절풍",
+        "hint": "계절에 따라 그 방향이 바뀌는 바람",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "절구",
+        "hint": "곡식이나 양념 따위를 빻는 기구",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 4
+      },
+      {
+        "id": 9,
+        "word": "방송국",
+        "hint": "방송 프로그램을 제작하고 송출하는 기관",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 10,
+        "word": "송신기",
+        "hint": "전파로 신호를 보내는 장치",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 11,
+        "word": "자식",
+        "hint": "자기가 낳은 아들과 딸",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 12,
+        "word": "전송",
+        "hint": "정보나 데이터를 다른 곳으로 보냄",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 5
+      },
+      {
+        "id": 13,
+        "word": "송구",
+        "hint": "미안하고 죄송함",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 6
+      },
+      {
+        "id": 14,
+        "word": "기사식당",
+        "hint": "화물차 운전기사들을 주고객으로 하는 식당",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 1
+      }
+    ],
+    "solution": [
+      [
+        "X",
+        "방",
+        "X",
+        "고",
+        "X",
+        "마",
+        "X"
+      ],
+      [
+        "X",
+        "사",
+        "교",
+        "육",
+        "X",
+        "이",
+        "자"
+      ],
+      [
+        "X",
+        "능",
+        "X",
+        "지",
+        "X",
+        "동",
+        "X"
+      ],
+      [
+        "제",
+        "X",
+        "X",
+        "계",
+        "절",
+        "풍",
+        "X"
+      ],
+      [
+        "방",
+        "송",
+        "국",
+        "X",
+        "구",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "신",
+        "X",
+        "자",
+        "X",
+        "전",
+        "송"
+      ],
+      [
+        "X",
+        "기",
+        "사",
+        "식",
+        "당",
+        "X",
+        "구"
+      ]
+    ],
+    "grid": [
+      [
+        "X",
+        "",
+        "X",
+        "",
+        "X",
+        "",
+        "X"
+      ],
+      [
+        "X",
+        "",
+        "교",
+        "",
+        "X",
+        "",
+        "자"
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "",
+        "X",
+        "",
+        "X"
+      ],
+      [
+        "제",
+        "X",
+        "X",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      [
+        "",
+        "",
+        "국",
+        "X",
+        "",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "",
+        "X",
+        "",
+        ""
+      ],
+      [
+        "X",
+        "",
+        "사",
+        "",
+        "당",
+        "X",
+        "구"
+      ]
+    ],
+    "solo_words": [
+      "기",
+      "송",
+      "방",
+      "사",
+      "능",
+      "고",
+      "육",
+      "지",
+      "계",
+      "마",
+      "이",
+      "동",
+      "풍",
+      "절",
+      "구",
+      "송",
+      "신",
+      "자",
+      "전",
+      "식",
+      "방"
+    ]
+  },
+  {
+    "puzzle_id": 8,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "유비무환",
+        "hint": "미리 준비가 되어 있으면 걱정할 것이 없음",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "된장",
+        "hint": "메주를 소금물에 담갔다가 메주를 건져 내고 그 물을 졸인 장",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 3,
+        "word": "오레오",
+        "hint": "초콜릿 쿠키 사이에 크림을 넣은 과자의 상표명",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 4
+      },
+      {
+        "id": 4,
+        "word": "오대양육대주",
+        "hint": "지구의 다섯 개의 큰 바다와 여섯 개의 큰 육지",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "오비이락",
+        "hint": "까마귀 날자 배 떨어진다는 뜻으로 공교롭게도 때가 같이 맞아떨어짐",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 6,
+        "word": "비무장지대",
+        "hint": "군사 시설이나 군대를 두지 않기로 한 지대",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "양송이",
+        "hint": "주름버섯목 주름버섯과의 버섯",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 4
+      },
+      {
+        "id": 8,
+        "word": "환풍기",
+        "hint": "실내의 공기를 밖으로 내보내거나 바깥 공기를 안으로 들이는 장치",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 0
+      },
+      {
+        "id": 9,
+        "word": "풍력발전",
+        "hint": "바람의 힘을 이용하여 전기를 일으킴",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 1
+      },
+      {
+        "id": 10,
+        "word": "재발",
+        "hint": "병이 다시 일어남",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 11,
+        "word": "호주머니",
+        "hint": "작은 물건을 넣기 위하여 옷에 붙이거나 따로 만든 자그마한 주머니",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 12,
+        "word": "호미",
+        "hint": "논밭의 흙을 파거나 김을 매는 데 쓰는 농기구",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 13,
+        "word": "니체",
+        "hint": "독일의 철학자, 시인",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 6
+      }
+    ],
+    "solution": [
+      [
+        "유",
+        "X",
+        "된",
+        "X",
+        "오",
+        "레",
+        "오"
+      ],
+      [
+        "비",
+        "무",
+        "장",
+        "지",
+        "대",
+        "X",
+        "비"
+      ],
+      [
+        "무",
+        "X",
+        "X",
+        "X",
+        "양",
+        "송",
+        "이"
+      ],
+      [
+        "환",
+        "풍",
+        "기",
+        "X",
+        "육",
+        "X",
+        "락"
+      ],
+      [
+        "X",
+        "력",
+        "X",
+        "X",
+        "대",
+        "X",
+        "X"
+      ],
+      [
+        "재",
+        "발",
+        "X",
+        "호",
+        "주",
+        "머",
+        "니"
+      ],
+      [
+        "X",
+        "전",
+        "X",
+        "미",
+        "X",
+        "X",
+        "체"
+      ]
+    ],
+    "grid": [
+      [
+        "",
+        "X",
+        "",
+        "X",
+        "",
+        "레",
+        ""
+      ],
+      [
+        "",
+        "무",
+        "",
+        "지",
+        "",
+        "X",
+        ""
+      ],
+      [
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "",
+        "이"
+      ],
+      [
+        "",
+        "",
+        "기",
+        "X",
+        "",
+        "X",
+        ""
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "X",
+        "",
+        "X",
+        "X"
+      ],
+      [
+        "재",
+        "",
+        "X",
+        "",
+        "주",
+        "머",
+        ""
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "미",
+        "X",
+        "X",
+        "체"
+      ]
+    ],
+    "solo_words": [
+      "유",
+      "비",
+      "무",
+      "환",
+      "풍",
+      "력",
+      "발",
+      "전",
+      "호",
+      "니",
+      "오",
+      "대",
+      "양",
+      "육",
+      "대",
+      "오",
+      "락",
+      "된",
+      "장",
+      "비",
+      "송"
+    ]
+  },
+  {
+    "puzzle_id": 9,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "냉동식품",
+        "hint": "식품을 냉동하여 저장한 것",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "동물",
+        "hint": "생물계를 둘로 나눈 것 중 하나로 스스로 움직이며 감각과 신경이 발달한 생물",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 1
+      },
+      {
+        "id": 3,
+        "word": "품새",
+        "hint": "태권도에서 공격과 방어의 동작을 일정한 틀에 맞춘 것",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 4,
+        "word": "냉기",
+        "hint": "차가운 기운",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 5,
+        "word": "기네스북",
+        "hint": "세계적인 기록을 모아 엮은 책",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 6,
+        "word": "사원",
+        "hint": "회사에 소속되어 일하는 사람",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 2
+      },
+      {
+        "id": 7,
+        "word": "버스",
+        "hint": "많은 사람을 태우고 정해진 길을 달리는 대중교통 수단",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 5
+      },
+      {
+        "id": 8,
+        "word": "긴팔원숭이",
+        "hint": "긴팔원숭잇과의 유인원",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 0
+      },
+      {
+        "id": 9,
+        "word": "숭례문",
+        "hint": "서울 특별시 중구 남대문로에 있는 조선 시대의 성문",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 10,
+        "word": "공방",
+        "hint": "물건을 만드는 작은 작업장",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 11,
+        "word": "우문현답",
+        "hint": "어리석은 물음에 현명한 대답",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 12,
+        "word": "우연",
+        "hint": "아무 인과 관계 없이 뜻밖에 일어나는 일",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 13,
+        "word": "답사",
+        "hint": "어떤 사실을 알아보기 위하여 그 현장에 찾아가 봄",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 5
+      },
+      {
+        "id": 14,
+        "word": "방패연",
+        "hint": "방패 모양으로 만든 연",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 0
+      },
+      {
+        "id": 15,
+        "word": "사장",
+        "hint": "회사의 업무를 대표하고 총괄하는 사람",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 5
+      }
+    ],
+    "solution": [
+      [
+        "냉",
+        "동",
+        "식",
+        "품",
+        "X",
+        "냉",
+        "기"
+      ],
+      [
+        "X",
+        "물",
+        "X",
+        "새",
+        "X",
+        "X",
+        "네"
+      ],
+      [
+        "X",
+        "X",
+        "사",
+        "X",
+        "X",
+        "버",
+        "스"
+      ],
+      [
+        "긴",
+        "팔",
+        "원",
+        "숭",
+        "이",
+        "X",
+        "북"
+      ],
+      [
+        "X",
+        "X",
+        "X",
+        "례",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "공",
+        "X",
+        "우",
+        "문",
+        "현",
+        "답",
+        "X"
+      ],
+      [
+        "방",
+        "패",
+        "연",
+        "X",
+        "X",
+        "사",
+        "장"
+      ]
+    ],
+    "grid": [
+      [
+        "냉",
+        "",
+        "식",
+        "",
+        "X",
+        "",
+        "기"
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "",
+        "X",
+        "X",
+        ""
+      ],
+      [
+        "X",
+        "X",
+        "",
+        "X",
+        "X",
+        "버",
+        ""
+      ],
+      [
+        "",
+        "팔",
+        "",
+        "",
+        "",
+        "X",
+        ""
+      ],
+      [
+        "X",
+        "X",
+        "X",
+        "",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "공",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      [
+        "",
+        "패",
+        "",
+        "X",
+        "X",
+        "사",
+        ""
+      ]
+    ],
+    "solo_words": [
+      "동",
+      "물",
+      "품",
+      "새",
+      "네",
+      "스",
+      "사",
+      "원",
+      "숭",
+      "례",
+      "문",
+      "우",
+      "연",
+      "답",
+      "긴",
+      "이",
+      "현",
+      "장",
+      "방",
+      "냉",
+      "북"
+    ]
+  },
+  {
+    "puzzle_id": 12,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "무궁화",
+        "hint": "아욱과의 낙엽 활엽 관목이며 대한민국의 나라꽃",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "무지개",
+        "hint": "비가 온 뒤나 분수 주위에 둥글게 나타나는 일곱 빛깔의 띠",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "화재",
+        "hint": "불이 나서 일어나는 재난",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 4,
+        "word": "홀대",
+        "hint": "푸대접함",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 5,
+        "word": "대학교",
+        "hint": "고등 교육을 실시하는 교육 기관",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 6,
+        "word": "재난",
+        "hint": "뜻밖에 일어나는 재앙과 고난",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 2
+      },
+      {
+        "id": 7,
+        "word": "난초",
+        "hint": "난초과의 여러해살이풀",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "개발",
+        "hint": "지식이나 재능 따위를 일깨워 줌",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 9,
+        "word": "발전기",
+        "hint": "기계적 에너지를 전기 에너지로 바꾸는 장치",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 1
+      },
+      {
+        "id": 10,
+        "word": "초등학교",
+        "hint": "초등 교육을 실시하는 교육 기관",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 11,
+        "word": "등하불명",
+        "hint": "나타났다가 사라져서 행방이나 소재가 분명하지 않음",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 4
+      },
+      {
+        "id": 12,
+        "word": "신기록",
+        "hint": "이전의 기록을 깨뜨리고 새로 세운 기록",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 13,
+        "word": "신도시",
+        "hint": "계획에 따라 새로 건설하는 도시",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 14,
+        "word": "불장난",
+        "hint": "불을 가지고 위험하게 장난함",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 15,
+        "word": "난수",
+        "hint": "임의로 선택한 수",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 6
+      },
+      {
+        "id": 16,
+        "word": "발명",
+        "hint": "이전에 없던 기술이나 물건을 새로 생각하여 만들어 냄",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 17,
+        "word": "발판",
+        "hint": "발을 디디거나 놓을 수 있게 만든 판자나 돌",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 18,
+        "word": "시집",
+        "hint": "여러 편의 시를 모아 엮은 책",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 0
+      }
+    ],
+    "solution": [
+      [
+        "무",
+        "궁",
+        "화",
+        "X",
+        "X",
+        "홀",
+        "대"
+      ],
+      [
+        "지",
+        "X",
+        "재",
+        "난",
+        "X",
+        "X",
+        "학"
+      ],
+      [
+        "개",
+        "발",
+        "X",
+        "초",
+        "등",
+        "학",
+        "교"
+      ],
+      [
+        "X",
+        "전",
+        "X",
+        "X",
+        "하",
+        "X",
+        "X"
+      ],
+      [
+        "신",
+        "기",
+        "록",
+        "X",
+        "불",
+        "장",
+        "난"
+      ],
+      [
+        "도",
+        "X",
+        "X",
+        "발",
+        "명",
+        "X",
+        "수"
+      ],
+      [
+        "시",
+        "집",
+        "X",
+        "판",
+        "X",
+        "X",
+        "X"
+      ]
+    ],
+    "grid": [
+      [
+        "",
+        "궁",
+        "",
+        "X",
+        "X",
+        "홀",
+        ""
+      ],
+      [
+        "",
+        "X",
+        "재",
+        "",
+        "X",
+        "X",
+        ""
+      ],
+      [
+        "개",
+        "",
+        "X",
+        "초",
+        "",
+        "",
+        ""
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "X",
+        "",
+        "X",
+        "X"
+      ],
+      [
+        "신",
+        "",
+        "",
+        "X",
+        "불",
+        "",
+        ""
+      ],
+      [
+        "",
+        "X",
+        "X",
+        "발",
+        "",
+        "X",
+        ""
+      ],
+      [
+        "시",
+        "",
+        "X",
+        "",
+        "X",
+        "X",
+        "X"
+      ]
+    ],
+    "solo_words": [
+      "화",
+      "대",
+      "지",
+      "난",
+      "학",
+      "발",
+      "등",
+      "학",
+      "교",
+      "전",
+      "하",
+      "기",
+      "록",
+      "장",
+      "난",
+      "도",
+      "명",
+      "수",
+      "집",
+      "판",
+      "무"
+    ]
+  },
+  {
+    "puzzle_id": 15,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "자일리톨",
+        "hint": "자작나무에서 추출한 천연 감미료",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "일거수일투족",
+        "hint": "손을 한 번 들고 발을 한 번 옮긴다는 뜻으로 사람의 모든 동작을 이르는 말",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 1
+      },
+      {
+        "id": 3,
+        "word": "활어회",
+        "hint": "산 물고기를 잡아 바로 떠서 만든 회",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 4,
+        "word": "금붕어",
+        "hint": "잉엇과의 민물고기",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "의수",
+        "hint": "손이나 팔을 대신하여 쓰는 인공 기구",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 6,
+        "word": "수정",
+        "hint": "잘못된 것을 바로잡음",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 7,
+        "word": "일시정지",
+        "hint": "일시적으로 정지함",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 1
+      },
+      {
+        "id": 8,
+        "word": "지자체",
+        "hint": "지방 자치 단체의 줄임말",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 4
+      },
+      {
+        "id": 9,
+        "word": "화투",
+        "hint": "열두 달의 꽃과 동식물을 그린 48장의 투전",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 10,
+        "word": "여관",
+        "hint": "여행하는 사람에게 숙식을 제공하는 곳",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 6
+      },
+      {
+        "id": 11,
+        "word": "족발",
+        "hint": "돼지의 다리를 삶거나 찐 음식",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 1
+      },
+      {
+        "id": 12,
+        "word": "발부",
+        "hint": "법원 따위에서 영장이나 명령을 냄",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 13,
+        "word": "체육관",
+        "hint": "운동 경기나 체육 활동을 하는 시설",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 4
+      },
+      {
+        "id": 14,
+        "word": "육회",
+        "hint": "쇠고기를 날것으로 양념하여 만든 음식",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 5
+      }
+    ],
+    "solution": [
+      [
+        "자",
+        "일",
+        "리",
+        "톨",
+        "X",
+        "X",
+        "활"
+      ],
+      [
+        "X",
+        "거",
+        "X",
+        "X",
+        "금",
+        "붕",
+        "어"
+      ],
+      [
+        "의",
+        "수",
+        "X",
+        "수",
+        "X",
+        "X",
+        "회"
+      ],
+      [
+        "X",
+        "일",
+        "시",
+        "정",
+        "지",
+        "X",
+        "X"
+      ],
+      [
+        "화",
+        "투",
+        "X",
+        "X",
+        "자",
+        "X",
+        "여"
+      ],
+      [
+        "X",
+        "족",
+        "발",
+        "X",
+        "체",
+        "육",
+        "관"
+      ],
+      [
+        "X",
+        "X",
+        "부",
+        "X",
+        "X",
+        "회",
+        "X"
+      ]
+    ],
+    "grid": [
+      [
+        "자",
+        "",
+        "",
+        "",
+        "X",
+        "X",
+        "활"
+      ],
+      [
+        "X",
+        "",
+        "X",
+        "X",
+        "금",
+        "",
+        ""
+      ],
+      [
+        "의",
+        "",
+        "X",
+        "수",
+        "X",
+        "X",
+        ""
+      ],
+      [
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "X"
+      ],
+      [
+        "화",
+        "",
+        "X",
+        "X",
+        "",
+        "X",
+        "여"
+      ],
+      [
+        "X",
+        "족",
+        "",
+        "X",
+        "",
+        "육",
+        ""
+      ],
+      [
+        "X",
+        "X",
+        "",
+        "X",
+        "X",
+        "",
+        "X"
+      ]
+    ],
+    "solo_words": [
+      "일",
+      "리",
+      "톨",
+      "거",
+      "붕",
+      "어",
+      "수",
+      "회",
+      "일",
+      "시",
+      "정",
+      "지",
+      "투",
+      "자",
+      "발",
+      "관",
+      "부",
+      "회",
+      "체"
+    ]
+  }
+]

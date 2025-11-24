@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, Suspense } from "react";
-import data from "@/public/flip_card_game.json";
+import data from "@/public/game_json/flip_card_game/flip_card_game.json";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";

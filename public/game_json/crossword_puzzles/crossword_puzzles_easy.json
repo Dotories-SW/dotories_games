@@ -1,0 +1,1215 @@
+[
+  {
+    "puzzle_id": 1,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "고진감래",
+        "hint": "고생 끝에 즐거움이 온다는 뜻의 사자성어",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "고양이",
+        "hint": "식육목의 포유류로 쥐를 잘 잡는 집에서 기르는 동물",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "감나무",
+        "hint": "감나무과의 낙엽 활엽 교목",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 4,
+        "word": "수능",
+        "hint": "대학수학능력시험의 줄임말",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 5
+      },
+      {
+        "id": 5,
+        "word": "감독",
+        "hint": "영화나 연극을 제작할 때 연출을 맡은 사람",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 4
+      },
+      {
+        "id": 6,
+        "word": "이름표",
+        "hint": "이름을 적어서 몸이나 물건에 붙이는 표",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "이무기",
+        "hint": "전설에서 용이 되지 못한 큰 뱀",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 8,
+        "word": "표범",
+        "hint": "고양잇과의 포유류로 온몸에 흑갈색 무늬가 있는 맹수",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 2
+      },
+      {
+        "id": 9,
+        "word": "독버섯",
+        "hint": "사람이 먹으면 중독되는 버섯",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 10,
+        "word": "버선발",
+        "hint": "버선만 신고 신을 신지 않은 발",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 5
+      },
+      {
+        "id": 11,
+        "word": "능어버섯",
+        "hint": "송이버섯과의 버섯으로 향기가 매우 좋은 식용버섯",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 6
+      },
+      {
+        "id": 12,
+        "word": "선발대",
+        "hint": "앞서 보내는 부대나 일행",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 4
+      }
+    ],
+    "solution": [
+      [
+        "고",
+        "진",
+        "감",
+        "래",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "양",
+        "X",
+        "나",
+        "X",
+        "X",
+        "수",
+        "능"
+      ],
+      [
+        "이",
+        "X",
+        "무",
+        "X",
+        "X",
+        "X",
+        "이"
+      ],
+      [
+        "X",
+        "X",
+        "X",
+        "X",
+        "감",
+        "X",
+        "버"
+      ],
+      [
+        "이",
+        "름",
+        "표",
+        "X",
+        "독",
+        "버",
+        "섯"
+      ],
+      [
+        "무",
+        "X",
+        "범",
+        "X",
+        "X",
+        "선",
+        "X"
+      ],
+      [
+        "기",
+        "X",
+        "X",
+        "X",
+        "선",
+        "발",
+        "대"
+      ]
+    ],
+    "grid": [
+      [
+        "",
+        "진",
+        "감",
+        "래",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "양",
+        "X",
+        "나",
+        "X",
+        "X",
+        "수",
+        "능"
+      ],
+      [
+        "이",
+        "X",
+        "무",
+        "X",
+        "X",
+        "X",
+        "이"
+      ],
+      [
+        "X",
+        "X",
+        "X",
+        "X",
+        "감",
+        "X",
+        "버"
+      ],
+      [
+        "이",
+        "름",
+        "",
+        "X",
+        "독",
+        "",
+        "섯"
+      ],
+      [
+        "무",
+        "X",
+        "범",
+        "X",
+        "X",
+        "선",
+        "X"
+      ],
+      [
+        "기",
+        "X",
+        "X",
+        "X",
+        "",
+        "발",
+        "대"
+      ]
+    ],
+    "solo_words": [
+      "고",
+      "버",
+      "선",
+      "표"
+    ]
+  },
+  {
+    "puzzle_id": 2,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "앙부일구",
+        "hint": "조선 시대에 쓰던 해시계의 한 가지",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "부모님",
+        "hint": "아버지와 어머니를 아울러 높여 이르는 말",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 1
+      },
+      {
+        "id": 3,
+        "word": "수영장",
+        "hint": "수영을 하기 위한 시설을 갖춘 못이나 건물",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 4,
+        "word": "수선화",
+        "hint": "수선화과의 여러해살이풀",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "손님",
+        "hint": "찾아온 사람을 대접하여 이르는 말",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 6,
+        "word": "손수건",
+        "hint": "손이나 얼굴의 땀을 닦는 작은 천",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "척화비",
+        "hint": "서양과의 화친을 배척한다는 내용을 새긴 비석",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "척척박사",
+        "hint": "무슨 일이든 척척 잘 아는 사람",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 9,
+        "word": "건곤일척",
+        "hint": "천지를 걸고 하는 한판 승부",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 10,
+        "word": "곤지암",
+        "hint": "경기도 광주시에 있는 지명",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 11,
+        "word": "박물관",
+        "hint": "역사, 예술, 과학 등의 자료를 수집하여 전시하는 시설",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 12,
+        "word": "관세",
+        "hint": "수입품에 부과하는 세금",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 5
+      },
+      {
+        "id": 13,
+        "word": "세금",
+        "hint": "국가나 지방 자치 단체가 국민으로부터 강제로 거두어들이는 돈",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 5
+      }
+    ],
+    "solution": [
+      [
+        "앙",
+        "부",
+        "일",
+        "구",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "모",
+        "X",
+        "X",
+        "수",
+        "영",
+        "장"
+      ],
+      [
+        "손",
+        "님",
+        "X",
+        "X",
+        "선",
+        "X",
+        "X"
+      ],
+      [
+        "수",
+        "X",
+        "X",
+        "척",
+        "화",
+        "비",
+        "X"
+      ],
+      [
+        "건",
+        "곤",
+        "일",
+        "척",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "지",
+        "X",
+        "박",
+        "물",
+        "관",
+        "X"
+      ],
+      [
+        "X",
+        "암",
+        "X",
+        "사",
+        "X",
+        "세",
+        "금"
+      ]
+    ],
+    "grid": [
+      [
+        "앙",
+        "",
+        "일",
+        "구",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "모",
+        "X",
+        "X",
+        "수",
+        "영",
+        "장"
+      ],
+      [
+        "",
+        "님",
+        "X",
+        "X",
+        "선",
+        "X",
+        "X"
+      ],
+      [
+        "수",
+        "X",
+        "X",
+        "척",
+        "",
+        "비",
+        "X"
+      ],
+      [
+        "건",
+        "",
+        "일",
+        "척",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "지",
+        "X",
+        "박",
+        "물",
+        "관",
+        "X"
+      ],
+      [
+        "X",
+        "암",
+        "X",
+        "사",
+        "X",
+        "세",
+        "금"
+      ]
+    ],
+    "solo_words": [
+      "부",
+      "손",
+      "곤",
+      "화"
+    ]
+  },
+  {
+    "puzzle_id": 3,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "배추김치",
+        "hint": "배추를 주재료로 하여 담근 김치",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "배멀미",
+        "hint": "배를 타고 갈 때 어지럽고 구역질이 나는 증세",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "운동",
+        "hint": "몸을 단련하거나 건강을 위해 몸을 움직이는 일",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 5
+      },
+      {
+        "id": 4,
+        "word": "동아리",
+        "hint": "공통된 목적과 관심사를 가진 사람들의 모임",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 6
+      },
+      {
+        "id": 5,
+        "word": "미켈란젤로",
+        "hint": "이탈리아 르네상스 시대의 조각가, 화가, 건축가",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 6,
+        "word": "켈리포니아",
+        "hint": "미국 서부 태평양 연안의 주",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 1
+      },
+      {
+        "id": 7,
+        "word": "젤라토",
+        "hint": "이탈리아식 아이스크림",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "포테토칩",
+        "hint": "감자를 얇게 썰어 기름에 튀긴 과자",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 9,
+        "word": "칩거",
+        "hint": "집에만 있으면서 밖에 나가지 않음",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 10,
+        "word": "거미줄",
+        "hint": "거미가 배 속의 분비선에서 뽑아낸 실로 만든 줄",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 4
+      },
+      {
+        "id": 11,
+        "word": "방아쇠",
+        "hint": "총의 공이를 치는 쇠",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 0
+      }
+    ],
+    "solution": [
+      [
+        "배",
+        "추",
+        "김",
+        "치",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "멀",
+        "X",
+        "X",
+        "X",
+        "X",
+        "운",
+        "동"
+      ],
+      [
+        "미",
+        "켈",
+        "란",
+        "젤",
+        "로",
+        "X",
+        "아"
+      ],
+      [
+        "X",
+        "리",
+        "X",
+        "라",
+        "X",
+        "X",
+        "리"
+      ],
+      [
+        "X",
+        "포",
+        "테",
+        "토",
+        "칩",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "니",
+        "X",
+        "X",
+        "거",
+        "미",
+        "줄"
+      ],
+      [
+        "방",
+        "아",
+        "쇠",
+        "X",
+        "X",
+        "X",
+        "X"
+      ]
+    ],
+    "grid": [
+      [
+        "",
+        "추",
+        "김",
+        "치",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "멀",
+        "X",
+        "X",
+        "X",
+        "X",
+        "운",
+        "동"
+      ],
+      [
+        "미",
+        "",
+        "란",
+        "젤",
+        "로",
+        "X",
+        "아"
+      ],
+      [
+        "X",
+        "리",
+        "X",
+        "라",
+        "X",
+        "X",
+        "리"
+      ],
+      [
+        "X",
+        "",
+        "테",
+        "토",
+        "칩",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "니",
+        "X",
+        "X",
+        "",
+        "미",
+        "줄"
+      ],
+      [
+        "방",
+        "아",
+        "쇠",
+        "X",
+        "X",
+        "X",
+        "X"
+      ]
+    ],
+    "solo_words": [
+      "배",
+      "켈",
+      "포",
+      "거"
+    ]
+  },
+  {
+    "puzzle_id": 10,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "예감",
+        "hint": "어떤 일이 일어날 것을 미리 느껴서 앎",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "예술의전당",
+        "hint": "서울특별시 서초구에 있는 복합 문화 예술 공간",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "세계사",
+        "hint": "세계 각국의 역사를 전체적으로 다룬 역사",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 4
+      },
+      {
+        "id": 4,
+        "word": "세치혀",
+        "hint": "말을 하는 재주",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "팔굽혀펴기",
+        "hint": "엎드려서 두 팔로 땅을 짚고 팔을 굽혔다 펴는 운동",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 2
+      },
+      {
+        "id": 6,
+        "word": "팔랑귀",
+        "hint": "남의 말을 잘 듣고 곧이곧대로 믿는 귀",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 2
+      },
+      {
+        "id": 7,
+        "word": "기상청",
+        "hint": "기상 관측과 일기 예보를 담당하는 국가 기관",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 6
+      },
+      {
+        "id": 8,
+        "word": "당나귀",
+        "hint": "말과의 포유류",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 9,
+        "word": "나팔꽃",
+        "hint": "메꽃과의 한해살이 덩굴풀",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 10,
+        "word": "조달청",
+        "hint": "물자를 조달하는 일을 맡아보는 중앙 행정 기관",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 11,
+        "word": "달맞이",
+        "hint": "밝은 달을 보면서 즐김",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 5
+      },
+      {
+        "id": 12,
+        "word": "꽃꽂이",
+        "hint": "꽃을 여러 가지로 꾸며서 화병이나 화분에 꽂는 일",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 1
+      },
+      {
+        "id": 13,
+        "word": "이름",
+        "hint": "사물이나 사람을 다른 것과 구별하여 부르는 말",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 5
+      }
+    ],
+    "solution": [
+      [
+        "예",
+        "감",
+        "X",
+        "X",
+        "세",
+        "계",
+        "사"
+      ],
+      [
+        "술",
+        "X",
+        "X",
+        "X",
+        "치",
+        "X",
+        "X"
+      ],
+      [
+        "의",
+        "X",
+        "팔",
+        "굽",
+        "혀",
+        "펴",
+        "기"
+      ],
+      [
+        "전",
+        "X",
+        "랑",
+        "X",
+        "X",
+        "X",
+        "상"
+      ],
+      [
+        "당",
+        "나",
+        "귀",
+        "X",
+        "조",
+        "달",
+        "청"
+      ],
+      [
+        "X",
+        "팔",
+        "X",
+        "X",
+        "X",
+        "맞",
+        "X"
+      ],
+      [
+        "X",
+        "꽃",
+        "꽂",
+        "이",
+        "X",
+        "이",
+        "름"
+      ]
+    ],
+    "grid": [
+      [
+        "",
+        "감",
+        "X",
+        "X",
+        "세",
+        "계",
+        "사"
+      ],
+      [
+        "술",
+        "X",
+        "X",
+        "X",
+        "치",
+        "X",
+        "X"
+      ],
+      [
+        "의",
+        "X",
+        "팔",
+        "굽",
+        "",
+        "펴",
+        "기"
+      ],
+      [
+        "전",
+        "X",
+        "랑",
+        "X",
+        "X",
+        "X",
+        "상"
+      ],
+      [
+        "당",
+        "나",
+        "",
+        "X",
+        "조",
+        "",
+        "청"
+      ],
+      [
+        "X",
+        "팔",
+        "X",
+        "X",
+        "X",
+        "맞",
+        "X"
+      ],
+      [
+        "X",
+        "",
+        "꽂",
+        "이",
+        "X",
+        "이",
+        "름"
+      ]
+    ],
+    "solo_words": [
+      "예",
+      "혀",
+      "귀",
+      "꽃",
+      "달"
+    ]
+  },
+  {
+    "puzzle_id": 13,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "심기일전",
+        "hint": "마음을 고쳐먹고 어떤 일에 다시 착수함",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "심청사달",
+        "hint": "심청전에서 효녀 심청과 아버지 심 봉사가 다시 만난 일",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "일기예보",
+        "hint": "관측한 기상 자료를 토대로 앞으로의 날씨를 미리 알림",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 4,
+        "word": "날갯짓",
+        "hint": "날개를 휘저어 움직임",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "날파리",
+        "hint": "날아다니는 작은 벌레를 통틀어 이르는 말",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 6,
+        "word": "보따리",
+        "hint": "물건을 싸는 큰 보자기",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 2
+      },
+      {
+        "id": 7,
+        "word": "따돌림",
+        "hint": "일부러 괴롭히거나 싫어하여 같이 어울리지 않음",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "연휴",
+        "hint": "휴일이 이어지는 것",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 9,
+        "word": "조사",
+        "hint": "어떤 일이나 사물의 내용을 명확히 하기 위하여 자세히 살펴보거나 찾아봄",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 5
+      },
+      {
+        "id": 10,
+        "word": "사기꾼",
+        "hint": "남을 속여서 재물을 빼앗는 사람",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 6
+      },
+      {
+        "id": 11,
+        "word": "휴양림",
+        "hint": "휴양하며 쉴 수 있도록 시설을 갖춘 숲",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 1
+      },
+      {
+        "id": 12,
+        "word": "양보",
+        "hint": "자기의 권리나 이익 따위를 남에게 내어 줌",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 13,
+        "word": "나무꾼",
+        "hint": "나무를 베는 것을 업으로 하는 사람",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 4
+      }
+    ],
+    "solution": [
+      [
+        "심",
+        "기",
+        "일",
+        "전",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "청",
+        "X",
+        "기",
+        "X",
+        "날",
+        "갯",
+        "짓"
+      ],
+      [
+        "사",
+        "X",
+        "예",
+        "X",
+        "파",
+        "X",
+        "X"
+      ],
+      [
+        "달",
+        "X",
+        "보",
+        "따",
+        "리",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "연",
+        "X",
+        "돌",
+        "X",
+        "조",
+        "사"
+      ],
+      [
+        "X",
+        "휴",
+        "양",
+        "림",
+        "X",
+        "X",
+        "기"
+      ],
+      [
+        "X",
+        "X",
+        "보",
+        "X",
+        "나",
+        "무",
+        "꾼"
+      ]
+    ],
+    "grid": [
+      [
+        "",
+        "기",
+        "",
+        "전",
+        "X",
+        "X",
+        "X"
+      ],
+      [
+        "청",
+        "X",
+        "기",
+        "X",
+        "",
+        "갯",
+        "짓"
+      ],
+      [
+        "사",
+        "X",
+        "예",
+        "X",
+        "파",
+        "X",
+        "X"
+      ],
+      [
+        "달",
+        "X",
+        "보",
+        "따",
+        "리",
+        "X",
+        "X"
+      ],
+      [
+        "X",
+        "연",
+        "X",
+        "돌",
+        "X",
+        "조",
+        "사"
+      ],
+      [
+        "X",
+        "휴",
+        "",
+        "림",
+        "X",
+        "X",
+        "기"
+      ],
+      [
+        "X",
+        "X",
+        "보",
+        "X",
+        "나",
+        "무",
+        ""
+      ]
+    ],
+    "solo_words": [
+      "심",
+      "일",
+      "날",
+      "꾼",
+      "양"
+    ]
+  }
+]

@@ -698,6 +698,10 @@ function BoxStacking() {
     setIsEnding(true); // 👉 이제부터는 게임 화면 대신 "종료중" 화면 렌더
     setGameOver(true);
     fallingSoundRef.current?.pause();
+    window.parent.postMessage(
+      { type: 'fromApp', payload: { score: 100 } },
+      '*'
+    );
 
     const acquiredCoin = Math.max(0, score - 10);
 
