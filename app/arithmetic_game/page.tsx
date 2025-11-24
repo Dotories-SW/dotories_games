@@ -1,16 +1,11 @@
+// arithmetic/ArithmeticPage.tsx
 "use client";
-import React, { useState, useEffect, Suspense, useRef } from "react";
-import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
-import { useSearchParams } from "next/navigation";
+
+import React, { Suspense } from "react";
 import LoadingSpinner from "../_component/LoadingSpinner";
-
-interface Question {
-  text: string;
-  answer: number;
-  choices: number[];
-}
-
-type Difficulty = "easy" | "normal" | "hard";
+import { useArithmeticGame } from "./useArithmeticGame";
+import { DIFFICULTY_CONFIGS } from "./utils";
+import type { Difficulty } from "./types";
 
 export default function ArithmeticPage() {
   return (
@@ -21,349 +16,25 @@ export default function ArithmeticPage() {
 }
 
 function ArithmeticGame() {
-  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
-  const [selectedDifficulty, setSelectedDifficulty] =
-    useState<Difficulty | null>(null);
-  const [difficulty, setDifficulty] = useState<Difficulty>("easy");
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
-  const [score, setScore] = useState(0);
-  const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
-  const [showResult, setShowResult] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [gameCompleted, setGameCompleted] = useState(false);
-  const [previousAnswer, setPreviousAnswer] = useState<number | null>(null);
-  const [inCorrectCount, setInCorrectCount] = useState<number>(0);
-
-  const MAX_QUESTIONS = 10;
-  const [completedGames, setCompletedGames] = useState<boolean[]>([
-    false,
-    false,
-    false,
-  ]);
-
-  // 난이도별 설정
-  const DIFFICULTY_CONFIGS = {
-    easy: {
-      name: "쉬움",
-      description: "덧셈, 뺄셈",
-      coin: 5,
-      localIndex: 0,
-      backendIndex: 0,
-    },
-    normal: {
-      name: "보통",
-      description: "사칙연산",
-      coin: 8,
-      localIndex: 1,
-      backendIndex: 1,
-    },
-    hard: {
-      name: "어려움",
-      description: "연속 계산",
-      coin: 12,
-      localIndex: 2,
-      backendIndex: 2,
-    },
-  };
-
-  const params = useSearchParams();
-  const loginId: string = params.get("id")
-    ? (params.get("id") as string)
-    : "691c2ca7e90f06e920804f4a";
-
-  const successSoundRef = useRef<HTMLAudioElement | null>(null);
-  const failSoundRef = useRef<HTMLAudioElement | null>(null);
-  const arithmeticSoundRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    successSoundRef.current = new Audio("/sounds/arithmetic/success.mp3");
-    failSoundRef.current = new Audio("/sounds/arithmetic/fail.mp3");
-    arithmeticSoundRef.current = new Audio("/sounds/arithmetic/arithmetic_bgm.mp3");
-    arithmeticSoundRef.current.loop = true;
-    arithmeticSoundRef.current.volume = 0.1;
-
-    return () => {
-      if (successSoundRef.current) {
-        successSoundRef.current.pause();
-        successSoundRef.current = null;
-      }
-      if (failSoundRef.current) {
-        failSoundRef.current.pause();
-        failSoundRef.current = null;
-      }
-      if (arithmeticSoundRef.current) {
-        arithmeticSoundRef.current.pause();
-        arithmeticSoundRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const getCompleted = async () => {
-      const res = await getGameCompleted(loginId);
-      let data = res.data;
-      if (typeof data === "string") {
-        data = JSON.parse(data);
-      }
-      setCompletedGames([
-        data[DIFFICULTY_CONFIGS.easy.backendIndex],
-        data[DIFFICULTY_CONFIGS.normal.backendIndex],
-        data[DIFFICULTY_CONFIGS.hard.backendIndex],
-      ]);
-    };
-    getCompleted();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDifficultySelect]);
-
-  const completedGame = async (
-    loginId: string,
-    index: number,
-    completed: boolean,
-    mode: "easy" | "normal" | "hard",
-  ) => {
-    try {
-      await patchCompletedGame(loginId, index, completed, DIFFICULTY_CONFIGS[mode].coin);
-    } catch (error) {
-      console.error("게임 완료 업데이트 실패:", error);
-    }
-  };
-
-  // 랜덤 숫자 생성
-  const randomInt = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-
-  // 약수 구하기 (나눗셈용)
-  const getDivisors = (num: number): number[] => {
-    const divisors: number[] = [];
-    for (let i = 2; i <= Math.min(num, 9); i++) {
-      if (num % i === 0) {
-        divisors.push(i);
-      }
-    }
-    return divisors.length > 0 ? divisors : [2]; // 약수가 없으면 2 반환 (기본값)
-  };
-
-  // 선택지 생성 (정답 포함 4개)
-  const generateChoices = (answer: number, diff: Difficulty): number[] => {
-    const choices = new Set<number>([answer]);
-    const range = diff === "easy" ? 10 : 5;
-
-    while (choices.size < 4) {
-      const offset = randomInt(-range, range);
-      const wrongAnswer = answer + offset;
-      if (wrongAnswer !== answer && wrongAnswer > 0) {
-        choices.add(wrongAnswer);
-      }
-    }
-
-    return Array.from(choices).sort(() => Math.random() - 0.5);
-  };
-
-  // 문제 생성
-  const generateQuestion = (
-    diff: Difficulty,
-    prevAns: number | null
-  ): Question => {
-    let text = "";
-    let answer = 0;
-
-    if (diff === "easy") {
-      // 쉬움: 덧셈, 뺄셈 (1-50)
-      const a = randomInt(1, 10);
-      const b = randomInt(1, 10);
-      const operation = Math.random() < 0.5 ? "+" : "-";
-
-      if (operation === "+") {
-        text = `${a} + ${b}`;
-        answer = a + b;
-      } else {
-        // 음수 방지
-        const larger = Math.max(a, b);
-        const smaller = Math.min(a, b);
-        text = `${larger} - ${smaller}`;
-        answer = larger - smaller;
-      }
-    } else if (diff === "normal") {
-      // 보통: 사칙연산 모두 (1-9)
-      const operations = ["+", "-", "*", "/"];
-      const operation = operations[randomInt(0, 3)];
-
-      if (operation === "+") {
-        const a = randomInt(1, 50);
-        const b = randomInt(1, 50);
-        text = `${a} + ${b}`;
-        answer = a + b;
-      } else if (operation === "-") {
-        const a = randomInt(1, 50);
-        const b = randomInt(1, 50);
-        const larger = Math.max(a, b);
-        const smaller = Math.min(a, b);
-        text = `${larger} - ${smaller}`;
-        answer = larger - smaller;
-      } else if (operation === "*") {
-        const a = randomInt(1, 9);
-        const b = randomInt(1, 9);
-        text = `${a} × ${b}`;
-        answer = a * b;
-      } else {
-        // 나눗셈: 정수로 떨어지도록
-        const b = randomInt(1, 9);
-        const quotient = randomInt(1, 9);
-        const a = b * quotient;
-        text = `${a} ÷ ${b}`;
-        answer = quotient;
-      }
-    } else {
-      // 어려움: 이전 답을 활용
-      if (prevAns === null) {
-        // 첫 문제 또는 틀렸을 때는 간단한 곱셈/덧셈 (나눗셈 제외)
-        const operations = ["+", "*"];
-        const operation = operations[randomInt(0, 1)];
-
-        if (operation === "+") {
-          const a = randomInt(1, 20);
-          const b = randomInt(1, 20);
-          text = `${a} + ${b}`;
-          answer = a + b;
-        } else {
-          const a = randomInt(2, 9);
-          const b = randomInt(2, 9);
-          text = `${a} × ${b}`;
-          answer = a * b;
-        }
-      } else {
-        // 이전 답 활용 - "[이전 답]" 형식으로 표시
-        const operations = ["+", "-", "*", "/"];
-        const operation = operations[randomInt(0, 3)];
-
-        if (operation === "+") {
-          const num = randomInt(1, 9);
-          text = `[이전 답] + ${num}`;
-          answer = prevAns + num;
-        } else if (operation === "-") {
-          const num = randomInt(1, 9);
-          if (prevAns > num) {
-            text = `[이전 답] - ${num}`;
-            answer = prevAns - num;
-          } else {
-            text = `[이전 답] + ${num}`;
-            answer = prevAns + num;
-          }
-        } else if (operation === "*") {
-          const num = randomInt(2, 5);
-          text = `[이전 답] × ${num}`;
-          answer = prevAns * num;
-        } else {
-          // 나눗셈: 이전 답의 약수로 나누기 (항상 정수)
-          const divisors = getDivisors(prevAns);
-          if (divisors.length > 0) {
-            const divisor = divisors[randomInt(0, divisors.length - 1)];
-            text = `[이전 답] ÷ ${divisor}`;
-            answer = Math.floor(prevAns / divisor); // 소수점 방지
-          } else {
-            // 약수가 없으면 덧셈으로 대체
-            const num = randomInt(1, 9);
-            text = `[이전 답] + ${num}`;
-            answer = prevAns + num;
-          }
-        }
-      }
-    }
-
-    // 모든 답이 정수임을 보장
-    answer = Math.round(answer);
-
-    const choices = generateChoices(answer, diff);
-    return { text, answer, choices };
-  };
-
-  // 게임 시작
-  const startGameWithDifficulty = (diff: Difficulty) => {
-    setDifficulty(diff);
-    setScore(0);
-    setGameCompleted(false);
-    setPreviousAnswer(null);
-    setShowDifficultySelect(false);
-    setInCorrectCount(0);
-
-    // 첫 문제 생성
-    const question = generateQuestion(diff, null);
-    setCurrentQuestion(question);
-    setCurrentQuestionNumber(1);
-    setShowResult(false);
-    setSelectedAnswer(null);
-
-    //브금 시작
-    arithmeticSoundRef.current?.play();
-  };
-
-  // 다음 문제
-  const nextQuestion = (
-    diff: Difficulty,
-    prevAns: number | null,
-    currentNum: number
-  ) => {
-    if (currentNum >= MAX_QUESTIONS) {
-      setGameCompleted(true);
-      return;
-    }
-
-    const question = generateQuestion(diff, prevAns);
-    setCurrentQuestion(question);
-    setCurrentQuestionNumber(currentNum + 1);
-    setShowResult(false);
-    setSelectedAnswer(null);
-    setPreviousAnswer(prevAns);
-  };
-
-  // 답 선택
-  const handleAnswerSelect = (answer: number) => {
-    if (showResult) return;
-
-    setSelectedAnswer(answer);
-    setShowResult(true);
-
-    const isCorrect = answer === currentQuestion?.answer;
-    if (isCorrect) {
-      if (successSoundRef.current) {
-        successSoundRef.current.play();
-      }
-      setScore((prev) => prev + 1);
-
-      // 다음 문제에 전달할 이전 답 (어려움 난이도일 때만)
-      const nextPrevAnswer =
-        difficulty === "hard" && currentQuestion
-          ? currentQuestion.answer
-          : previousAnswer;
-
-      // 현재 문제 번호 저장 (setTimeout 안에서 state가 변경될 수 있으므로)
-      const currentNum = currentQuestionNumber;
-      const newScore = score + 1;
-
-      // 1.5초 후 다음 문제 (정답일 때만)
-      setTimeout(() => {
-        if (newScore >= MAX_QUESTIONS) {
-          setGameCompleted(true);
-        } else {
-          nextQuestion(difficulty, nextPrevAnswer, currentNum);
-        }
-      }, 1500);
-    } else {
-      if (failSoundRef.current) {
-        failSoundRef.current.play();
-      }
-      // 틀렸을 때는 3초 후 새로운 문제 생성 (이전 답 초기화)
-      setTimeout(() => {
-        const newQuestion = generateQuestion(difficulty, null);
-        setCurrentQuestion(newQuestion);
-        setShowResult(false);
-        setSelectedAnswer(null);
-        setPreviousAnswer(null);
-        setInCorrectCount((prev) => prev + 1);
-      }, 1500);
-    }
-  };
+  const {
+    showDifficultySelect,
+    setShowDifficultySelect,
+    selectedDifficulty,
+    setSelectedDifficulty,
+    difficulty,
+    currentQuestion,
+    score,
+    currentQuestionNumber,
+    showResult,
+    selectedAnswer,
+    gameCompleted,
+    inCorrectCount,
+    completedGames,
+    MAX_QUESTIONS,
+    startGameWithDifficulty,
+    handleAnswerSelect,
+    handleEndGame,
+  } = useArithmeticGame();
 
   // 난이도 선택 화면
   if (showDifficultySelect) {
@@ -380,7 +51,6 @@ function ArithmeticGame() {
         `}</style>
 
         <div className="w-[90%] max-w-2xl mx-auto p-[2vh]">
-          {/* 헤더 */}
           <div className="bg-white rounded-3xl p-[3vh] mb-[3vh] shadow-sm border border-gray-200">
             <div className="text-center">
               <div className="w-[16vw] h-[16vw] max-w-[80px] max-h-[80px] bg-blue-500 rounded-full mx-auto mb-[2vh] flex items-center justify-center">
@@ -395,16 +65,20 @@ function ArithmeticGame() {
               <p className="text-gray-600 text-[3.5vw]">정답을 맞춰보세요!</p>
             </div>
 
-            {/* 난이도 선택 */}
             <div className="mt-[3vh]">
               <h2 className="text-[3.5vw] font-bold text-gray-800 text-center mb-[2vh]">
                 난이도 선택
               </h2>
               <div className="space-y-[1.5vh]">
-                {Object.entries(DIFFICULTY_CONFIGS).map(([key, config]) => (
+                {(
+                  Object.entries(DIFFICULTY_CONFIGS) as [
+                    Difficulty,
+                    (typeof DIFFICULTY_CONFIGS)[Difficulty]
+                  ][]
+                ).map(([key, config]) => (
                   <button
                     key={key}
-                    onClick={() => setSelectedDifficulty(key as Difficulty)}
+                    onClick={() => setSelectedDifficulty(key)}
                     className={`w-full p-[2vh] rounded-2xl transition-all ${
                       selectedDifficulty === key
                         ? "bg-blue-400 border-2 border-blue-400"
@@ -457,7 +131,6 @@ function ArithmeticGame() {
                 ))}
               </div>
 
-              {/* 게임 시작 버튼 */}
               <div className="mt-[3vh]">
                 <button
                   onClick={() =>
@@ -482,17 +155,6 @@ function ArithmeticGame() {
 
   // 게임 완료 화면
   if (gameCompleted) {
-    completedGame(
-      loginId,
-      DIFFICULTY_CONFIGS[selectedDifficulty as keyof typeof DIFFICULTY_CONFIGS]
-        .backendIndex,
-      true,
-      selectedDifficulty as "easy" | "normal" | "hard"
-    );
-
-    if(arithmeticSoundRef.current){
-      arithmeticSoundRef.current.pause();
-    }
     return (
       <div
         className="min-h-screen flex items-center justify-center p-[2vh]"
@@ -507,7 +169,10 @@ function ArithmeticGame() {
           <p className="text-[3vw] mb-[3vh] text-black-600">
             정답률 :{" "}
             <span className="text-green-600 font-bold">
-              {Math.round((score / (MAX_QUESTIONS + inCorrectCount)) * 100)}%
+              {Math.round(
+                (score / (MAX_QUESTIONS + inCorrectCount || 1)) * 100
+              )}
+              %
             </span>
           </p>
           <div className="space-y-[1.5vh]">
@@ -523,6 +188,38 @@ function ArithmeticGame() {
             >
               같은 난이도 다시하기
             </button>
+            <div className="flex flex-row justify-between">
+              <button
+                className="w-full mr-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
+                onClick={() =>
+                  handleEndGame("noAds", DIFFICULTY_CONFIGS[difficulty].coin)
+                }
+              >
+                {gameCompleted ? (
+                  <div className="text-[3.5vw]">
+                    <span>
+                      오늘 코인을 수령하여 <br /> 더 받을 수 없습니다.
+                    </span>
+                  </div>
+                ) : (
+                  <span>{DIFFICULTY_CONFIGS[difficulty].coin} 코인 받기</span>
+                )}
+              </button>
+              {!gameCompleted && (
+                <button
+                  className="w-full ml-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
+                  onClick={() =>
+                    handleEndGame("ads", DIFFICULTY_CONFIGS[difficulty].coin)
+                  }
+                >
+                  <div className="text-[3.5vw]">
+                    <span>광고 보고</span>
+                    <br />
+                    <span>코인 두배로 받기</span>
+                  </div>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -563,7 +260,6 @@ function ArithmeticGame() {
               </div>
             </div>
 
-            {/* 선택지 */}
             <div className="grid grid-cols-2 gap-[1.5vh]">
               {currentQuestion.choices.map((choice, index) => {
                 const isSelected = selectedAnswer === choice;
@@ -594,7 +290,7 @@ function ArithmeticGame() {
           </div>
         )}
 
-        <div className="mt-[5vh]"></div>
+        <div className="mt-[5vh]" />
       </div>
     </div>
   );
