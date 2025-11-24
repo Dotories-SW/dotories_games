@@ -204,7 +204,7 @@ function CrosswordPuzzles() {
                   )
                 }
               >
-                {gameCompleted ? (
+                {completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex] ? (
                   <div className="text-[3.5vw]">
                     <span>
                       오늘 코인을 수령하여 <br /> 더 받을 수 없습니다.
@@ -217,7 +217,7 @@ function CrosswordPuzzles() {
                   </span>
                 )}
               </button>
-              {!gameCompleted && (
+              {!completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex] && (
                 <button
                   className="w-full ml-[1vw] py-[2vh] border border-purple-500 text-black rounded-xl font-bold text-[4vw] hover:bg-purple-600 transition-colors mt-[1vh] hover:text-white"
                   onClick={() =>

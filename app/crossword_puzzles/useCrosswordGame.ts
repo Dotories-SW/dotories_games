@@ -26,17 +26,27 @@ export function useCrosswordGame(loginId: string) {
   const [loading, setLoading] = useState(false);
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
   const [gameCompleted, setGameCompleted] = useState(false);
-  const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
   const [availableLetters, setAvailableLetters] = useState<string[]>([]);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<Difficulty | null>(null);
   const [usedLetters, setUsedLetters] = useState<Set<number>>(new Set());
-  const [cellToLetterIndex, setCellToLetterIndex] = useState<Map<string, number>>(
-    new Map()
-  );
+  const [cellToLetterIndex, setCellToLetterIndex] = useState<
+    Map<string, number>
+  >(new Map());
   const [selectedWords, setSelectedWords] = useState<Word[]>([]);
   const [showHint, setShowHint] = useState(false);
-  const [selectedDirection, setSelectedDirection] = useState<Direction | null>(null);
-  const [completedGames, setCompletedGames] = useState<boolean[]>([false, false, false]); // [easy, normal, hard]
+  const [selectedDirection, setSelectedDirection] = useState<Direction | null>(
+    null
+  );
+  const [completedGames, setCompletedGames] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]); // [easy, normal, hard]
   const [correctCount, setCorrectCount] = useState<number>(0);
   const [totalBlanks, setTotalBlanks] = useState<number>(0);
 
@@ -45,12 +55,15 @@ export function useCrosswordGame(loginId: string) {
   const crosswordSoundRef = useRef<HTMLAudioElement | null>(null);
 
   // 진행률
-  const progress = totalBlanks > 0 ? Math.round((correctCount / totalBlanks) * 100) : 0;
+  const progress =
+    totalBlanks > 0 ? Math.round((correctCount / totalBlanks) * 100) : 0;
   const router = useRouter();
 
   // 배경음 초기화
   useEffect(() => {
-    crosswordSoundRef.current = new Audio("/sounds/crossword/crossword_bgm.mp3");
+    crosswordSoundRef.current = new Audio(
+      "/sounds/crossword/crossword_bgm.mp3"
+    );
     crosswordSoundRef.current.loop = true;
     crosswordSoundRef.current.volume = 0.1;
 
@@ -107,7 +120,12 @@ export function useCrosswordGame(loginId: string) {
 
       const config = DIFFICULTY_CONFIGS[selectedDifficulty];
       try {
-        await patchCompletedGame(loginId, config.backendIndex, true, config.coin);
+        await patchCompletedGame(
+          loginId,
+          config.backendIndex,
+          true,
+          config.coin
+        );
       } catch (error) {
         console.error("게임 완료 업데이트 실패:", error);
       } finally {
@@ -237,7 +255,9 @@ export function useCrosswordGame(loginId: string) {
         setSelectedWords(wordsAtStart);
         setShowHint(false);
 
-        const hasHorizontal = wordsAtStart.some((w) => w.direction === "horizontal");
+        const hasHorizontal = wordsAtStart.some(
+          (w) => w.direction === "horizontal"
+        );
         setSelectedDirection(hasHorizontal ? "horizontal" : "vertical");
       } else {
         setSelectedWords([]);
@@ -375,17 +395,29 @@ export function useCrosswordGame(loginId: string) {
   };
 
   const handleEndGame = async (mode: string, coin: number) => {
-    if (gameCompleted){
+    if (
+      completedGames[
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+      ]
+    ) {
       router.back();
       return;
-    }
-    if (mode === "ads") {
+    } else if (
+      !completedGames[
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+      ] &&
+      mode === "ads"
+    ) {
       window.parent.postMessage(
         { type: "fromApp", payload: { advertise: true, coin: coin * 2 } },
         "*"
       );
-    }
-    if (mode === "noAds") {
+    } else if (
+      !completedGames[
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+      ] &&
+      mode === "noAds"
+    ) {
       try {
         await patchCompletedGame(loginId, 3, true, coin);
       } catch (e) {
