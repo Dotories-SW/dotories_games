@@ -50,6 +50,7 @@ function CrosswordPuzzles() {
     undo,
     goToDifficultySelect,
     getWordsAtCell,
+    handleEndGame,
   } = useCrosswordGame(loginId);
 
   // 난이도 선택 화면
@@ -86,66 +87,70 @@ function CrosswordPuzzles() {
                 난이도 선택
               </h2>
               <div className="space-y-[1.5vh]">
-                {(Object.keys(DIFFICULTY_CONFIGS) as Difficulty[]).map((key) => {
-                  const config = DIFFICULTY_CONFIGS[key];
-                  const isSelected = selectedDifficulty === key;
-                  const isCompleted = completedGames[config.localIndex];
+                {(Object.keys(DIFFICULTY_CONFIGS) as Difficulty[]).map(
+                  (key) => {
+                    const config = DIFFICULTY_CONFIGS[key];
+                    const isSelected = selectedDifficulty === key;
+                    const isCompleted = completedGames[config.localIndex];
 
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedDifficulty(key)}
-                      className={`w-full p-[2vh] rounded-2xl transition-all ${
-                        isSelected
-                          ? "bg-purple-500 border-2 border-purple-500"
-                          : isCompleted
-                          ? "border-2 border-[#6ead79]"
-                          : "bg-white border-2 border-gray-300 hover:border-gray-400"
-                      } shadow-sm hover:shadow-md`}
-                    >
-                      <div className="text-center">
-                        <div
-                          className={`font-bold text-[4vw] text-gray-800 ${
-                            isSelected ? "text-white" : ""
-                          }`}
-                        >
-                          {config.name}
-                          <p className="text-[2.5vw]">
-                            {isCompleted && (
-                              <span
-                                className={
-                                  isSelected ? "text-white" : "text-[#6ead79]"
-                                }
-                              >
-                                게임 진행은 가능하지만, 코인은 제공되지 않습니다.
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-[1vh]">
-                          <span className="text-[3.5vw]">🪙</span>
-                          <span
-                            className={`text-[3.5vw] ${
-                              isSelected
-                                ? "text-white"
-                                : isCompleted
-                                ? "text-[#6ead79]"
-                                : "text-red-400"
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => setSelectedDifficulty(key)}
+                        className={`w-full p-[2vh] rounded-2xl transition-all ${
+                          isSelected
+                            ? "bg-purple-500 border-2 border-purple-500"
+                            : isCompleted
+                            ? "border-2 border-[#6ead79]"
+                            : "bg-white border-2 border-gray-300 hover:border-gray-400"
+                        } shadow-sm hover:shadow-md`}
+                      >
+                        <div className="text-center">
+                          <div
+                            className={`font-bold text-[4vw] text-gray-800 ${
+                              isSelected ? "text-white" : ""
                             }`}
                           >
-                            {config.coin}
-                          </span>
+                            {config.name}
+                            <p className="text-[2.5vw]">
+                              {isCompleted && (
+                                <span
+                                  className={
+                                    isSelected ? "text-white" : "text-[#6ead79]"
+                                  }
+                                >
+                                  게임 진행은 가능하지만, 코인은 제공되지
+                                  않습니다.
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                          <div className="flex items-center justify-center gap-1 text-orange-600 font-semibold mt-[1vh]">
+                            <span className="text-[3.5vw]">🪙</span>
+                            <span
+                              className={`text-[3.5vw] ${
+                                isSelected
+                                  ? "text-white"
+                                  : isCompleted
+                                  ? "text-[#6ead79]"
+                                  : "text-red-400"
+                              }`}
+                            >
+                              {config.coin}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                      </button>
+                    );
+                  }
+                )}
               </div>
 
               <div className="mt-[3vh]">
                 <button
                   onClick={() =>
-                    selectedDifficulty && startGameWithDifficulty(selectedDifficulty)
+                    selectedDifficulty &&
+                    startGameWithDifficulty(selectedDifficulty)
                   }
                   className={`w-[90%] mx-auto block py-[2vh] rounded-full font-bold text-[3.5vw] transition-colors shadow-lg ${
                     selectedDifficulty
@@ -189,6 +194,49 @@ function CrosswordPuzzles() {
             >
               메인화면으로
             </button>
+            <div className="flex flex-row justify-between">
+              <button
+                className="w-full mr-[1vw] py-[2vh] border border-purple-500 text-black rounded-xl font-bold text-[4vw] hover:bg-purple-600 transition-colors mt-[1vh] hover:text-white"
+                onClick={() =>
+                  handleEndGame(
+                    "noAds",
+                    DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin
+                  )
+                }
+              >
+                {gameCompleted ? (
+                  <div className="text-[3.5vw]">
+                    <span>
+                      오늘 코인을 수령하여 <br /> 더 받을 수 없습니다.
+                    </span>
+                  </div>
+                ) : (
+                  <span>
+                    {DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin}{" "}
+                    코인 받기
+                  </span>
+                )}
+              </button>
+              {!gameCompleted && (
+                <button
+                  className="w-full ml-[1vw] py-[2vh] border border-purple-500 text-black rounded-xl font-bold text-[4vw] hover:bg-purple-600 transition-colors mt-[1vh] hover:text-white"
+                  onClick={() =>
+                    handleEndGame(
+                      "ads",
+                      DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin
+                    )
+                  }
+                >
+                  <div className="text-[3.5vw]">
+                    <span>
+                      <span>광고 보고</span>
+                      <br />
+                      <span>코인 두배로 받기</span>
+                    </span>
+                  </div>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -313,7 +361,8 @@ function CrosswordPuzzles() {
                       <span
                         className={`text-[5vw] ${
                           userCell
-                            ? currentPuzzle.solution[rowIndex][colIndex] === userCell
+                            ? currentPuzzle.solution[rowIndex][colIndex] ===
+                              userCell
                               ? "text-green-600 font-bold"
                               : "text-purple-600"
                             : "text-gray-400"
@@ -336,8 +385,10 @@ function CrosswordPuzzles() {
               const isUsed = usedLetters.has(index);
               const canSelect =
                 selectedCell &&
-                (currentPuzzle.grid[selectedCell.row][selectedCell.col] === "" ||
-                  currentPuzzle.grid[selectedCell.row][selectedCell.col] === "?");
+                (currentPuzzle.grid[selectedCell.row][selectedCell.col] ===
+                  "" ||
+                  currentPuzzle.grid[selectedCell.row][selectedCell.col] ===
+                    "?");
 
               return (
                 <div key={index} className="aspect-square">
@@ -402,7 +453,9 @@ function CrosswordPuzzles() {
                         {currentWord.id}
                       </span>
                       <span className="text-[3.5vw] font-semibold text-gray-700">
-                        {currentWord.direction === "horizontal" ? "가로" : "세로"}
+                        {currentWord.direction === "horizontal"
+                          ? "가로"
+                          : "세로"}
                       </span>
                     </div>
                     <button
@@ -437,13 +490,17 @@ function CrosswordPuzzles() {
               disabled={
                 !selectedCell ||
                 (selectedCell &&
-                  currentPuzzle.grid[selectedCell.row][selectedCell.col] !== "" &&
-                  currentPuzzle.grid[selectedCell.row][selectedCell.col] !== "?")
+                  currentPuzzle.grid[selectedCell.row][selectedCell.col] !==
+                    "" &&
+                  currentPuzzle.grid[selectedCell.row][selectedCell.col] !==
+                    "?")
               }
               className={`w-full py-[2vh] text-[4vw] rounded-xl font-semibold transition-colors ${
                 selectedCell &&
-                (currentPuzzle.grid[selectedCell.row][selectedCell.col] === "" ||
-                  currentPuzzle.grid[selectedCell.row][selectedCell.col] === "?")
+                (currentPuzzle.grid[selectedCell.row][selectedCell.col] ===
+                  "" ||
+                  currentPuzzle.grid[selectedCell.row][selectedCell.col] ===
+                    "?")
                   ? "bg-red-400 text-white hover:bg-red-500"
                   : "bg-gray-300 text-gray-400 cursor-not-allowed"
               }`}

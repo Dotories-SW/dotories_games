@@ -10,6 +10,7 @@ import {
   Word,
   getDifficultyFileName,
 } from "./types";
+import { useRouter } from "next/navigation";
 
 interface HistoryState {
   userGrid: string[][];
@@ -45,6 +46,7 @@ export function useCrosswordGame(loginId: string) {
 
   // 진행률
   const progress = totalBlanks > 0 ? Math.round((correctCount / totalBlanks) * 100) : 0;
+  const router = useRouter();
 
   // 배경음 초기화
   useEffect(() => {
@@ -372,6 +374,27 @@ export function useCrosswordGame(loginId: string) {
     crosswordSoundRef.current?.pause();
   };
 
+  const handleEndGame = async (mode: string, coin: number) => {
+    if (gameCompleted){
+      router.back();
+      return;
+    }
+    if (mode === "ads") {
+      window.parent.postMessage(
+        { type: "fromApp", payload: { advertise: true, coin: coin * 2 } },
+        "*"
+      );
+    }
+    if (mode === "noAds") {
+      try {
+        await patchCompletedGame(loginId, 3, true, coin);
+      } catch (e) {
+        console.error("patchCompletedGame error", e);
+      }
+    }
+    router.back();
+  };
+
   return {
     // 상태
     puzzles,
@@ -405,5 +428,6 @@ export function useCrosswordGame(loginId: string) {
     undo,
     goToDifficultySelect,
     getWordsAtCell,
+    handleEndGame,
   };
 }
