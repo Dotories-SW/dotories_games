@@ -206,24 +206,21 @@ export function useArithmeticGame() {
   );
 
   const handleEndGame = async (mode: string, coin: number) => {
-    if(gameCompleted){
+    if(completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex]){
       router.back();
       return;
-    }
-    
-    if (!gameCompleted && mode === "ads") {
+    } else if (!completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] && mode === "ads") {
       window.parent.postMessage(
         { type: "fromApp", payload: { advertise: true, coin: coin * 2 } },
         "*"
       );
-    } else if (!gameCompleted && mode === "noAds") {
+    } else if (!completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] && mode === "noAds") {
       try {
         await patchCompletedGame(loginId, 3, true, coin);
       } catch (e) {
         console.error("patchCompletedGame error", e);
       }
     }
-    console.log("handleEndGame", mode, coin, "gameCompleted", gameCompleted);
     router.back();
   };
 

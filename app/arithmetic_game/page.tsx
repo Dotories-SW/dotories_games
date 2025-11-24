@@ -195,7 +195,7 @@ function ArithmeticGame() {
                   handleEndGame("noAds", DIFFICULTY_CONFIGS[difficulty].coin)
                 }
               >
-                {gameCompleted ? (
+                {completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] ? (
                   <div className="text-[3.5vw]">
                     <span>
                       오늘 코인을 수령하여 <br /> 더 받을 수 없습니다.
@@ -205,7 +205,7 @@ function ArithmeticGame() {
                   <span>{DIFFICULTY_CONFIGS[difficulty].coin} 코인 받기</span>
                 )}
               </button>
-              {!gameCompleted && (
+              {!completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] && (
                 <button
                   className="w-full ml-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
                   onClick={() =>
