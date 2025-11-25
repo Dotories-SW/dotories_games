@@ -67,6 +67,123 @@
           "end_y": 3
         }
       ]
+    },
+    {
+      "puzzle_id": 2,
+      "size": 7,
+      "colors": [
+        {
+          "color": "red",
+          "start_x": 6,
+          "start_y": 0,
+          "end_x": 3,
+          "end_y": 5
+        },
+        {
+          "color": "blue",
+          "start_x": 1,
+          "start_y": 1,
+          "end_x": 4,
+          "end_y": 3
+        },
+        {
+          "color": "green",
+          "start_x": 2,
+          "start_y": 1,
+          "end_x": 4,
+          "end_y": 4
+        },
+        {
+          "color": "yellow",
+          "start_x": 1,
+          "start_y": 5,
+          "end_x": 3,
+          "end_y": 4
+        },
+        {
+          "color": "purple",
+          "start_x": 5,
+          "start_y": 6,
+          "end_x": 6,
+          "end_y": 2
+        },
+        {
+          "color": "orange",
+          "start_x": 3,
+          "start_y": 6,
+          "end_x": 5,
+          "end_y": 5
+        },
+        {
+          "color": "cyan",
+          "start_x": 3,
+          "start_y": 1,
+          "end_x": 6,
+          "end_y": 1
+        }
+      ]
+    },
+    {
+      "puzzle_id": 3,
+      "size": 7,
+      "colors": [
+        {
+          "color": "red",
+          "start_x": 2,
+          "start_y": 1,
+          "end_x": 1,
+          "end_y": 5
+        },
+        {
+          "color": "blue",
+          "start_x": 5,
+          "start_y": 1,
+          "end_x": 1,
+          "end_y": 6
+        },
+        {
+          "color": "green",
+          "start_x": 5,
+          "start_y": 2,
+          "end_x": 3,
+          "end_y": 4
+        },
+        {
+          "color": "yellow",
+          "start_x": 0,
+          "start_y": 2,
+          "end_x": 3,
+          "end_y": 2
+        },
+        {
+          "color": "purple",
+          "start_x": 3,
+          "start_y": 6,
+          "end_x": 5,
+          "end_y": 6
+        },
+        {
+          "color": "orange",
+          "start_x": 4,
+          "start_y": 2,
+          "end_x": 6,
+          "end_y": 0
+        },
+        {
+          "color": "cyan",
+          "start_x": 5,
+          "start_y": 5,
+          "end_x": 6,
+          "end_y": 6
+        },
+        {
+          "color": "magenta",
+          "start_x": 1,
+          "start_y": 1,
+          "end_x": 0,
+          "end_y": 6
+        }
+      ]
     }
   ]
   
