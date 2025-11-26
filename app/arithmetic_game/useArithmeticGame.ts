@@ -205,13 +205,13 @@ export function useArithmeticGame() {
     ]
   );
 
-  const handleEndGame = async (mode: string, coin: number) => {
+  const handleEndGame = async (mode: string, coin: number, index: number) => {
     if(completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex]){
       router.back();
       return;
     } else if (!completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] && mode === "ads") {
       window.parent.postMessage(
-        { type: "fromApp", payload: { advertise: true, coin: coin * 2 } },
+        { type: "fromApp", payload: { advertise: true, coin: coin * 2, index: index } },
         "*"
       );
     } else if (!completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] && mode === "noAds") {

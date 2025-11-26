@@ -200,7 +200,8 @@ function CrosswordPuzzles() {
                 onClick={() =>
                   handleEndGame(
                     "noAds",
-                    DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin
+                    DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin,
+                    DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex
                   )
                 }
               >
@@ -223,7 +224,8 @@ function CrosswordPuzzles() {
                   onClick={() =>
                     handleEndGame(
                       "ads",
-                      DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin
+                      DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin,
+                      DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex
                     )
                   }
                 >

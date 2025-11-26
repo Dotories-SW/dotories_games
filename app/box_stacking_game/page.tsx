@@ -140,7 +140,7 @@ function BoxStackingPage() {
                       goBack();
                       return;
                     }
-                    handleEndGame("noAds");
+                    handleEndGame("noAds", 3);
                   }}
                 >
                   {isCompleted ? (
@@ -161,7 +161,7 @@ function BoxStackingPage() {
                   <button
                     className="w-full ml-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl
  font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
-                    onClick={() => handleEndGame("ads")}
+                    onClick={() => handleEndGame("ads", 3)}
                   >
                     <div className="text-[3.5vw]">
                       <span>광고 보고</span>

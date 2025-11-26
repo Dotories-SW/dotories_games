@@ -623,7 +623,7 @@ export function useBoxStackingGame() {
     speedRef.current = 2;
   };
 
-  const handleEndGame = async (mode: string) => {
+  const handleEndGame = async (mode: string, index: number) => {
     if(isCompleted){
       router.back();
       return;
@@ -640,7 +640,7 @@ export function useBoxStackingGame() {
       window.parent.postMessage(
         {
           type: "fromApp",
-          payload: { advertise: true, coin: acquiredCoin * 2 },
+          payload: { advertise: true, coin: acquiredCoin * 2, index: index },
         },
         "*"
       );
