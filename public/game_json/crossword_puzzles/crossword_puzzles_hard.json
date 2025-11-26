@@ -1116,5 +1116,172 @@
       "위",
       "스"
     ]
+  },
+  {
+    "puzzle_id": 8,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "아포칼립스",
+        "hint": "세계의 종말이나 대재앙을 다룬 이야기 또는 그런 상황을 이르는 말",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "토구",
+        "hint": "흙을 다져 쌓아 올린 둑",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "화성",
+        "hint": "태양에서 네 번째에 있는 행성",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "수경",
+        "hint": "물을 이용하여 경치를 꾸민 조경",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 2
+      },
+      {
+        "id": 5,
+        "word": "키조개",
+        "hint": "패각이 길게 자라며 식용하는 대형 조개",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 6,
+        "word": "진터",
+        "hint": "옛날부터 사람이 살아 오던 마을의 터",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 5
+      },
+      {
+        "id": 7,
+        "word": "약소국",
+        "hint": "경제력이나 군사력이 상대적으로 약한 나라",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 8,
+        "word": "상폐",
+        "hint": "증권 시장에서 어떤 종목의 상장이 폐지됨",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 5
+      },
+      {
+        "id": 9,
+        "word": "아포가토",
+        "hint": "얼음과자에 진한 커피를 부어 먹는 디저트",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 10,
+        "word": "구약성서",
+        "hint": "기독교 성서에서 예수 탄생 이전의 기록 부분",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 1
+      },
+      {
+        "id": 11,
+        "word": "칼국수",
+        "hint": "밀가루 반죽을 칼로 썰어 만든 국수 요리",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 12,
+        "word": "경술국치",
+        "hint": "1910년 경술년에 일어난 한국의 국권 피탈 사건",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 13,
+        "word": "화개장터",
+        "hint": "경상남도와 전라남도의 경계에 있는 전통 장터",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 14,
+        "word": "진진상인",
+        "hint": "‘진실하고 성실한 상인’이라는 뜻으로 쓰이는 말",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 5
+      },
+      {
+        "id": 15,
+        "word": "스키",
+        "hint": "눈 위를 미끄러져 타는 스포츠",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 4
+      }
+    ],
+    "solution": [
+      ["아", "포", "칼", "립", "스", "X", "화"],
+      ["포", "X", "국", "X", "키", "조", "개"],
+      ["가", "X", "수", "경", "X", "X", "장"],
+      ["토", "구", "X", "술", "X", "진", "터"],
+      ["X", "약", "소", "국", "X", "진", "X"],
+      ["화", "성", "X", "치", "X", "상", "폐"],
+      ["X", "서", "X", "X", "X", "인", "X"]
+    ],
+    "grid": [
+      ["아", "", "", "", "스", "X", "화"],
+      ["", "X", "", "X", "", "조", ""],
+      ["", "X", "수", "", "X", "X", ""],
+      ["토", "", "X", "", "X", "", ""],
+      ["X", "", "", "", "X", "", "X"],
+      ["화", "", "X", "치", "X", "상", "폐"],
+      ["X", "서", "X", "X", "X", "", "X"]
+    ],
+    "solo_words": [
+      "포",
+      "칼",
+      "립",
+      "포",
+      "국",
+      "키",
+      "개",
+      "가",
+      "경",
+      "술",
+      "국",
+      "장",
+      "터",
+      "진",
+      "진",
+      "인",
+      "구",
+      "성",
+      "약",
+      "소"
+    ]
   }
 ]

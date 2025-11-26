@@ -884,5 +884,139 @@
       ["X", "잎", "X", "판", "X", "X", "존"]
     ],
     "solo_words": ["암", "등", "락", "니", "리", "단", "장", "기", "회", "생"]
+  },
+  {
+    "puzzle_id": 8,
+    "difficulty": "normal",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "자급자족",
+        "hint": "필요한 것을 스스로 생산하여 충당함",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "지역난방",
+        "hint": "중앙에서 생산한 열을 관을 통해 여러 건물에 공급하는 난방 방식",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "수자원",
+        "hint": "생활이나 산업에 이용할 수 있는 물의 자원",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "랍스터",
+        "hint": "등이 단단한 껍질로 덮인 큰 바닷가재",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "만력제",
+        "hint": "중국 명나라 때 만력 연호를 사용하던 황제",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 1
+      },
+      {
+        "id": 6,
+        "word": "커널",
+        "hint": "운영 체제의 핵심이 되는 부분",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 5
+      },
+      {
+        "id": 7,
+        "word": "인복",
+        "hint": "좋은 사람을 만나는 복",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 5
+      },
+      {
+        "id": 8,
+        "word": "자기지시수표",
+        "hint": "지급받을 자가 수표를 발행한 사람 자신인 수표",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 9,
+        "word": "자금난",
+        "hint": "필요한 자금이 부족하여 겪는 어려움",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 10,
+        "word": "복합터미널",
+        "hint": "여러 교통수단이 함께 모여 있는 터미널",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 6
+      },
+      {
+        "id": 11,
+        "word": "서랍",
+        "hint": "물건을 넣어 두기 위하여 책상이나 장에 달아 넣고 빼는 상자",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 4
+      },
+      {
+        "id": 12,
+        "word": "원자력",
+        "hint": "원자의 핵반응에서 나오는 에너지",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 2
+      }
+    ],
+    "solution": [
+      ["자", "급", "자", "족", "X", "X", "X"],
+      ["기", "X", "금", "X", "X", "X", "X"],
+      ["지", "역", "난", "방", "X", "인", "복"],
+      ["시", "X", "X", "X", "서", "X", "합"],
+      ["수", "자", "원", "X", "랍", "스", "터"],
+      ["표", "X", "자", "X", "X", "X", "미"],
+      ["X", "만", "력", "제", "X", "커", "널"]
+    ],
+    "grid": [
+      ["", "급", "", "족", "X", "X", "X"],
+      ["기", "X", "금", "X", "X", "X", "X"],
+      ["", "역", "", "방", "X", "인", ""],
+      ["시", "X", "X", "X", "서", "X", "합"],
+      ["", "자", "", "X", "", "스", ""],
+      ["표", "X", "자", "X", "X", "X", "미"],
+      ["X", "만", "", "제", "X", "커", ""]
+    ],
+    "solo_words": [
+      "자",
+      "자",
+      "지",
+      "난",
+      "복",
+      "수",
+      "원",
+      "랍",
+      "터",
+      "력",
+      "널"
+    ]
   }
 ]
