@@ -129,7 +129,7 @@ function BoxStackingPage() {
               다시 하기
             </button>
 
-            {score > 10 && (
+            {score < 10 && (
               <div className="flex flex-row justify-between">
                 <button
                   className="w-[49%] py-[2vh] border border-blue-500 text-black rounded-xl
@@ -151,7 +151,7 @@ function BoxStackingPage() {
                     </div>
                   ) : (
                     <div className="text-[3.5vw]">
-                      <span>{Math.max(0, score - 10)}코인 받고 </span>
+                      <span>{Math.max(1, score - 10)}코인 받고 </span>
                       <br />
                       <span>오늘의 도전 종료</span>
                     </div>
