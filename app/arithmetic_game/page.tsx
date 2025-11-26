@@ -192,7 +192,11 @@ function ArithmeticGame() {
               <button
                 className="w-full mr-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
                 onClick={() =>
-                  handleEndGame("noAds", DIFFICULTY_CONFIGS[difficulty].coin)
+                  handleEndGame(
+                    "noAds",
+                    DIFFICULTY_CONFIGS[difficulty].coin,
+                    DIFFICULTY_CONFIGS[difficulty].backendIndex
+                  )
                 }
               >
                 {completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] ? (
@@ -209,7 +213,11 @@ function ArithmeticGame() {
                 <button
                   className="w-full ml-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
                   onClick={() =>
-                    handleEndGame("ads", DIFFICULTY_CONFIGS[difficulty].coin)
+                    handleEndGame(
+                      "ads",
+                      DIFFICULTY_CONFIGS[difficulty].coin,
+                      DIFFICULTY_CONFIGS[difficulty].backendIndex
+                    )
                   }
                 >
                   <div className="text-[3.5vw]">
