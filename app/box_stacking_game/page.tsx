@@ -132,7 +132,7 @@ function BoxStackingPage() {
             {score < 10 && (
               <div className="flex flex-row justify-between">
                 <button
-                  className="w-[49%] py-[2vh] border border-blue-500 text-black rounded-xl
+                  className="w-full mr-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl
  font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
                   onClick={() => {
                     if (isCompleted) {
@@ -157,25 +157,19 @@ function BoxStackingPage() {
                     </div>
                   )}
                 </button>
-                <button
-                  className="w-[49%] py-[2vh] border border-blue-500 text-black rounded-xl
+                {!isCompleted && (
+                  <button
+                    className="w-full ml-[1vw] py-[2vh] border border-blue-500 text-black rounded-xl
  font-bold text-[4vw] hover:bg-blue-600 transition-colors mt-[1vh] hover:text-white"
-                  onClick={() => handleEndGame("ads")}
-                >
-                  {isCompleted ? (
-                    <div className="text-[3.5vw]">
-                      <span>
-                        오늘 코인을 수령하여 <br /> 더 받을 수 없습니다.
-                      </span>
-                    </div>
-                  ) : (
+                    onClick={() => handleEndGame("ads")}
+                  >
                     <div className="text-[3.5vw]">
                       <span>광고 보고</span>
                       <br />
                       <span>코인 두배로 받기</span>
                     </div>
-                  )}
-                </button>
+                  </button>
+                )}
               </div>
             )}
           </div>
