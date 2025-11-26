@@ -1,6 +1,6 @@
 [
   {
-    "puzzle_id": 4,
+    "puzzle_id": 1,
     "difficulty": "normal",
     "size": 7,
     "words": [
@@ -114,7 +114,7 @@
     "solo_words": ["미", "국", "지", "시", "누", "감", "이", "위", "대", "민"]
   },
   {
-    "puzzle_id": 5,
+    "puzzle_id": 2,
     "difficulty": "normal",
     "size": 7,
     "words": [
@@ -220,7 +220,7 @@
     "solo_words": ["어", "부", "어", "리", "사", "품", "기", "제", "면", "지"]
   },
   {
-    "puzzle_id": 6,
+    "puzzle_id": 3,
     "difficulty": "normal",
     "size": 7,
     "words": [
@@ -358,7 +358,7 @@
     "solo_words": ["인", "역", "관", "석", "거", "지", "청", "천", "구", "풍"]
   },
   {
-    "puzzle_id": 11,
+    "puzzle_id": 4,
     "difficulty": "normal",
     "size": 7,
     "words": [
@@ -496,7 +496,7 @@
     "solo_words": ["품", "권", "농", "징", "벨", "가", "대", "장", "밀", "예"]
   },
   {
-    "puzzle_id": 14,
+    "puzzle_id": 5,
     "difficulty": "normal",
     "size": 7,
     "words": [
@@ -630,7 +630,7 @@
     ]
   },
   {
-    "puzzle_id": 15,
+    "puzzle_id": 6,
     "difficulty": "normal",
     "size": 7,
     "words": [
@@ -749,6 +749,140 @@
       ["X", "독", "X", "나", "X", "약", "X"],
       ["X", "", "나", "무", "X", "분", "X"]
     ],
-    "solo_words": ["부", "광", "역", "장", "밤", "구", "대", "기", "고", "상", "정"]
+    "solo_words": [
+      "부",
+      "광",
+      "역",
+      "장",
+      "밤",
+      "구",
+      "대",
+      "기",
+      "고",
+      "상",
+      "정"
+    ]
+  },
+  {
+    "puzzle_id": 7,
+    "difficulty": "normal",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "암벽등반",
+        "hint": "바위나 절벽 따위를 오르는 등반 활동",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "바지락",
+        "hint": "국이나 찌개 재료로 많이 쓰이는 조개",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 4
+      },
+      {
+        "id": 3,
+        "word": "니힐리즘",
+        "hint": "도덕이나 가치, 질서 따위를 부정하거나 허무하게 보는 사상",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "단어장",
+        "hint": "단어를 적어 두고 외우기 위하여 쓰는 공책",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 5,
+        "word": "기사회생",
+        "hint": "거의 죽을 뻔한 사람이 다시 살아남 또는 위기를 모면하여 다시 살아남",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 3
+      },
+      {
+        "id": 6,
+        "word": "암모니아",
+        "hint": "질소와 수소가 결합한 자극적인 냄새의 기체",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "등자리",
+        "hint": "서로 같은 위치나 같은 값에 해당하는 자리",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 2
+      },
+      {
+        "id": 8,
+        "word": "오락",
+        "hint": "즐거움을 얻기 위하여 하는 놀이나 활동",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 9,
+        "word": "단풍잎",
+        "hint": "가을에 붉게 또는 누렇게 물든 나뭇잎",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 10,
+        "word": "장기판",
+        "hint": "장기를 둘 때 말을 놓는 판",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 3
+      },
+      {
+        "id": 11,
+        "word": "마사회",
+        "hint": "경마와 말 산업을 담당하는 공기업을 이르는 말",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 5
+      },
+      {
+        "id": 12,
+        "word": "생존",
+        "hint": "살아서 존재함",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 6
+      }
+    ],
+    "solution": [
+      ["암", "벽", "등", "반", "X", "X", "오"],
+      ["모", "X", "자", "X", "바", "지", "락"],
+      ["니", "힐", "리", "즘", "X", "X", "X"],
+      ["아", "X", "X", "X", "X", "마", "X"],
+      ["X", "단", "어", "장", "X", "사", "X"],
+      ["X", "풍", "X", "기", "사", "회", "생"],
+      ["X", "잎", "X", "판", "X", "X", "존"]
+    ],
+    "grid": [
+      ["", "벽", "", "반", "X", "X", "오"],
+      ["모", "X", "자", "X", "바", "지", ""],
+      ["", "힐", "", "즘", "X", "X", "X"],
+      ["아", "X", "X", "X", "X", "마", "X"],
+      ["X", "", "어", "", "X", "사", "X"],
+      ["X", "풍", "X", "", "사", "", ""],
+      ["X", "잎", "X", "판", "X", "X", "존"]
+    ],
+    "solo_words": ["암", "등", "락", "니", "리", "단", "장", "기", "회", "생"]
   }
 ]
