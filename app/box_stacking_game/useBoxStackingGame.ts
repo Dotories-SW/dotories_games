@@ -650,8 +650,10 @@ export function useBoxStackingGame() {
       } catch (e) {
         console.error("patchCompletedGame error", e);
       }
+      finally {
+        router.back();
+      }
     }
-    router.back();
   };
 
   const goBack = () => {

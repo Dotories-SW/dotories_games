@@ -241,8 +241,8 @@ export function useFlipCardGame() {
     }
     else if (!completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex] && mode === "noAds") {
       await patchCompletedGame(loginId, DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex, true, coin);
+      router.back();
     }
-    router.back();
   };
 
   return {

@@ -423,8 +423,10 @@ export function useCrosswordGame(loginId: string) {
       } catch (e) {
         console.error("patchCompletedGame error", e);
       }
+      finally {
+        router.back();
+      }
     }
-    router.back();
   };
 
   return {
