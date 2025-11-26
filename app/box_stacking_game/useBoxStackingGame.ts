@@ -636,7 +636,7 @@ export function useBoxStackingGame() {
     fallingSoundRef.current?.pause();
     const acquiredCoin = Math.max(0, score - 10);
 
-    if (!isCompleted && mode !== "ads") {
+    if (!isCompleted && mode === "ads") {
       window.parent.postMessage(
         {
           type: "fromApp",
