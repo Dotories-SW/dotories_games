@@ -5,13 +5,12 @@ const AuthorizationName = process.env.NEXT_PUBLIC_AUTHORIZATION_NAME;
 const AuthorizationPassword = process.env.NEXT_PUBLIC_AUTHORIZATION_PASSWORD;
 
 const getGameCompleted = async (loginId: string) => {
-  const res = await axios.get(`${apiUrl}/privacy`, {
+  const res = await axios.get(`${apiUrl}/privacy/accomplishment`, {
     headers: {
       "login-id": loginId,
       Authorization: `Basic ${btoa(
         `${AuthorizationName}:${AuthorizationPassword}`
-      )}`,
-      type: "accomplishment",
+      )}`
     },
   });
   return res;
@@ -25,7 +24,7 @@ const patchCompletedGame = async (
 ) => {
   console.log(apiUrl);
   const res = await axios.patch(
-    `${apiUrl}/privacy`,
+    `${apiUrl}/privacy/game-completed`,
     { 
         index: index,
         completed: completed,
@@ -37,7 +36,6 @@ const patchCompletedGame = async (
         "Authorization": `Basic ${btoa(
           `${AuthorizationName}:${AuthorizationPassword}`
         )}`,
-        type: "game-completed",
       },
     }
   );
