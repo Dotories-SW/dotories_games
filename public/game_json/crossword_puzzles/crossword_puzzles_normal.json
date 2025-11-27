@@ -1018,5 +1018,120 @@
       "력",
       "널"
     ]
+  },
+  {
+    "puzzle_id": 9,
+    "difficulty": "normal",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "인공지능",
+        "hint": "인간의 지능 작용을 모방하여 학습, 추론, 문제 해결 따위를 수행하는 컴퓨터 시스템",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "유니버시아드",
+        "hint": "세계 각국의 대학생 선수가 참가하는 국제 종합 경기 대회",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 1
+      },
+      {
+        "id": 3,
+        "word": "염산",
+        "hint": "염화 수소의 수용액으로, 강한 산성을 띠는 무색의 액체",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "슬기",
+        "hint": "사물을 바르게 이해하고 처리하는 지혜",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 5,
+        "word": "오일장",
+        "hint": "다섯 날 간격으로 서는 장",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 3
+      },
+      {
+        "id": 6,
+        "word": "불경기",
+        "hint": "경제 활동이 위축되어 경기가 좋지 아니한 상태",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 7,
+        "word": "인가",
+        "hint": "어떤 행위를 유효하게 하기 위하여 허가하거나 인정함",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 8,
+        "word": "능이버섯",
+        "hint": "솔밭에서 자라는 식용 버섯의 하나로 향기가 좋은 버섯",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 9,
+        "word": "아시아드경기장",
+        "hint": "아시아 경기 대회의 개최를 위하여 지은 종합 경기장",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 10,
+        "word": "유산슬",
+        "hint": "고기, 해산물, 채소 따위를 잘게 썰어 걸쭉한 소스로 볶아 만든 중국 요리",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 1
+      },
+      {
+        "id": 11,
+        "word": "기도",
+        "hint": "신이나 부처 따위의 초월적 존재에게 비는 일",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 2
+      }
+    ],
+    "solution": [
+      ["인", "공", "지", "능", "X", "아", "X"],
+      ["가", "X", "X", "이", "X", "시", "X"],
+      ["X", "유", "니", "버", "시", "아", "드"],
+      ["염", "산", "X", "섯", "X", "드", "X"],
+      ["X", "슬", "기", "X", "불", "경", "기"],
+      ["X", "X", "도", "X", "X", "기", "X"],
+      ["X", "X", "X", "오", "일", "장", "X"]
+    ],
+    "grid": [
+      ["인", "공", "지", "",  "X", "아", "X"],
+      ["가", "X", "X", "이", "X", "시", "X"],
+      ["X", "",  "니", "",  "시", "",  "드"],
+      ["염", "", "X", "",  "X", "드", "X"],
+      ["X", "",  "",  "X", "불", "",  "기"],
+      ["X", "X", "도", "X", "X", "기", "X"],
+      ["X", "X", "X", "오", "일", "",  "X"]
+    ],
+    "solo_words": ["능", "버", "섯", "아", "경", "장", "유", "산", "슬", "기"]
   }
+  
 ]

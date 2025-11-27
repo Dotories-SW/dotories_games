@@ -990,5 +990,135 @@
       ["현", "X", "X", "X", "X", "대", "X"]
     ],
     "solo_words": ["크", "스", "토", "서", "발"]
+  },
+  {
+    "puzzle_id": 9,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "퀴노이드",
+        "hint": "벤젠 고리가 두 개의 이중 결합과 두 개의 단일 결합으로 된 구조를 가진 유기 화합물",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "레가티시모",
+        "hint": "아주 부드럽고 끊지 말고 이어서 연주하라는 뜻의 음악 용어",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "용가마",
+        "hint": "도자기 따위를 구울 때 쓰는 큰 가마",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "양꼬치",
+        "hint": "양고기를 꼬치에 꿰어 구운 음식",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "역세권",
+        "hint": "철도역 주변으로, 역을 중심으로 상권이 형성된 지역",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 4
+      },
+      {
+        "id": 6,
+        "word": "바퀴벌레",
+        "hint": "밤에 주로 활동하며 집 안에 서식하는 해충",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "본드",
+        "hint": "사물을 서로 붙이는 접착제",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "이모티콘",
+        "hint": "표정이나 감정을 나타내기 위해 문자나 그림으로 만든 기호",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 2
+      },
+      {
+        "id": 9,
+        "word": "양모",
+        "hint": "양의 털에서 얻은 섬유",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 4
+      },
+      {
+        "id": 10,
+        "word": "잉꼬",
+        "hint": "작고 꼬리가 긴 앵무새의 하나",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 5
+      },
+      {
+        "id": 11,
+        "word": "치외법권",
+        "hint": "어떤 나라의 영토 안에 있으면서도 그 나라의 법률 적용을 받지 않는 권리",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 6
+      },
+      {
+        "id": 12,
+        "word": "미용",
+        "hint": "머리 손질이나 화장 따위로 겉모습을 아름답게 꾸미는 일",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 13,
+        "word": "역설",
+        "hint": "겉으로는 모순된 것처럼 보이나 그 속에 진리가 담긴 말",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 4
+      }
+    ],
+    "solution": [
+      ["바", "X", "X", "본", "X", "X", "X"],
+      ["퀴", "노", "이", "드", "X", "잉", "X"],
+      ["벌", "X", "모", "X", "양", "꼬", "치"],
+      ["레", "가", "티", "시", "모", "X", "외"],
+      ["X", "X", "콘", "X", "X", "X", "법"],
+      ["미", "X", "X", "X", "역", "세", "권"],
+      ["용", "가", "마", "X", "설", "X", "X"]
+    ],
+    "grid": [
+      ["바", "X", "X", "본", "X", "X", "X"],
+      ["", "노", "", "드", "X", "잉", "X"],
+      ["벌", "X", "모", "X", "", "꼬", "치"],
+      ["레", "가", "", "시", "모", "X", "외"],
+      ["X", "X", "콘", "X", "X", "X", "법"],
+      ["미", "X", "X", "X", "", "세", "권"],
+      ["용", "가", "마", "X", "설", "X", "X"]
+    ],
+    "solo_words": ["퀴", "이", "양", "티", "역"]
   }
 ]

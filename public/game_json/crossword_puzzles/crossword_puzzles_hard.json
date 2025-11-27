@@ -1283,5 +1283,157 @@
       "약",
       "소"
     ]
+  },
+  {
+    "puzzle_id": 9,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "삼국시대",
+        "hint": "고구려·백제·신라가 한반도에서 서로 겨루던 시대",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "초가삼간",
+        "hint": "초가집 세 칸이라는 뜻으로, 매우 초라하고 작은 집을 이르는 말",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "비정부기구활동",
+        "hint": "정부가 아닌 민간 단체가 공공 이익을 위하여 하는 각종 국제·사회 활동",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "연무제",
+        "hint": "군대에서 무기 사용이나 전술을 보이는 행사",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 4
+      },
+      {
+        "id": 5,
+        "word": "억지",
+        "hint": "이치에 맞지 않게 무리로 우김",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 6,
+        "word": "삼고초려",
+        "hint": "인재를 얻기 위하여 정성을 다해 여러 번 찾아감",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "대장간",
+        "hint": "쇠를 달구어 두드려 농기구나 연장 따위를 만드는 곳",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "지역경제공동체",
+        "hint": "특정 지역 안에서 경제 활동과 이익을 함께 나누는 공동체",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 6
+      },
+      {
+        "id": 9,
+        "word": "비애",
+        "hint": "몹시 슬프고 서러운 느낌",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 10,
+        "word": "치정",
+        "hint": "남녀 사이의 애정에 얽힌 시기와 원한",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 1
+      },
+      {
+        "id": 11,
+        "word": "부장",
+        "hint": "부서를 맡아 책임지는 직책 또는 그 직책에 있는 사람",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 12,
+        "word": "살기",
+        "hint": "사람을 해치려는 사납고 독한 기운",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 3
+      },
+      {
+        "id": 13,
+        "word": "구직",
+        "hint": "일자리를 찾아 나섬 또는 그 활동",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 4
+      }
+    ],
+    "solution": [
+      ["삼", "국", "시", "대", "X", "억", "지"],
+      ["고", "X", "X", "장", "X", "X", "역"],
+      ["초", "가", "삼", "간", "X", "X", "경"],
+      ["려", "X", "X", "X", "연", "무", "제"],
+      ["X", "치", "X", "살", "X", "X", "공"],
+      ["비", "정", "부", "기", "구", "활", "동"],
+      ["애", "X", "장", "X", "직", "X", "체"]
+    ],
+    "grid": [
+      ["",  "국", "",  "",  "X", "억", ""],
+      ["",  "X", "X", "장", "X", "X", ""],
+      ["",  "가", "",  "",  "X", "X", "경"],
+      ["려", "X", "X", "X", "",  "무", ""],
+      ["X", "치", "X", "살", "X", "X", ""],
+      ["",  "",  "",  "",  "",  "활", ""],
+      ["애", "X", "",  "X", "직", "X", ""]
+    ],
+    "solo_words": [
+      "삼",
+      "시",
+      "대",
+      "초",
+      "삼",
+      "간",
+      "려",
+      "연",
+      "제",
+      "공",
+      "비",
+      "정",
+      "부",
+      "기",
+      "구",
+      "동",
+      "애",
+      "장",
+      "역",
+      "체"
+    ]
   }
+  
 ]
