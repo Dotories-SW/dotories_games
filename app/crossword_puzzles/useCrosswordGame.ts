@@ -11,6 +11,7 @@ import {
   getDifficultyFileName,
 } from "./types";
 import { useRouter } from "next/navigation";
+import { useGameTimer } from "../_hooks/useGameTimer";
 
 interface HistoryState {
   userGrid: string[][];
@@ -49,10 +50,12 @@ export function useCrosswordGame(loginId: string) {
   ]); // [easy, normal, hard]
   const [correctCount, setCorrectCount] = useState<number>(0);
   const [totalBlanks, setTotalBlanks] = useState<number>(0);
+  const [wrongAttempts, setWrongAttempts] = useState<number>(0);
 
-  const [history, setHistory] = useState<HistoryState[]>([]);
+const [history, setHistory] = useState<HistoryState[]>([]);
 
-  const crosswordSoundRef = useRef<HTMLAudioElement | null>(null);
+const crosswordSoundRef = useRef<HTMLAudioElement | null>(null);
+const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // 진행률
   const progress =
@@ -113,28 +116,10 @@ export function useCrosswordGame(loginId: string) {
     getCompleted();
   }, [loginId, showDifficultySelect]);
 
-  // 게임 완료 시 코인 지급 + BGM 정지
+  // 게임 완료 시 코인 지급 + BGM 정지 + 플레이 시간 기록
   useEffect(() => {
-    const patchWhenComplete = async () => {
-      if (!gameCompleted || !selectedDifficulty) return;
-
-      const config = DIFFICULTY_CONFIGS[selectedDifficulty];
-      try {
-        await patchCompletedGame(
-          loginId,
-          config.backendIndex,
-          true,
-          config.coin
-        );
-      } catch (error) {
-        console.error("게임 완료 업데이트 실패:", error);
-      } finally {
-        crosswordSoundRef.current?.pause();
-      }
-    };
-
-    patchWhenComplete();
-  }, [gameCompleted, selectedDifficulty, loginId]);
+    crosswordSoundRef.current?.pause();
+  }, [gameCompleted]);
 
   // 히스토리 저장
   const saveHistory = () => {
@@ -195,6 +180,9 @@ export function useCrosswordGame(loginId: string) {
         setShowHint(false);
         setSelectedDirection(null);
         setHistory([]);
+        setWrongAttempts(0);
+        reset();
+        start();
         setLoading(false);
       })
       .catch((error) => {
@@ -320,6 +308,9 @@ export function useCrosswordGame(loginId: string) {
 
       if (isCorrectAnswer(row, col, letter)) {
         setCorrectCount((prev) => prev + 1);
+      } else {
+        // 정답이 아닌 글자를 넣은 시도를 1회로 카운트
+        setWrongAttempts((prev) => prev + 1);
       }
 
       setUsedLetters((prev) => new Set([...prev, letterIndex]));
@@ -384,6 +375,7 @@ export function useCrosswordGame(loginId: string) {
       setSelectedDirection(null);
       setHistory([]);
       setCorrectCount(0);
+      reset();
     }
   };
 
@@ -418,8 +410,16 @@ export function useCrosswordGame(loginId: string) {
       ] &&
       mode === "noAds"
     ) {
+      const playDurationSec = stopAndGetDuration();
       try {
-        await patchCompletedGame(loginId, 3, true, coin);
+        await patchCompletedGame(
+          loginId,
+          index,
+          true,
+          coin,
+          playDurationSec,
+          wrongAttempts
+        );
       } catch (e) {
         console.error("patchCompletedGame error", e);
       }

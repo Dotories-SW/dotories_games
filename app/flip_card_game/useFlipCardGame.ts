@@ -149,30 +149,9 @@ export function useFlipCardGame() {
 
   // 게임 완료 시 서버에 완료 기록 + BGM 정지
   useEffect(() => {
-    const sendCompleted = async () => {
-      if (!gameCompleted || !selectedDifficulty) return;
-
-      const mode = selectedDifficulty;
-      const config = DIFFICULTY_CONFIGS[mode];
-
-      try {
-        await patchCompletedGame(
-          loginId,
-          config.backendIndex,
-          true,
-          config.coin
-        );
-      } catch (err) {
-        console.error("게임 완료 업데이트 실패:", err);
-      } finally {
-        if (gameBgmRef.current) {
-          gameBgmRef.current.pause();
-        }
-      }
-    };
-
-    sendCompleted();
-  }, [gameCompleted, selectedDifficulty, loginId]);
+    gameBgmRef.current?.pause();
+    
+  }, [gameCompleted]);
 
   // 카드가 뒤집혀있는지 판단
   const isCardFlipped = useCallback(
@@ -240,7 +219,7 @@ export function useFlipCardGame() {
       );
     }
     else if (!completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex] && mode === "noAds") {
-      await patchCompletedGame(loginId, DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex, true, coin);
+      await patchCompletedGame(loginId, DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex, true, coin, 0, 0);
       router.back();
     }
   };

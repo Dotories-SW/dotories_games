@@ -42,7 +42,7 @@ export function useBoxStackingGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691c2ca7e90f06e920804f4a";
+    : "691c2eefe90f06e920804f4e";
 
   const router = useRouter();
 
@@ -561,8 +561,6 @@ export function useBoxStackingGame() {
 
     loopStart();
 
-    
-
     return () => {
       if (animationId !== undefined) cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
@@ -575,37 +573,36 @@ export function useBoxStackingGame() {
     const BOX_SIZE = boxSizeRef.current;
     const world = worldRef.current;
     if (!world) return;
-  
+
     if (gameOverRef.current) {
       setResetToken((v) => v + 1);
       return;
     }
-  
+
     const current = currentBoxRef.current;
     if (!current || current.isDropping) return;
-  
+
     const body = current.body;
     const lastBody = lastPlacedBoxRef.current;
-  
+
     if (lastBody) {
       const currX = body.getPosition().x;
       const lastX = lastBody.getPosition().x;
-  
+
       const perfectOffset = BOX_SIZE * 0.05;
       if (Math.abs(currX - lastX) <= perfectOffset) {
         perfectHitRef.current = 1;
       }
-  
+
       const allowedOffset = BOX_SIZE * 0.55;
       if (Math.abs(currX - lastX) > allowedOffset) {
         pendingFailRef.current = true;
       }
     }
-  
+
     body.setType("dynamic");
     body.setLinearVelocity(Vec2(0, 0));
     current.isDropping = true;
-
   }, []);
 
   const handleStartGame = () => {
@@ -624,11 +621,11 @@ export function useBoxStackingGame() {
   };
 
   const handleEndGame = async (mode: string, index: number) => {
-    if(isCompleted){
+    if (isCompleted) {
       router.back();
       return;
     }
-    
+
     if (isEnding) return;
 
     setIsEnding(true);
@@ -646,11 +643,10 @@ export function useBoxStackingGame() {
       );
     } else if (!isCompleted && mode === "noAds") {
       try {
-        await patchCompletedGame(loginId, 3, true, acquiredCoin);
+        await patchCompletedGame(loginId, 3, true, acquiredCoin, 0, 0);
       } catch (e) {
         console.error("patchCompletedGame error", e);
-      }
-      finally {
+      } finally {
         router.back();
       }
     }

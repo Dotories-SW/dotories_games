@@ -38,7 +38,7 @@ export function useArithmeticGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691c2ca7e90f06e920804f4a";
+    : "691c2eefe90f06e920804f4e";
   const router = useRouter();
 
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -95,30 +95,8 @@ export function useArithmeticGame() {
 
   // 게임 완료 → 서버에 완료 전송 + BGM 정지
   useEffect(() => {
-    const sendCompleted = async () => {
-      if (!gameCompleted || !selectedDifficulty) return;
-
-      const diff = selectedDifficulty;
-      const config = DIFFICULTY_CONFIGS[diff];
-
-      try {
-        await patchCompletedGame(
-          loginId,
-          config.backendIndex,
-          true,
-          config.coin
-        );
-      } catch (error) {
-        console.error("게임 완료 업데이트 실패:", error);
-      } finally {
-        if (arithmeticSoundRef.current) {
-          arithmeticSoundRef.current.pause();
-        }
-      }
-    };
-
-    sendCompleted();
-  }, [gameCompleted, loginId, selectedDifficulty]);
+    arithmeticSoundRef.current?.pause();
+  }, [gameCompleted]);
 
   const startGameWithDifficulty = useCallback((diff: Difficulty) => {
     setDifficulty(diff);
@@ -225,7 +203,7 @@ export function useArithmeticGame() {
       mode === "noAds"
     ) {
       try {
-        await patchCompletedGame(loginId, 3, true, coin);
+        await patchCompletedGame(loginId, 3, true, coin, 0, 0);
       } catch (e) {
         console.error("patchCompletedGame error", e);
       } finally {
