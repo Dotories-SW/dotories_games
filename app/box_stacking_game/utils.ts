@@ -27,6 +27,7 @@ export const DUST_IMAGE_PATHS = [
 ];
 
 export const FALLING_SOUND_PATH = "/sounds/box_stacking/falling_box.mp3";
+export const BOX_STACK_SOUND_PATH = "/sounds/box_stacking/box_stacking_bgm.mp3";
 
 // 화면 크기 기준으로 월드 크기 계산
 export const getWorldSize = (width: number, height: number) => {

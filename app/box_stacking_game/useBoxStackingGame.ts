@@ -24,6 +24,7 @@ import {
   FALLING_SOUND_PATH,
   getWorldSize,
   getGravityValue,
+  BOX_STACK_SOUND_PATH,
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect } from "./types";
 import { useGameTimer } from "../_hooks/useGameTimer";
@@ -66,6 +67,7 @@ export function useBoxStackingGame() {
   const dustFramesRef = useRef<HTMLImageElement[]>([]);
   const pendingFailRef = useRef<boolean>(false);
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
+  const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // gameOver 상태와 ref 동기화
@@ -98,6 +100,10 @@ export function useBoxStackingGame() {
 
     fallingSoundRef.current = new Audio(FALLING_SOUND_PATH);
     fallingSoundRef.current.volume = 0.3;
+
+    boxStackSoundRef.current = new Audio(BOX_STACK_SOUND_PATH);
+    boxStackSoundRef.current.loop = true;
+    boxStackSoundRef.current.volume = 0.1;
 
     const updateCanvasSize = () => {
       const width = window.innerWidth;
@@ -614,6 +620,7 @@ export function useBoxStackingGame() {
     setResetToken((v) => v + 1);
     reset();
     start();
+    boxStackSoundRef.current?.play();
   };
 
   const handleRetry = () => {
@@ -622,6 +629,7 @@ export function useBoxStackingGame() {
     setScore(0);
     setIsEnding(false);
     speedRef.current = 2;
+    boxStackSoundRef.current?.play();
   };
 
   const handleEndGame = async (mode: string, index: number) => {
@@ -636,6 +644,7 @@ export function useBoxStackingGame() {
     setIsEnding(true);
     setGameOver(true);
     fallingSoundRef.current?.pause();
+    boxStackSoundRef.current?.pause();
     const acquiredCoin = Math.max(0, score - 10);
 
     if (!isCompleted && mode === "ads") {
