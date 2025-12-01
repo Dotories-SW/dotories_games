@@ -31,7 +31,7 @@ const patchCompletedGame = async (
         "index": index,
         "completed": completed,
         "coin": coin,
-        "duration-sec": durationSec,
+        "durationsec": durationSec,
         "score": score,
     },
     {
