@@ -14,6 +14,7 @@ import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 
 import type { Difficulty, Question } from "./types";
 import { DIFFICULTY_CONFIGS, MAX_QUESTIONS, generateQuestion } from "./utils";
+import { useGameTimer } from "../_hooks/useGameTimer";
 
 export function useArithmeticGame() {
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
@@ -44,6 +45,7 @@ export function useArithmeticGame() {
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
   const failSoundRef = useRef<HTMLAudioElement | null>(null);
   const arithmeticSoundRef = useRef<HTMLAudioElement | null>(null);
+  const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // 사운드 초기화
   useEffect(() => {
@@ -105,7 +107,8 @@ export function useArithmeticGame() {
     setPreviousAnswer(null);
     setShowDifficultySelect(false);
     setInCorrectCount(0);
-
+    reset();
+    start();
     const question = generateQuestion(diff, null);
     setCurrentQuestion(question);
     setCurrentQuestionNumber(1);
@@ -184,6 +187,7 @@ export function useArithmeticGame() {
   );
 
   const handleEndGame = async (mode: string, coin: number, index: number) => {
+    const playDurationSec = stopAndGetDuration();
     if (completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex]) {
       router.back();
       return;
@@ -203,7 +207,14 @@ export function useArithmeticGame() {
       mode === "noAds"
     ) {
       try {
-        await patchCompletedGame(loginId, 3, true, coin, 0, 0);
+        await patchCompletedGame(
+          loginId,
+          3,
+          true,
+          coin,
+          playDurationSec,
+          inCorrectCount
+        );
       } catch (e) {
         console.error("patchCompletedGame error", e);
       } finally {

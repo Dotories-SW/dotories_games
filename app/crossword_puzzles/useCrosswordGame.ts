@@ -375,7 +375,6 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
       setSelectedDirection(null);
       setHistory([]);
       setCorrectCount(0);
-      reset();
     }
   };
 

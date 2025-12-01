@@ -15,14 +15,14 @@ import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
 import data from "@/public/game_json/flip_card_game/flip_card_game.json";
 import type { Card, GameData, Difficulty } from "./types";
 import { DIFFICULTY_CONFIGS, shuffleCards } from "./utils";
+import { useGameTimer } from "../_hooks/useGameTimer";
 
 const gameData = data as GameData;
 
 export function useFlipCardGame() {
   const [showDifficultySelect, setShowDifficultySelect] = useState(true);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(
-    null
-  );
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<Difficulty | null>(null);
   const [gameCards, setGameCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<number[]>([]);
@@ -32,6 +32,7 @@ export function useFlipCardGame() {
   const [showingCards, setShowingCards] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [moveCount, setMoveCount] = useState(0);
+  const [wrongAttempts, setWrongAttempts] = useState<number>(0);
 
   const [completedGames, setCompletedGames] = useState<boolean[]>([
     false,
@@ -48,6 +49,7 @@ export function useFlipCardGame() {
     : "691c2ca7e90f06e920804f4a";
 
   const router = useRouter();
+  const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // 오디오 초기화
   useEffect(() => {
@@ -110,6 +112,9 @@ export function useFlipCardGame() {
     setShowingCards(false);
     setCountdown(3);
     setMoveCount(0);
+    setWrongAttempts(0);
+    reset();
+    start();
   }, []);
 
   // 안내 모달 → 카드 미리보기 시작
@@ -150,7 +155,6 @@ export function useFlipCardGame() {
   // 게임 완료 시 서버에 완료 기록 + BGM 정지
   useEffect(() => {
     gameBgmRef.current?.pause();
-    
   }, [gameCompleted]);
 
   // 카드가 뒤집혀있는지 판단
@@ -199,6 +203,7 @@ export function useFlipCardGame() {
           setTimeout(() => {
             setFlippedCards([]);
             setIsChecking(false);
+            setWrongAttempts((prev) => prev + 1);
           }, 1000);
         }
         setMoveCount((prev) => prev + 1);
@@ -208,18 +213,41 @@ export function useFlipCardGame() {
   );
 
   const handleEndGame = async (mode: string, coin: number, index: number) => {
-    if (completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex]) {
+    const playDurationSec = stopAndGetDuration();
+    if (
+      completedGames[
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+      ]
+    ) {
       router.back();
       return;
-    }
-    else if (!completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex] && mode === "ads") {
+    } else if (
+      !completedGames[
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+      ] &&
+      mode === "ads"
+    ) {
       window.parent.postMessage(
-        { type: "fromApp", payload: { advertise: true, coin: coin * 2, index: index } },
+        {
+          type: "fromApp",
+          payload: { advertise: true, coin: coin * 2, index: index },
+        },
         "*"
       );
-    }
-    else if (!completedGames[DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex] && mode === "noAds") {
-      await patchCompletedGame(loginId, DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex, true, coin, 0, 0);
+    } else if (
+      !completedGames[
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
+      ] &&
+      mode === "noAds"
+    ) {
+      await patchCompletedGame(
+        loginId,
+        DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex,
+        true,
+        coin,
+        playDurationSec,
+        wrongAttempts
+      );
       router.back();
     }
   };

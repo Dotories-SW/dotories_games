@@ -26,6 +26,7 @@ import {
   getGravityValue,
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect } from "./types";
+import { useGameTimer } from "../_hooks/useGameTimer";
 
 export function useBoxStackingGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -65,6 +66,7 @@ export function useBoxStackingGame() {
   const dustFramesRef = useRef<HTMLImageElement[]>([]);
   const pendingFailRef = useRef<boolean>(false);
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
+  const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // gameOver 상태와 ref 동기화
   useEffect(() => {
@@ -610,6 +612,8 @@ export function useBoxStackingGame() {
     setScore(0);
     setGameOver(false);
     setResetToken((v) => v + 1);
+    reset();
+    start();
   };
 
   const handleRetry = () => {
@@ -621,6 +625,7 @@ export function useBoxStackingGame() {
   };
 
   const handleEndGame = async (mode: string, index: number) => {
+    const playDurationSec = stopAndGetDuration();
     if (isCompleted) {
       router.back();
       return;
@@ -643,7 +648,14 @@ export function useBoxStackingGame() {
       );
     } else if (!isCompleted && mode === "noAds") {
       try {
-        await patchCompletedGame(loginId, 3, true, acquiredCoin, 0, 0);
+        await patchCompletedGame(
+          loginId,
+          3,
+          true,
+          acquiredCoin,
+          playDurationSec,
+          0
+        );
       } catch (e) {
         console.error("patchCompletedGame error", e);
       } finally {
