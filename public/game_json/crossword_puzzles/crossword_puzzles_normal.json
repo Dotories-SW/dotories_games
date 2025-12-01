@@ -1123,15 +1123,180 @@
       ["X", "X", "X", "오", "일", "장", "X"]
     ],
     "grid": [
-      ["인", "공", "지", "",  "X", "아", "X"],
+      ["인", "공", "지", "", "X", "아", "X"],
       ["가", "X", "X", "이", "X", "시", "X"],
-      ["X", "",  "니", "",  "시", "",  "드"],
-      ["염", "", "X", "",  "X", "드", "X"],
-      ["X", "",  "",  "X", "불", "",  "기"],
+      ["X", "", "니", "", "시", "", "드"],
+      ["염", "", "X", "", "X", "드", "X"],
+      ["X", "", "", "X", "불", "", "기"],
       ["X", "X", "도", "X", "X", "기", "X"],
-      ["X", "X", "X", "오", "일", "",  "X"]
+      ["X", "X", "X", "오", "일", "", "X"]
     ],
     "solo_words": ["능", "버", "섯", "아", "경", "장", "유", "산", "슬", "기"]
+  },
+  {
+    "puzzle_id": 10,
+    "difficulty": "normal",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "휴지",
+        "hint": "코를 풀거나 닦는 데 쓰는 얇은 종이",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "무령왕릉",
+        "hint": "백제 제25대 왕 무령왕의 무덤",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 3,
+        "word": "림보",
+        "hint": "축음악에 맞추어 허리를 뒤로 젖히고 봉 아래를 통과하는 춤",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "공개",
+        "hint": "널리 드러내어 보이거나 알게 함",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 5,
+        "word": "따개비",
+        "hint": "바위나 배 밑에 붙어 사는 작은 갑각류",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 1
+      },
+      {
+        "id": 6,
+        "word": "피리",
+        "hint": "불어서 소리를 내는 관악기",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 7,
+        "word": "노량진",
+        "hint": "서울 동작구에 있는 지명으로, 수산 시장과 학원가로 유명한 곳",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 0
+      },
+      {
+        "id": 8,
+        "word": "탈의실",
+        "hint": "옷을 벗거나 갈아입는 방",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 9,
+        "word": "염주",
+        "hint": "불교에서 기도나 수행 때 손에 쥐고 외는 구슬을 꿴 줄",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 5
+      },
+      {
+        "id": 10,
+        "word": "휴양림",
+        "hint": "쉬고 놀 수 있도록 시설을 갖춘 숲",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 11,
+        "word": "무장공비",
+        "hint": "무기를 지니고 게릴라 활동을 하는 침투 무장대",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 3
+      },
+      {
+        "id": 12,
+        "word": "왕관",
+        "hint": "왕의 신분을 나타내기 위해 머리에 쓰는 관",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 13,
+        "word": "신비주의",
+        "hint": "이성으로 설명하기 어려운 신비한 체험이나 힘을 중시하는 태도",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 6
+      },
+      {
+        "id": 14,
+        "word": "보따리",
+        "hint": "보자기에 물건을 싸서 묶은 것",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 1
+      },
+      {
+        "id": 15,
+        "word": "피아노",
+        "hint": "건반을 눌러 현을 쳐서 소리를 내는 타현 건반 악기",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 0
+      },
+      {
+        "id": 16,
+        "word": "탈진",
+        "hint": "기운이 다 빠져 버림",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 2
+      }
+    ],
+    "solution": [
+      ["휴", "지", "X", "무", "령", "왕", "릉"],
+      ["양", "X", "X", "장", "X", "관", "X"],
+      ["림", "보", "X", "공", "개", "X", "신"],
+      ["X", "따", "개", "비", "X", "X", "비"],
+      ["피", "리", "X", "X", "X", "염", "주"],
+      ["아", "X", "탈", "의", "실", "X", "의"],
+      ["노", "량", "진", "X", "X", "X", "X"]
+    ],
+    "grid": [
+      ["", "지", "X", "", "령", "", "릉"],
+      ["양", "X", "X", "장", "X", "관", "X"],
+      ["", "", "X", "", "개", "X", "신"],
+      ["X", "", "개", "", "X", "X", "비"],
+      ["", "", "X", "X", "X", "염", "주"],
+      ["아", "X", "탈", "의", "실", "X", "의"],
+      ["", "량", "진", "X", "X", "X", "X"]
+    ],
+    "solo_words": [
+      "휴",
+      "무",
+      "왕",
+      "림",
+      "보",
+      "공",
+      "따",
+      "비",
+      "피",
+      "리",
+      "노"
+    ]
   }
-  
 ]

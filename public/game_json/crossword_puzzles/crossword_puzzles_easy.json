@@ -1120,5 +1120,136 @@
       ["용", "가", "마", "X", "설", "X", "X"]
     ],
     "solo_words": ["퀴", "이", "양", "티", "역"]
+  },
+  {
+    "puzzle_id": 10,
+    "difficulty": "easy",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "인사",
+        "hint": "만나거나 헤어질 때 예의를 나타내는 말이나 행동",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "필요충분조건",
+        "hint": "어떤 명제가 참이기 위한 필요조건이자 충분조건이 되는 조건",
+        "direction": "horizontal",
+        "start_row": 1,
+        "start_col": 1
+      },
+      {
+        "id": 3,
+        "word": "악귀",
+        "hint": "나쁜 짓을 하거나 해를 끼친다고 여기는 사나운 귀신",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 4,
+        "word": "황새",
+        "hint": "황새과의 큰 철새로, 긴 다리와 부리를 가진 새",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 0
+      },
+      {
+        "id": 5,
+        "word": "요구르트",
+        "hint": "우유나 탈지유를 젖산균으로 발효시켜 만든 음료",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 1
+      },
+      {
+        "id": 6,
+        "word": "자전",
+        "hint": "천체가 자기 축을 중심으로 스스로 도는 운동",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 5
+      },
+      {
+        "id": 7,
+        "word": "함선",
+        "hint": "군사 목적으로 쓰이는 배",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 8,
+        "word": "사필귀정",
+        "hint": "그릇된 일은 결국 바로잡혀 옳은 데로 돌아간다는 뜻의 사자성어",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 1
+      },
+      {
+        "id": 9,
+        "word": "신분당선",
+        "hint": "서울 강남과 경기 성남·용인·수원을 잇는 광역 전철 노선",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 4
+      },
+      {
+        "id": 10,
+        "word": "건물",
+        "hint": "사람이 살거나 일을 하기 위하여 지은 구조물",
+        "direction": "vertical",
+        "start_row": 1,
+        "start_col": 6
+      },
+      {
+        "id": 11,
+        "word": "함부르크",
+        "hint": "독일 북부의 항구 도시",
+        "direction": "vertical",
+        "start_row": 3,
+        "start_col": 3
+      },
+      {
+        "id": 12,
+        "word": "요새",
+        "hint": "적의 공격을 막기 위하여 단단히 요새화한 곳",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 1
+      },
+      {
+        "id": 13,
+        "word": "전깃줄",
+        "hint": "전기를 보내기 위하여 전선을 늘어뜨려 놓은 줄",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 6
+      }
+    ],
+    "solution": [
+      ["인", "사", "X", "X", "신", "X", "X"],
+      ["X", "필", "요", "충", "분", "조", "건"],
+      ["악", "귀", "X", "X", "당", "X", "물"],
+      ["X", "정", "X", "함", "선", "X", "X"],
+      ["X", "X", "X", "부", "X", "자", "전"],
+      ["X", "요", "구", "르", "트", "X", "깃"],
+      ["황", "새", "X", "크", "X", "X", "줄"]
+    ],
+    "grid": [
+      ["인", "",  "X", "X", "신", "X", "X"],
+      ["X", "필", "요", "충", "",  "조", "건"],
+      ["악", "귀", "X", "X", "당", "X", "물"],
+      ["X", "정", "X", "",  "선", "X", "X"],
+      ["X", "X", "X", "부", "X", "자", ""],
+      ["X", "",  "구", "르", "트", "X", "깃"],
+      ["황", "새", "X", "크", "X", "X", "줄"]
+    ],
+    "solo_words": ["사", "분", "함", "전", "요"]
   }
+  
 ]
