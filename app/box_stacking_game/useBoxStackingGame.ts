@@ -405,10 +405,11 @@ export function useBoxStackingGame() {
         const pos = body.getPosition();
         const vel = body.getLinearVelocity();
 
-        const margin = 0.5;
-        if (pos.x < margin && vel.x < 0) {
+        const leftMargin = WORLD_WIDTH * 0.15;
+        const rightMargin = WORLD_WIDTH * 0.85;
+        if (pos.x < leftMargin && vel.x < 0) {
           body.setLinearVelocity(Vec2(Math.abs(vel.x), 0));
-        } else if (pos.x > WORLD_WIDTH - margin && vel.x > 0) {
+        } else if (pos.x > rightMargin && vel.x > 0) {
           body.setLinearVelocity(Vec2(-Math.abs(vel.x), 0));
         }
       }
