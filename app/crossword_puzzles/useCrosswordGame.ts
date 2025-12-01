@@ -10,7 +10,7 @@ import {
   Word,
   getDifficultyFileName,
 } from "./types";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGameTimer } from "../_hooks/useGameTimer";
 
 interface HistoryState {
@@ -20,7 +20,11 @@ interface HistoryState {
   correctCount: number;
 }
 
-export function useCrosswordGame(loginId: string) {
+export function useCrosswordGame() {
+  const params = useSearchParams();
+  const loginId: string = params.get("id")
+    ? (params.get("id") as string)
+    : "691c2eefe90f06e920804f4e";
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | null>(null);
   const [userGrid, setUserGrid] = useState<string[][]>([]);

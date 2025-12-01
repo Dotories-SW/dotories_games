@@ -1,7 +1,6 @@
 // app/crossword_puzzles/page.tsx
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import React, { Suspense } from "react";
 import LoadingSpinner from "../_component/LoadingSpinner";
 import { useCrosswordGame } from "./useCrosswordGame";
@@ -16,11 +15,6 @@ export default function CrosswordPuzzlesPage() {
 }
 
 function CrosswordPuzzles() {
-  const params = useSearchParams();
-  const loginId: string = params.get("id")
-    ? (params.get("id") as string)
-    : "691c2eefe90f06e920804f4e";
-
   const {
     currentPuzzle,
     userGrid,
@@ -51,7 +45,7 @@ function CrosswordPuzzles() {
     goToDifficultySelect,
     getWordsAtCell,
     handleEndGame,
-  } = useCrosswordGame(loginId);
+  } = useCrosswordGame();
 
   // 난이도 선택 화면
   if (showDifficultySelect) {
