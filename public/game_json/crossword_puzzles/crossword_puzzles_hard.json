@@ -1586,5 +1586,170 @@
       "설",
       "지"
     ]
+  },
+  {
+    "puzzle_id": 11,
+    "difficulty": "hard",
+    "size": 7,
+    "words": [
+      {
+        "id": 1,
+        "word": "지하상가",
+        "hint": "도로 지하 등에 조성한 상점들이 모여 있는 거리",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 0
+      },
+      {
+        "id": 2,
+        "word": "강도",
+        "hint": "폭력이나 협박으로 남의 물건을 빼앗는 사람",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 0
+      },
+      {
+        "id": 3,
+        "word": "빈털터리",
+        "hint": "가지고 있는 재산이 거의 없는 사람",
+        "direction": "horizontal",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 4,
+        "word": "고백",
+        "hint": "숨기고 있던 사실이나 마음을 솔직하게 말함",
+        "direction": "horizontal",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 5,
+        "word": "꼼장어",
+        "hint": "먹장어를 속되게 이르는 말",
+        "direction": "horizontal",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 6,
+        "word": "촌철살인",
+        "hint": "짧은 말로 상대의 잘못을 날카롭게 찌르는 일",
+        "direction": "horizontal",
+        "start_row": 6,
+        "start_col": 2
+      },
+      {
+        "id": 7,
+        "word": "채널링",
+        "hint": "온라인 게임 등에서 한 계정으로 여러 서비스를 이용하게 하는 방식",
+        "direction": "horizontal",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 8,
+        "word": "처갓집",
+        "hint": "아내의 부모가 사는 집",
+        "direction": "horizontal",
+        "start_row": 3,
+        "start_col": 1
+      },
+      {
+        "id": 9,
+        "word": "하수도처리장",
+        "hint": "하수를 모아 정화하고 처리하는 시설을 갖춘 장소",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 1
+      },
+      {
+        "id": 10,
+        "word": "꼼수",
+        "hint": "엉큼하게 남을 속이려는 수단이나 술책",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 0
+      },
+      {
+        "id": 11,
+        "word": "어촌",
+        "hint": "어업을 생업으로 하는 사람들이 모여 사는 마을",
+        "direction": "vertical",
+        "start_row": 5,
+        "start_col": 2
+      },
+      {
+        "id": 12,
+        "word": "빈집",
+        "hint": "사람이 살지 않거나 비어 있는 집",
+        "direction": "vertical",
+        "start_row": 2,
+        "start_col": 3
+      },
+      {
+        "id": 13,
+        "word": "고속터미널",
+        "hint": "고속버스가 출발·도착하는 정류장 시설",
+        "direction": "vertical",
+        "start_row": 0,
+        "start_col": 5
+      },
+      {
+        "id": 14,
+        "word": "채끝살",
+        "hint": "소 등심 끝부분에 해당하는 쇠고기 부위",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 4
+      },
+      {
+        "id": 15,
+        "word": "링크",
+        "hint": "문서나 화면에서 다른 곳으로 연결되는 부분",
+        "direction": "vertical",
+        "start_row": 4,
+        "start_col": 6
+      }
+    ],
+    "solution": [
+      ["지", "하", "상", "가", "X", "고", "백"],
+      ["X", "수", "X", "X", "X", "속", "X"],
+      ["강", "도", "X", "빈", "털", "터", "리"],
+      ["X", "처", "갓", "집", "X", "미", "X"],
+      ["X", "리", "X", "X", "채", "널", "링"],
+      ["꼼", "장", "어", "X", "끝", "X", "크"],
+      ["수", "X", "촌", "철", "살", "인", "X"]
+    ],
+    "grid": [
+      ["지", "",  "",  "가", "X", "",  "백"],
+      ["X", "",  "X", "X", "X", "속", "X"],
+      ["강", "", "X", "",  "",  "",  "리"],
+      ["X", "",  "갓", "",  "X", "",  "X"],
+      ["X", "리", "X", "X", "",  "",  ""],
+      ["",  "",  "",  "X", "끝", "X", ""],
+      ["수", "X", "",  "",  "",  "인", "X"]
+    ],
+    "solo_words": [
+      "지",
+      "상",
+      "가",
+      "백",
+      "수",
+      "속",
+      "강",
+      "털",
+      "리",
+      "갓",
+      "미",
+      "리",
+      "끝",
+      "크",
+      "수",
+      "철",
+      "인"
+    ]
   }
+  
 ]
