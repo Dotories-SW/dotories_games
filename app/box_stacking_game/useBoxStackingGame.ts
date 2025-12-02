@@ -664,7 +664,7 @@ export function useBoxStackingGame() {
           true,
           acquiredCoin,
           playDurationSec,
-          0
+          score
         );
       } catch (e) {
         console.error("patchCompletedGame error", e);
