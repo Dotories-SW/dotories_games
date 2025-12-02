@@ -210,6 +210,7 @@ export function useBoxStackingGame() {
     speedRef.current = 2;
     setScore(0);
     setGameOver(false);
+    perfectHitRef.current = 0;
 
     // 일정 쌓인 부분을 얼려버리는 함수
     const freezeOldBoxes = () => {
