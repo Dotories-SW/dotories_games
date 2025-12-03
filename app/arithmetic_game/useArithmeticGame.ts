@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import { BASE_LOGIN_ID } from "../constants/constants";
 
 import type { Difficulty, Question } from "./types";
 import { DIFFICULTY_CONFIGS, MAX_QUESTIONS, generateQuestion } from "./utils";
@@ -39,7 +40,7 @@ export function useArithmeticGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691c2eefe90f06e920804f4e";
+    : BASE_LOGIN_ID;
   const router = useRouter();
 
   const successSoundRef = useRef<HTMLAudioElement | null>(null);

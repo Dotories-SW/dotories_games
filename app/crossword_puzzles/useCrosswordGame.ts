@@ -12,6 +12,7 @@ import {
 } from "./types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGameTimer } from "../_hooks/useGameTimer";
+import { BASE_LOGIN_ID } from "../constants/constants";
 
 interface HistoryState {
   userGrid: string[][];
@@ -24,7 +25,7 @@ export function useCrosswordGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691c2eefe90f06e920804f4e";
+    : BASE_LOGIN_ID;
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | null>(null);
   const [userGrid, setUserGrid] = useState<string[][]>([]);

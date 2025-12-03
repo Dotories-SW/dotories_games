@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import { BASE_LOGIN_ID } from "../constants/constants";
 
 import data from "@/public/game_json/flip_card_game/flip_card_game.json";
 import type { Card, GameData, Difficulty } from "./types";
@@ -46,7 +47,7 @@ export function useFlipCardGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691c2eefe90f06e920804f4e";
+    : BASE_LOGIN_ID;
 
   const router = useRouter();
   const { start, stopAndGetDuration, reset } = useGameTimer();

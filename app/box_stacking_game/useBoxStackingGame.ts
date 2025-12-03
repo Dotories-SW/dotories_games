@@ -12,6 +12,7 @@ import type { TouchEvent } from "react";
 import planck, { Vec2, World, Body } from "planck-js";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
+import { BASE_LOGIN_ID } from "../constants/constants";
 
 import {
   SCALE,
@@ -44,7 +45,7 @@ export function useBoxStackingGame() {
   const params = useSearchParams();
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
-    : "691c2eefe90f06e920804f4e";
+    : BASE_LOGIN_ID;
 
   const router = useRouter();
 
