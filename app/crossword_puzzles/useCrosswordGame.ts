@@ -418,7 +418,7 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
       try {
         await patchCompletedGame(
           loginId,
-          index,
+          DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex,
           true,
           coin,
           playDurationSec,

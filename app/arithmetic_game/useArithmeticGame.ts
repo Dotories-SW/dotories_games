@@ -210,7 +210,7 @@ export function useArithmeticGame() {
       try {
         await patchCompletedGame(
           loginId,
-          3,
+          DIFFICULTY_CONFIGS[difficulty].backendIndex,
           true,
           coin,
           playDurationSec,
