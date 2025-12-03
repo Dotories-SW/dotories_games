@@ -68,12 +68,18 @@ export function useBoxStackingGame() {
   const pendingFailRef = useRef<boolean>(false);
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
   const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
+  const scoreRef = useRef<number>(0);
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // gameOver 상태와 ref 동기화
   useEffect(() => {
     gameOverRef.current = gameOver;
   }, [gameOver]);
+
+  // score 상태와 ref 동기화
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
 
   // 오늘 게임 완료 여부 조회
   useEffect(() => {
@@ -98,12 +104,22 @@ export function useBoxStackingGame() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    perfectHitRef.current = 0;
+
     fallingSoundRef.current = new Audio(FALLING_SOUND_PATH);
     fallingSoundRef.current.volume = 0.3;
 
     boxStackSoundRef.current = new Audio(BOX_STACK_SOUND_PATH);
     boxStackSoundRef.current.loop = true;
     boxStackSoundRef.current.volume = 0.1;
+
+    // 반응형 중력
+    const gravityValue = getGravityValue(window.innerHeight);
+
+    const world = new planck.World({
+      gravity: Vec2(0, gravityValue),
+    });
+    worldRef.current = world;
 
     const updateCanvasSize = () => {
       const width = window.innerWidth;
@@ -118,11 +134,19 @@ export function useBoxStackingGame() {
       ctx.scale(dpr, dpr);
 
       const shorterSide = Math.min(width, height);
-      const boxPixelSize = shorterSide * 0.008;
-      boxSizeRef.current = boxPixelSize;
+      const boxPixelSize = shorterSide * 0.28;
+      // 픽셀 단위를 월드 단위로 변환하고, 상한선 설정 (최대 5m)
+      const boxSizeWorld = boxPixelSize / SCALE;
+      boxSizeRef.current = Math.min(boxSizeWorld, 5);
 
       // 스폰 위치 (스크린 기준 픽셀 오프셋)
       spawnOffsetScreenRef.current = height * 0.2;
+
+      // resize 시 중력값도 업데이트
+      if (worldRef.current) {
+        const newGravityValue = getGravityValue(height);
+        worldRef.current.setGravity(Vec2(0, newGravityValue));
+      }
     };
 
     updateCanvasSize();
@@ -131,14 +155,6 @@ export function useBoxStackingGame() {
       updateCanvasSize();
     };
     window.addEventListener("resize", handleResize);
-
-    // 반응형 중력
-    const gravityValue = getGravityValue(window.innerHeight);
-
-    const world = new planck.World({
-      gravity: Vec2(0, gravityValue),
-    });
-    worldRef.current = world;
 
     // 충돌 감지 – 먼지/소리/landing 플래그
     world.on("begin-contact", (contact) => {
@@ -210,7 +226,6 @@ export function useBoxStackingGame() {
     speedRef.current = 2;
     setScore(0);
     setGameOver(false);
-    perfectHitRef.current = 0;
 
     // 일정 쌓인 부분을 얼려버리는 함수
     const freezeOldBoxes = () => {
@@ -501,7 +516,7 @@ export function useBoxStackingGame() {
         const glow = perfectHitRef.current;
 
         ctx.save();
-        if (glow > 0) {
+        if (glow > 0 && scoreRef.current > 0) {
           ctx.shadowColor = `rgba(250, 204, 21, ${0.6 * glow})`;
           ctx.shadowBlur = 25 * glow;
           ctx.lineWidth = 3 + 3 * glow;
@@ -604,7 +619,9 @@ export function useBoxStackingGame() {
         perfectHitRef.current = 1;
       }
 
-      const allowedOffset = BOX_SIZE * 0.55;
+      // allowedOffset: 박스가 50% 이상 겹치면 통과 (중심점 거리가 BOX_SIZE * 0.5 이하면 OK)
+      // 작은 박스를 위해 최소값 0.3m 보장
+      const allowedOffset = Math.max(0.3, BOX_SIZE * 0.5);
       if (Math.abs(currX - lastX) > allowedOffset) {
         pendingFailRef.current = true;
       }
