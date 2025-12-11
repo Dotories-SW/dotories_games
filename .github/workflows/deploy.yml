@@ -54,35 +54,42 @@ jobs:
 
           SERVER_B=ubuntu@210.109.15.236
 
-          ssh -o StrictHostKeyChecking=no $SERVER_B "
+          ssh -o StrictHostKeyChecking=no $SERVER_B 'bash -lc "
             set -e
+
+            # nvm 로드 (nvm 안 쓰면 이 부분은 자동으로 그냥 넘어감)
+            export NVM_DIR=\"\$HOME/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
+
+            # (원하는 Node 버전이 있으면 예: nvm use 20)
+            # nvm use 20 || true
+
             cd /home/ubuntu/dotories_games
 
-            echo '[B] git sync'
+            echo \"[B] git sync\"
             git fetch --all
             git reset --hard origin/master
 
-            echo '[B] install deps'
+            echo \"[B] install deps\"
             if [ -f package-lock.json ]; then
               npm ci || npm install
             else
               npm install
             fi
 
-            echo '[B] build'
+            echo \"[B] build\"
             npm run build
-            # npm run export   # 필요하면 주석 해제
 
-            echo '[B] restart pm2'
+            echo \"[B] restart pm2\"
             if command -v pm2 >/dev/null 2>&1; then
               pm2 describe dotories_games >/dev/null 2>&1 && \
                 pm2 restart dotories_games || \
                 pm2 start \"npx serve out -l 3000\" --name dotories_games
               pm2 save
             else
-              echo '[B] ERROR: pm2 not found'
+              echo \"[B] ERROR: pm2 not found\"
               exit 1
             fi
 
-            echo '===== SERVER B deploy done ====='
-          "
+            echo \"===== SERVER B deploy done =====\"
+          "'
