@@ -1,0 +1,73 @@
+name: Deploy dotories_games
+
+on:
+  push:
+    branches:
+      - master        # ✅ master 브랜치에 push 되면 자동 배포
+  workflow_dispatch:  # 수동 배포 버튼
+    inputs:
+      ref:
+        description: 'Git ref to deploy (optional)'
+        required: false
+        default: 'master'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to KakaoCloud servers via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DOTORIES_SERVERS }}   # 콤마로 구분된 서버 Public IP들
+          username: ubuntu                        # Kakao VM 기본 계정 (다르면 바꾸기)
+          key: ${{ secrets.DOTORIES_SSH_KEY }}    # 배포용 SSH Private Key
+          port: 22
+          script: |
+            echo "===== Deploy on $(hostname) ====="
+
+            # 1) 프로젝트 디렉토리로 이동
+            cd /home/ubuntu/dotories_games
+
+            echo "[STEP] 현재 브랜치 / 커밋 확인"
+            git status
+
+            echo "[STEP] 원격(master) 기준으로 코드 동기화"
+            git fetch --all
+            git reset --hard origin/master   # ✅ 여기도 master
+
+            echo "[STEP] Node 의존성 설치 (npm ci 없으면 npm install)"
+            if command -v npm >/dev/null 2>&1; then
+              if [ -f package-lock.json ]; then
+                npm ci || npm install
+              else
+                npm install
+              fi
+            else
+              echo "[ERROR] npm이 설치되어 있지 않습니다."
+              exit 1
+            fi
+
+            echo "[STEP] 빌드 실행"
+            npm run build
+
+            # 만약 next export를 쓰고 있으면 아래 주석 해제
+            # npm run export
+
+            echo "[STEP] PM2로 서비스 재시작"
+            if command -v pm2 >/dev/null 2>&1; then
+              pm2 describe dotories_games >/dev/null 2>&1
+              if [ $? -eq 0 ]; then
+                echo "[PM2] 기존 프로세스 재시작"
+                pm2 restart dotories_games
+              else
+                echo "[PM2] 프로세스가 없어 새로 시작합니다."
+                pm2 start "npx serve out -l 3000" --name dotories_games
+              fi
+              pm2 save
+            else
+              echo "[ERROR] pm2가 설치되어 있지 않습니다. (npm i -g pm2 필요)"
+              exit 1
+            fi
+
+            echo "===== Deploy finished on $(hostname) ====="
