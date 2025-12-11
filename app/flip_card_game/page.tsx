@@ -305,7 +305,7 @@ function FlipCardGame() {
         <div
           className={`grid gap-[1vw]`}
           style={{
-            gridTemplateColumns: `repeat(${gameCards.length / 2}, 1fr)`,
+            gridTemplateColumns: `repeat(${gameCards.length / (gameCards.length / 4)}, 1fr)`,
             maxWidth: `min(90vw, ${
               gameCards.length === 8
                 ? "500px"
