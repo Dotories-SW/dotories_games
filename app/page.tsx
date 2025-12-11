@@ -5,7 +5,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex flex-col justify-center items-center p-5 sm:p-8">
       <h1 className="text-white text-3xl sm:text-4xl font-bold mb-8 sm:mb-10 text-center drop-shadow-lg">
-        🎮 도토리 게임 홈페이지
+        🎮 도토리 게임
       </h1>
       
       <div className="flex flex-col gap-5 w-full max-w-sm">
