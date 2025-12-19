@@ -23,6 +23,7 @@ export interface Card {
     pairs: number;
     cards: number;
     coin: number;
+    defaultScore: number;
     localIndex: number;
     backendIndex: number;
   }

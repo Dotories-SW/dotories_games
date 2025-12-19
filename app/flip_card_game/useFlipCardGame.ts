@@ -29,11 +29,19 @@ export function useFlipCardGame() {
   const [matchedCards, setMatchedCards] = useState<number[]>([]);
   const [isChecking, setIsChecking] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
   const [showPrepareModal, setShowPrepareModal] = useState(false);
   const [showingCards, setShowingCards] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [moveCount, setMoveCount] = useState(0);
   const [wrongAttempts, setWrongAttempts] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [streak, setStreak] = useState<number>(0);
+  const [lives, setLives] = useState<number>(5);
+  const [playDurationSec, setPlayDurationSec] = useState<number | null>(null);
+  const [encouragementMessage, setEncouragementMessage] = useState<string | null>(null);
+  const hasStoppedTimerRef = useRef(false);
+  const streakRef = useRef<number>(0);
 
   const [completedGames, setCompletedGames] = useState<boolean[]>([
     false,
@@ -51,6 +59,18 @@ export function useFlipCardGame() {
 
   const router = useRouter();
   const { start, stopAndGetDuration, reset } = useGameTimer();
+
+  // 게임 종료(완료/게임오버) 시 타이머/사운드 정리
+  useEffect(() => {
+    if (!gameCompleted && !gameOver) return;
+
+    gameBgmRef.current?.pause();
+
+    if (!hasStoppedTimerRef.current) {
+      hasStoppedTimerRef.current = true;
+      setPlayDurationSec(stopAndGetDuration());
+    }
+  }, [gameCompleted, gameOver, stopAndGetDuration]);
 
   // 오디오 초기화
   useEffect(() => {
@@ -103,20 +123,29 @@ export function useFlipCardGame() {
       gameBgmRef.current.play();
     }
 
+    setSelectedDifficulty(difficulty);
     setGameCards(shuffled);
     setFlippedCards([]);
     setMatchedCards([]);
     setIsChecking(false);
     setGameCompleted(false);
+    setGameOver(false);
     setShowDifficultySelect(false);
     setShowPrepareModal(true);
     setShowingCards(false);
     setCountdown(3);
     setMoveCount(0);
     setWrongAttempts(0);
+    setScore(0);
+    setStreak(0);
+    streakRef.current = 0;
+    setLives(5);
+    setEncouragementMessage(null);
+    setPlayDurationSec(null);
+    hasStoppedTimerRef.current = false;
     reset();
     start();
-  }, []);
+  }, [reset, start]);
 
   // 안내 모달 → 카드 미리보기 시작
   useEffect(() => {
@@ -153,10 +182,15 @@ export function useFlipCardGame() {
     }
   }, [matchedCards, gameCards]);
 
-  // 게임 완료 시 서버에 완료 기록 + BGM 정지
+  // 목숨 0이 되면 게임오버
   useEffect(() => {
-    gameBgmRef.current?.pause();
-  }, [gameCompleted]);
+    if (gameCompleted) return;
+    if (lives <= 0) {
+      setGameOver(true);
+      setFlippedCards([]);
+      setIsChecking(false);
+    }
+  }, [lives, gameCompleted]);
 
   // 카드가 뒤집혀있는지 판단
   const isCardFlipped = useCallback(
@@ -178,7 +212,9 @@ export function useFlipCardGame() {
         flippedCards.includes(cardId) ||
         matchedCards.includes(cardId) ||
         isChecking ||
-        flippedCards.length >= 2
+        flippedCards.length >= 2 ||
+        gameCompleted ||
+        gameOver
       ) {
         return;
       }
@@ -196,7 +232,70 @@ export function useFlipCardGame() {
 
         if (firstCard?.name === secondCard?.name) {
           // 매칭 성공
-          setMatchedCards((prev) => [...prev, firstId, secondId]);
+          setMatchedCards((prev) => {
+            const newMatched = [...prev, firstId, secondId];
+            const matchedPairs = newMatched.length / 2;
+            
+            // 난이도별 격려 메시지 표시 시점 (게임 완료 직전까지만)
+            if (selectedDifficulty) {
+              const totalPairs = DIFFICULTY_CONFIGS[selectedDifficulty].pairs;
+              
+              // 게임 완료 직전까지만 메시지 표시 (마지막 쌍은 게임 완료 화면에서 처리)
+              let messagePoints: number[];
+              let messages: string[];
+              
+              if (selectedDifficulty === "easy") {
+                // 쉬움: 4쌍 → 1, 2, 3쌍 (4쌍은 게임 완료)
+                messagePoints = [1, 2, 3];
+                messages = [
+                  "좋아요! 잘하고 있어요! 🎉",
+                  "훌륭해요! 계속 화이팅! 💪",
+                  "대단해요! 거의 다 왔어요! ⭐"
+                ];
+              } else if (selectedDifficulty === "normal") {
+                // 보통: 8쌍 → 2, 4, 6쌍 (8쌍은 게임 완료)
+                messagePoints = [2, 4, 6];
+                messages = [
+                  "좋아요! 잘하고 있어요! 🎉",
+                  "훌륭해요! 계속 화이팅! 💪",
+                  "대단해요! 거의 다 왔어요! ⭐"
+                ];
+              } else {
+                // 어려움: 10쌍 → 2, 5, 8쌍 (10쌍은 게임 완료)
+                messagePoints = [2, 5, 8];
+                messages = [
+                  "좋아요! 잘하고 있어요! 🎉",
+                  "훌륭해요! 계속 화이팅! 💪",
+                  "대단해요! 거의 다 왔어요! ⭐"
+                ];
+              }
+              
+              // 게임 완료 직전까지만 메시지 표시
+              if (matchedPairs < totalPairs) {
+                const messageIndex = messagePoints.indexOf(matchedPairs);
+                if (messageIndex !== -1) {
+                  setEncouragementMessage(messages[messageIndex]);
+                  setTimeout(() => setEncouragementMessage(null), 2000);
+                }
+              }
+            }
+            
+            return newMatched;
+          });
+          
+          // 현재 streak 값을 기준으로 점수 계산
+          const currentStreak = streakRef.current;
+          const baseScore =
+            selectedDifficulty != null
+              ? DIFFICULTY_CONFIGS[selectedDifficulty].defaultScore
+              : 0;
+          const multiplier = currentStreak >= 1 ? 1 + currentStreak * 0.2 : 1;
+          setScore((s) => s + baseScore * multiplier);
+          
+          // streak 증가
+          streakRef.current = currentStreak + 1;
+          setStreak(streakRef.current);
+          
           setFlippedCards([]);
           setIsChecking(false);
         } else {
@@ -205,16 +304,28 @@ export function useFlipCardGame() {
             setFlippedCards([]);
             setIsChecking(false);
             setWrongAttempts((prev) => prev + 1);
+            streakRef.current = 0;
+            setStreak(0);
+            setLives((prev) => prev - 1);
           }, 1000);
         }
         setMoveCount((prev) => prev + 1);
       }
     },
-    [showingCards, flippedCards, matchedCards, isChecking, gameCards]
+    [
+      showingCards,
+      flippedCards,
+      matchedCards,
+      isChecking,
+      gameCards,
+      selectedDifficulty,
+      gameCompleted,
+      gameOver,
+    ]
   );
 
   const handleEndGame = async (mode: string, coin: number, index: number) => {
-    const playDurationSec = stopAndGetDuration();
+    const duration = playDurationSec ?? stopAndGetDuration();
     if (
       completedGames[
         DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
@@ -246,12 +357,17 @@ export function useFlipCardGame() {
         DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].backendIndex,
         true,
         coin,
-        playDurationSec,
+        duration,
         wrongAttempts
       );
       router.back();
     }
   };
+
+  const restartGame = useCallback(() => {
+    if (!selectedDifficulty) return;
+    startGameWithDifficulty(selectedDifficulty);
+  }, [selectedDifficulty, startGameWithDifficulty]);
 
   return {
     // 상태
@@ -265,17 +381,23 @@ export function useFlipCardGame() {
     >,
     gameCards,
     gameCompleted,
+    gameOver,
     showPrepareModal,
     showingCards,
     countdown,
     moveCount,
     completedGames,
+    score,
+    streak,
+    lives,
+    encouragementMessage,
 
     // 데이터
     backImage: gameData.backImage,
 
     // 핸들러 / 유틸
     startGameWithDifficulty,
+    restartGame,
     handleCardClick,
     isCardFlipped,
     handleEndGame,
