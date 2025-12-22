@@ -238,12 +238,7 @@ function FlipCardGame() {
             </div>
           </div>
           <div className="space-y-[2vh]">
-            <button
-              onClick={() => setShowDifficultySelect(true)}
-              className="w-full py-[3.5vh] text-[4vw] bg-gray-100 text-gray-900 rounded-2xl font-bold active:scale-[0.98] transition-all"
-            >
-              다른 난이도 선택
-            </button>
+            {/* 코인 받기 버튼들 */}
             <div className="flex gap-[2vw]">
               <button
                 className="flex-1 py-[2.5vh] border-2 border-red-400 text-red-400 rounded-2xl font-bold text-[3.5vw] active:scale-[0.98] transition-all bg-white"
@@ -287,6 +282,13 @@ function FlipCardGame() {
                 </button>
               )}
             </div>
+            
+            <button
+              onClick={() => setShowDifficultySelect(true)}
+              className="w-full py-[3.5vh] text-[4vw] bg-gradient-to-r from-red-300 to-pink-300 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+            >
+              다른 난이도 선택
+            </button>
           </div>
         </div>
       </div>
