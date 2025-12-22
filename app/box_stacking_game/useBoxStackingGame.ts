@@ -406,8 +406,10 @@ export function useBoxStackingGame() {
 
           setScore((prev) => {
             const next = prev + pointsToAdd;
-            if (next % 70 === 0 && next > 0) {
-              speedRef.current += 0.5;
+            const prevInterval = Math.floor(prev / 70);
+            const nextInterval = Math.floor(next / 70);
+            if (nextInterval > prevInterval && next > 0) {
+              speedRef.current += 0.3;
             }
             return next;
           });
