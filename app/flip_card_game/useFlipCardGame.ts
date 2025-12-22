@@ -342,7 +342,7 @@ export function useFlipCardGame() {
       window.parent.postMessage(
         {
           type: "fromApp",
-          payload: { advertise: true, coin: coin * 2, index: index },
+          payload: { advertise: true, coin: coin * 2, index: index, durationsec: duration, score: wrongAttempts, description: "" },
         },
         "*"
       );
@@ -358,7 +358,8 @@ export function useFlipCardGame() {
         true,
         coin,
         duration,
-        wrongAttempts
+        wrongAttempts,
+        ""
       );
       router.back();
     }

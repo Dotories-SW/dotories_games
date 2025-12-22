@@ -23,6 +23,7 @@ const patchCompletedGame = async (
   coin: number,
   durationSec: number,
   score: number,
+  description: string,
 ) => {
   console.log(apiUrl);
   const res = await axios.patch(
@@ -33,6 +34,7 @@ const patchCompletedGame = async (
         "coin": coin,
         "durationsec": durationSec,
         "score": score,
+        "description": description,
     },
     {
       headers: {

@@ -199,7 +199,7 @@ export function useArithmeticGame() {
       window.parent.postMessage(
         {
           type: "fromApp",
-          payload: { advertise: true, coin: coin * 2, index: index },
+          payload: { advertise: true, coin: coin * 2, index: index, durationsec: playDurationSec, score: inCorrectCount, description: "" },
         },
         "*"
       );
@@ -214,7 +214,8 @@ export function useArithmeticGame() {
           true,
           coin,
           playDurationSec,
-          inCorrectCount
+          inCorrectCount,
+          ""
         );
       } catch (e) {
         console.error("patchCompletedGame error", e);

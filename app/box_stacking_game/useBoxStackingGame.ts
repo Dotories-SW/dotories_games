@@ -70,6 +70,7 @@ export function useBoxStackingGame() {
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
   const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
   const scoreRef = useRef<number>(0);
+  const failedBoxPositionRef = useRef<{ x: number; y: number } | null>(null);
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // gameOver 상태와 ref 동기화
@@ -224,6 +225,7 @@ export function useBoxStackingGame() {
     spawnYRef.current =
       (spawnOffsetScreenRef.current || window.innerHeight * 0.33) / SCALE;
     pendingFailRef.current = false;
+    failedBoxPositionRef.current = null;
     speedRef.current = 2;
     setScore(0);
     setGameOver(false);
@@ -358,6 +360,10 @@ export function useBoxStackingGame() {
           const outOfView = pos.y - cameraY > worldHeight + BOX_SIZE;
 
           if (belowStack || outOfView) {
+            // 무너져 내린 경우 fail로 처리
+            // 실제로 떨어진 박스의 위치를 저장
+            failedBoxPositionRef.current = { x: pos.x, y: pos.y };
+            current.hitAccuracy = "fail";
             pendingFailRef.current = false;
             current.isDropping = false;
             setGameOver(true);
@@ -372,6 +378,8 @@ export function useBoxStackingGame() {
           current.isDropping = false;
 
           if (pendingFailRef.current) {
+            // 실제로 떨어진 박스의 위치를 저장
+            failedBoxPositionRef.current = { x: pos.x, y: pos.y };
             pendingFailRef.current = false;
             setGameOver(true);
             gameOverRef.current = true;
@@ -381,9 +389,24 @@ export function useBoxStackingGame() {
           pendingFailRef.current = false;
           lastPlacedBoxRef.current = body;
 
+          // 정확도에 따른 차등 점수 부여
+          const accuracy = current.hitAccuracy || "normal";
+          let pointsToAdd = 0;
+          
+          if (accuracy === "perfect") {
+            pointsToAdd = 10;
+          } else if (accuracy === "good") {
+            pointsToAdd = 7;
+          } else if (accuracy === "normal") {
+            pointsToAdd = 5;
+          } else {
+            // fail인 경우 점수 없음 (이미 게임 오버 처리됨)
+            pointsToAdd = 0;
+          }
+
           setScore((prev) => {
-            const next = prev + 1;
-            if (next % 10 === 0) {
+            const next = prev + pointsToAdd;
+            if (next % 70 === 0 && next > 0) {
               speedRef.current += 0.5;
             }
             return next;
@@ -614,18 +637,24 @@ export function useBoxStackingGame() {
     if (lastBody) {
       const currX = body.getPosition().x;
       const lastX = lastBody.getPosition().x;
+      const offset = Math.abs(currX - lastX);
 
       const perfectOffset = BOX_SIZE * 0.05;
-      if (Math.abs(currX - lastX) <= perfectOffset) {
-        perfectHitRef.current = 1;
-      }
-
-      // allowedOffset: 박스가 50% 이상 겹치면 통과 (중심점 거리가 BOX_SIZE * 0.5 이하면 OK)
-      // 작은 박스를 위해 최소값 0.3m 보장
       const allowedOffset = Math.max(0.3, BOX_SIZE * 0.5);
-      if (Math.abs(currX - lastX) > allowedOffset) {
+      
+      // 정확도 레벨 결정
+      if (offset <= perfectOffset) {
+        perfectHitRef.current = 1;
+        current.hitAccuracy = "perfect";
+      } else if (offset <= allowedOffset) {
+        current.hitAccuracy = "good";
+      } else {
+        current.hitAccuracy = "normal";
         pendingFailRef.current = true;
       }
+    } else {
+      // 첫 번째 상자는 항상 perfect로 처리
+      current.hitAccuracy = "perfect";
     }
 
     body.setType("dynamic");
@@ -665,13 +694,42 @@ export function useBoxStackingGame() {
     setGameOver(true);
     fallingSoundRef.current?.pause();
     boxStackSoundRef.current?.pause();
-    const acquiredCoin = Math.max(0, score - 10);
+
+    // 실제로 떨어진 박스가 왼쪽/오른쪽으로 떨어졌는지 판단
+    let fallDirection: "left" | "right" = "left";
+    if (failedBoxPositionRef.current) {
+      const { width: WORLD_WIDTH } = getWorldSize(window.innerWidth, window.innerHeight);
+      const centerX = WORLD_WIDTH / 2;
+      const failedBoxX = failedBoxPositionRef.current.x;
+      
+      if (failedBoxX < centerX) {
+        fallDirection = "left";
+      } else {
+        fallDirection = "right";
+      }
+    } else if (lastPlacedBoxRef.current) {
+      // failedBoxPositionRef가 없는 경우 (상자가 기울어져서 게임 오버된 경우) 마지막 박스 사용
+      const lastPos = lastPlacedBoxRef.current.getPosition();
+      const { width: WORLD_WIDTH } = getWorldSize(window.innerWidth, window.innerHeight);
+      const centerX = WORLD_WIDTH / 2;
+      
+      if (lastPos.x < centerX) {
+        fallDirection = "left";
+      } else {
+        fallDirection = "right";
+      }
+    }
+
+    console.log("fallDirection", fallDirection);
+    
+    // 코인 계산: 70점 이상부터 10개, 이후 10점마다 1개씩 추가, 최대 25개
+    const acquiredCoin = score < 70 ? 0 : Math.min(25, 10 + Math.floor((score - 70) / 10));
 
     if (!isCompleted && mode === "ads") {
       window.parent.postMessage(
         {
           type: "fromApp",
-          payload: { advertise: true, coin: acquiredCoin * 2, index: index },
+          payload: { advertise: true, coin: acquiredCoin * 2, index: index, durationsec: playDurationSec, score: score, description: fallDirection },
         },
         "*"
       );
@@ -683,7 +741,8 @@ export function useBoxStackingGame() {
           true,
           acquiredCoin,
           playDurationSec,
-          score
+          score,
+          fallDirection
         );
       } catch (e) {
         console.error("patchCompletedGame error", e);

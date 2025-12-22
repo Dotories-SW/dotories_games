@@ -13,6 +13,7 @@ export interface CurrentBox {
   body: Body;
   isDropping: boolean;
   hasLanded?: boolean;
+  hitAccuracy?: "perfect" | "good" | "normal" | "fail";
 }
 
 export interface DustEffect {

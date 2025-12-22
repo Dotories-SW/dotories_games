@@ -391,6 +391,7 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
   };
 
   const handleEndGame = async (mode: string, coin: number, index: number) => {
+    const playDurationSec = stopAndGetDuration();
     if (
       completedGames[
         DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
@@ -405,7 +406,17 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
       mode === "ads"
     ) {
       window.parent.postMessage(
-        { type: "fromApp", payload: { advertise: true, coin: coin * 2, index: index } },
+        {
+          type: "fromApp",
+          payload: {
+            advertise: true,
+            coin: coin * 2,
+            index: index,
+            durationsec: playDurationSec,
+            score: wrongAttempts,
+            description: "",
+          },
+        },
         "*"
       );
     } else if (
@@ -414,7 +425,6 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
       ] &&
       mode === "noAds"
     ) {
-      const playDurationSec = stopAndGetDuration();
       try {
         await patchCompletedGame(
           loginId,
@@ -422,7 +432,8 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
           true,
           coin,
           playDurationSec,
-          wrongAttempts
+          wrongAttempts,
+          ""
         );
       } catch (e) {
         console.error("patchCompletedGame error", e);

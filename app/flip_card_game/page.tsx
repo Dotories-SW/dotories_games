@@ -66,10 +66,10 @@ function FlipCardGame() {
               <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-gradient-to-br from-red-400 to-red-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
                 <div className="text-white text-[10vw]">🎴</div>
               </div>
-              <h2 className="text-[5vw] font-bold text-gray-900 mb-[1.5vh]">
+              <h2 className="text-[7vw] font-bold text-gray-900 mb-[1.5vh]">
                 난이도를 선택하세요
               </h2>
-              <p className="text-gray-500 text-[3vw]">
+              <p className="text-gray-500 text-[4vw]">
                 같은 그림을 찾아 카드를 매칭하세요
               </p>
             </div>
@@ -100,7 +100,7 @@ function FlipCardGame() {
                             <span className="text-[4vw]">✅</span>
                           )}
                           <div
-                            className={`font-bold text-[4.5vw] ${
+                            className={`font-bold text-[5.5vw] ${
                               selectedDifficulty === key
                                 ? "text-white"
                                 : completedGames[config.localIndex]
@@ -112,7 +112,7 @@ function FlipCardGame() {
                           </div>
                         </div>
                         <div
-                          className={`text-[3.5vw] ${
+                          className={`text-[4.5vw] ${
                             selectedDifficulty === key
                               ? "text-white/90"
                               : completedGames[config.localIndex]
@@ -212,14 +212,11 @@ function FlipCardGame() {
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
           <div className="text-[15vw] mb-[3vh] animate-bounce">🎉</div>
           <h2 className="text-[6vw] font-bold text-gray-900 mb-[2vh]">완료!</h2>
-          <p className="text-[3.5vw] mb-[3vh] text-gray-600">
-            모든 카드를 매칭했습니다
-          </p>
-          
+
           <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-[3vh] mb-[3vh]">
             <div className="flex justify-between items-center mb-[2vh]">
-              <span className="text-[3vw] text-gray-600">시도 횟수</span>
-              <span className="text-[4vw] font-bold text-gray-900">{moveCount}</span>
+              <span className="text-[5vw] text-gray-600">시도 횟수</span>
+              <span className="text-[6vw] font-bold text-gray-900">{moveCount}</span>
             </div>
             <div className="border-t border-gray-200 pt-[2vh]">
               <p className="text-[3vw] text-gray-600 mb-[1vh]">최종 점수</p>
