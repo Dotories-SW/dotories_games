@@ -60,15 +60,6 @@ function FlipCardGame() {
           }
         `}</style>
 
-        {/* 상단 헤더 */}
-        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-          <div className="flex items-center px-[4vw] py-[2vh]">
-            <h1 className="text-[5vw] font-bold text-gray-900 flex-1 text-center">
-              카드 뒤집기
-            </h1>
-          </div>
-        </div>
-
         <div className="w-full px-[4vw] py-[3vh] pb-[6vh]">
           <div className="bg-white rounded-3xl p-[4vh] shadow-lg border-0">
             <div className="text-center mb-[4vh]">
