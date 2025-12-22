@@ -180,7 +180,7 @@ function CrosswordPuzzles() {
   if (gameCompleted) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-[4vw] safe-area-inset"
+        className="min-h-screen flex items-center justify-center p-[4vw]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <style jsx global>{`
@@ -190,10 +190,6 @@ function CrosswordPuzzles() {
               sans-serif;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
-          }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
           }
         `}</style>
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
@@ -294,10 +290,6 @@ function CrosswordPuzzles() {
             touch-action: manipulation;
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
-          }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
           }
           .crossword-cell {
             touch-action: manipulation;

@@ -31,7 +31,7 @@ function BoxStackingPage() {
   // 종료 중 화면
   if (isEnding) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 safe-area-inset">
+      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
         <style jsx global>{`
           body {
             margin: 0;
@@ -54,7 +54,7 @@ function BoxStackingPage() {
   // 시작 화면
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-[4vw] safe-area-inset">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-[4vw]">
         <style jsx global>{`
           body {
             margin: 0;
@@ -104,7 +104,7 @@ function BoxStackingPage() {
 
   // 실제 게임 화면
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 to-blue-100 cursor-pointer safe-area-inset">
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 to-blue-100 cursor-pointer">
       <style jsx global>{`
         body {
           margin: 0;
@@ -115,7 +115,7 @@ function BoxStackingPage() {
       `}</style>
 
       {/* 점수 */}
-      <div className="absolute top-[calc(2vh+env(safe-area-inset-top))] right-[4vw] z-10 pointer-events-none">
+      <div className="absolute top-[calc(2vh)] right-[4vw] z-10 pointer-events-none">
         <div className="bg-white/95 backdrop-blur-md border-2 border-blue-200/60 rounded-full px-[4vw] py-[1vh] shadow-lg">
           <div className="flex flex-row text-center items-center">
             <div className="text-[3.5vw] font-semibold text-gray-500">Score</div>
@@ -136,7 +136,7 @@ function BoxStackingPage() {
 
       {/* 게임 오버 모달 */}
       {gameOver && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 safe-area-inset">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-[5vh] w-[90%] max-w-md shadow-2xl text-center mx-[4vw]">
             <div className="text-[15vw] mb-[3vh] animate-bounce">💥</div>
             <h2 className="text-[6vw] font-bold text-gray-800 mb-[2vh]">

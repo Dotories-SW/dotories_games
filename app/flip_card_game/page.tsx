@@ -44,7 +44,7 @@ function FlipCardGame() {
   // 난이도 선택 화면
   if (showDifficultySelect) {
     return (
-      <div className="min-h-screen safe-area-inset" style={{ backgroundColor: "#F5F1E8" }}>
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F1E8" }}>
         <style jsx global>{`
           body {
             margin: 0;
@@ -171,7 +171,7 @@ function FlipCardGame() {
   if (gameOver) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-[4vw] safe-area-inset"
+        className="min-h-screen flex items-center justify-center p-[4vw]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
@@ -203,7 +203,7 @@ function FlipCardGame() {
   if (gameCompleted) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-[4vw] safe-area-inset"
+        className="min-h-screen flex items-center justify-center p-[4vw]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
@@ -282,7 +282,7 @@ function FlipCardGame() {
 
   return (
     <div
-      className="h-screen overflow-hidden relative safe-area-inset"
+      className="h-screen overflow-hidden relative"
       style={{
         background: "linear-gradient(to bottom, #FFE5E5 0%, #FFF5F0 50%, #F5F1E8 100%)",
       }}
@@ -351,7 +351,7 @@ function FlipCardGame() {
 
       {/* 격려 메시지 토스트 */}
       {encouragementMessage && (
-        <div className="fixed top-[calc(10vh+env(safe-area-inset-top))] left-1/2 transform -translate-x-1/2 z-[60] encouragement-toast">
+        <div className="fixed top-[calc(10vh)] left-1/2 transform -translate-x-1/2 z-[60] encouragement-toast">
           <div className="bg-gradient-to-r from-red-300 to-pink-300 text-white px-[5vw] py-[2vh] rounded-2xl shadow-2xl border-2 border-white/30">
             <p className="text-[3.5vw] font-bold text-center whitespace-nowrap">
               {encouragementMessage}
@@ -362,7 +362,7 @@ function FlipCardGame() {
 
       {/* 상단 헤더 - 모바일 스타일 */}
       <div className="absolute top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-200/30">
-        <div className="flex items-center justify-between px-[5vw] py-[3vh] pt-[calc(3vh+env(safe-area-inset-top))]">
+        <div className="flex items-center justify-between px-[5vw] py-[3vh] pt-[calc(3vh)]">
           {/* 하트 섹션 */}
           <div className="flex items-center gap-[1vw] border-2 bg-white shadow-sm border-red-200/60 rounded-full px-[3vw] py-[1.5vh]">
             <div className="text-[6.5vw] leading-none">
@@ -408,7 +408,7 @@ function FlipCardGame() {
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto flex justify-center items-center h-full pt-[calc(8vh+env(safe-area-inset-top))] pb-[calc(2vh+env(safe-area-inset-bottom))] px-[4vw]">
+      <div className="max-w-2xl mx-auto flex justify-center items-center h-full pt-[calc(8vh)] pb-[calc(2vh)] px-[4vw]">
         <div
           className={`grid w-full`}
           style={{

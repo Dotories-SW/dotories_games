@@ -40,7 +40,7 @@ function ArithmeticGame() {
   if (showDifficultySelect) {
     return (
       <div
-        className="min-h-screen safe-area-inset"
+        className="min-h-screen"
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <style jsx global>{`
@@ -171,7 +171,7 @@ function ArithmeticGame() {
   if (gameCompleted) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-[4vw] safe-area-inset"
+        className="min-h-screen flex items-center justify-center p-[4vw]"
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <style jsx global>{`
@@ -261,7 +261,7 @@ function ArithmeticGame() {
   return (
     <div className="bg-[#F5F1E8]">
       <div className="w-full h-[2vh]"></div>
-      <div className="min-h-screen p-[4vw] safe-area-inset">
+      <div className="min-h-screen p-[4vw]">
         <style jsx global>{`
           body {
             margin: 0;
