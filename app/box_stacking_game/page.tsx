@@ -39,10 +39,6 @@ function BoxStackingPage() {
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
           }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
         `}</style>
         <div className="bg-white rounded-3xl p-[5vh] w-[90%] max-w-md shadow-2xl text-center">
           <div className="text-[12vw] mb-[3vh] animate-pulse">⏳</div>
@@ -67,10 +63,7 @@ function BoxStackingPage() {
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
           }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
+
         `}</style>
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-[5vh] text-center">
           <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-gradient-to-br from-blue-400 to-blue-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
@@ -118,10 +111,6 @@ function BoxStackingPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           overflow: hidden;
           -webkit-tap-highlight-color: transparent;
-        }
-        .safe-area-inset {
-          padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
         }
       `}</style>
 

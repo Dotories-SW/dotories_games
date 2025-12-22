@@ -52,10 +52,7 @@ function ArithmeticGame() {
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
           }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
+
         `}</style>
 
         <div className="w-full px-[4vw] py-[3vh] pb-[6vh]">
@@ -185,10 +182,7 @@ function ArithmeticGame() {
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
           }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
+
         `}</style>
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
           <div className="text-[15vw] mb-[3vh] animate-bounce">🎉</div>
@@ -276,10 +270,6 @@ function ArithmeticGame() {
             touch-action: manipulation;
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
-          }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
           }
         `}</style>
 

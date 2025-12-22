@@ -54,10 +54,7 @@ function FlipCardGame() {
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
           }
-          .safe-area-inset {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
+
         `}</style>
 
         <div className="w-full px-[4vw] py-[3vh] pb-[6vh]">
@@ -298,10 +295,7 @@ function FlipCardGame() {
           overflow: hidden;
           -webkit-tap-highlight-color: transparent;
         }
-        .safe-area-inset {
-          padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
-        }
+
         .flip-card {
           perspective: 1000px;
           position: relative;
