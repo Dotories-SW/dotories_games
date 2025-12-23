@@ -49,3 +49,18 @@ export const getGravityValue = (screenHeight: number) => {
   const gravityScale = Math.max(0.7, Math.min(1.4, gravityScaleRaw));
   return BASE_GRAVITY * gravityScale;
 };
+
+// 화면 너비에 비례한 박스 속도 계산 (모든 기기에서 일관된 시각적 속도)
+export const getBoxSpeed = (screenWidth: number) => {
+  // 화면 너비의 22%/초를 기준으로 속도 계산
+  // 이렇게 하면 모든 기기에서 동일한 시각적 속도를 보여줌
+  const pixelsPerSecond = screenWidth * 0.22; // 화면 너비의 22%
+  return pixelsPerSecond / SCALE; // m/s로 변환
+};
+
+// 화면 너비에 비례한 박스 속도 증가량 계산
+export const getBoxSpeedIncrement = (screenWidth: number) => {
+  // 화면 너비의 3%/초씩 증가 (기본 속도의 약 13.6%)
+  const pixelsPerSecond = screenWidth * 0.03;
+  return pixelsPerSecond / SCALE; // m/s로 변환
+};

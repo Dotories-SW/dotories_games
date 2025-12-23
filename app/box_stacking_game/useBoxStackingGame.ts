@@ -26,6 +26,8 @@ import {
   FALLING_SOUND_PATH,
   getWorldSize,
   getGravityValue,
+  getBoxSpeed,
+  getBoxSpeedIncrement,
   BOX_STACK_SOUND_PATH,
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
@@ -261,7 +263,8 @@ export function useBoxStackingGame() {
     spawnYRef.current = spawnOffsetScreenRef.current / SCALE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
-    speedRef.current = 2;
+    // 화면 너비에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
+    speedRef.current = getBoxSpeed(window.innerWidth);
     setScore(0);
     setGameOver(false);
 
@@ -457,7 +460,8 @@ export function useBoxStackingGame() {
             const prevInterval = Math.floor(prev / 70);
             const nextInterval = Math.floor(next / 70);
             if (nextInterval > prevInterval && next > 0) {
-              speedRef.current += 0.3;
+              // 화면 너비에 비례한 속도 증가 (모든 기기에서 일관된 가속)
+              speedRef.current += getBoxSpeedIncrement(window.innerWidth);
             }
             return next;
           });
@@ -725,17 +729,20 @@ export function useBoxStackingGame() {
       const lastX = lastBody.getPosition().x;
       const offset = Math.abs(currX - lastX);
 
-      const perfectOffset = BOX_SIZE * 0.05;
-      const allowedOffset = Math.max(0.3, BOX_SIZE * 0.5);
+      const perfectOffset = BOX_SIZE * 0.05;  // 5% 이내: Perfect
+      const goodOffset = BOX_SIZE * 0.25;      // 25% 이내: Good
+      const allowedOffset = Math.max(0.3, BOX_SIZE * 0.5);  // 50% 이내: Normal
       
-      // 정확도 레벨 결정
+      // 정확도 레벨 결정 (3단계)
       if (offset <= perfectOffset) {
         perfectHitRef.current = 1;
-        current.hitAccuracy = "perfect";
+        current.hitAccuracy = "perfect";  // 10점: 매우 정확
+      } else if (offset <= goodOffset) {
+        current.hitAccuracy = "good";     // 7점: 정확
       } else if (offset <= allowedOffset) {
-        current.hitAccuracy = "good";
+        current.hitAccuracy = "normal";   // 5점: 보통
       } else {
-        current.hitAccuracy = "normal";
+        current.hitAccuracy = "fail";     // 0점: 실패
         pendingFailRef.current = true;
       }
     } else {
@@ -763,7 +770,8 @@ export function useBoxStackingGame() {
     setGameOver(false);
     setScore(0);
     setIsEnding(false);
-    speedRef.current = 2;
+    // 화면 너비에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
+    speedRef.current = getBoxSpeed(window.innerWidth);
     boxStackSoundRef.current?.play();
   };
 
