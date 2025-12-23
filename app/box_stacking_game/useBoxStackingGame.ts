@@ -28,6 +28,7 @@ import {
   getGravityValue,
   getBoxSpeed,
   getBoxSpeedIncrement,
+  isIOSDevice,
   BOX_STACK_SOUND_PATH,
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
@@ -76,6 +77,13 @@ export function useBoxStackingGame() {
   const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
   const scoreRef = useRef<number>(0);
   const failedBoxPositionRef = useRef<{ x: number; y: number } | null>(null);
+  
+  // 시간 측정 및 FPS 모니터링용 refs
+  const lastFrameTimeRef = useRef<number>(0);
+  const fpsRef = useRef<number>(60);
+  const frameCountRef = useRef<number>(0);
+  const lastFpsUpdateRef = useRef<number>(0);
+  
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // gameOver 상태와 ref 동기화
@@ -259,13 +267,15 @@ export function useBoxStackingGame() {
     currentBoxRef.current = null;
     lastPlacedBoxRef.current = null;
     cameraYRef.current = 0;
+    // iOS 감지
+    const isIOS = isIOSDevice();
+    
     // 초기 spawn Y 위치도 spawnOffsetScreenRef에 맞춰 설정
     spawnYRef.current = spawnOffsetScreenRef.current / SCALE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
-    // 화면 너비와 픽셀 밀도에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
-    const dpr = window.devicePixelRatio || 1;
-    speedRef.current = getBoxSpeed(window.innerWidth, dpr);
+    // 화면 너비 기반 속도 설정 (iOS/Safari 보정 포함)
+    speedRef.current = getBoxSpeed(window.innerWidth, isIOS);
     setScore(0);
     setGameOver(false);
 
@@ -273,21 +283,22 @@ export function useBoxStackingGame() {
     const freezeOldBoxes = () => {
       const boxes = boxesRef.current;
 
-      // settled된 박스 중 아직 freeze 안 된 것들 필터링
-      const settledBoxes = boxes.filter(
-        (b) => b.settled && !b.frozen && (b.stableTime || 0) > 0.4
-      );
+      // 전체 settled 박스 가져오기 (freeze 여부 상관없이)
+      const allSettledBoxes = boxes.filter((b) => b.settled);
       
       // 최소 3개 이상 쌓여야 freeze 시작
-      if (settledBoxes.length <= 2) return;
+      if (allSettledBoxes.length <= 2) return;
 
       // Y 좌표 오름차순 정렬 (위쪽 박스부터)
-      settledBoxes.sort(
+      allSettledBoxes.sort(
         (a, b) => a.body.getPosition().y - b.body.getPosition().y
       );
 
-      // 위 2개는 제외하고 나머지(아래쪽) freeze
-      const freezeTargets = settledBoxes.slice(2);
+      // 위 2개는 제외하고 나머지(아래쪽)만 freeze 대상
+      // 단, 이미 freeze된 것과 아직 안정화 시간이 부족한 것은 제외
+      const freezeTargets = allSettledBoxes.slice(2).filter(
+        (b) => !b.frozen && (b.stableTime || 0) > 0.4
+      );
       
       // 각도 허용 범위
       const SMALL_ANGLE = (5 * Math.PI) / 180;  // 5도: 거의 평평 → 0도로 보정
@@ -368,23 +379,51 @@ export function useBoxStackingGame() {
     };
 
     spawnBox();
+    
+    // 시간 측정 초기화
+    lastFrameTimeRef.current = performance.now();
+    lastFpsUpdateRef.current = performance.now();
+    frameCountRef.current = 0;
+    fpsRef.current = 60;
 
     let animationId: number | undefined;
 
-    const loop = () => {
+    const loop = (currentTime: number) => {
       animationId = requestAnimationFrame(loop);
 
       if (!worldRef.current) return;
 
+      // FPS 모니터링 (1초마다 업데이트)
+      frameCountRef.current++;
+      if (currentTime - lastFpsUpdateRef.current >= 1000) {
+        fpsRef.current = frameCountRef.current;
+        frameCountRef.current = 0;
+        lastFpsUpdateRef.current = currentTime;
+      }
+
+      // 실제 경과 시간 계산 (밀리초 → 초)
+      const deltaTime = lastFrameTimeRef.current > 0 
+        ? (currentTime - lastFrameTimeRef.current) / 1000 
+        : TIME_STEP;
+      
+      // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
       world.step(TIME_STEP);
+      
       if (!gameOverRef.current) {
-        updateLogic();
+        // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
+        const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
+        updateLogic(clampedDeltaTime);
       }
 
       renderScene(ctx);
+      
+      lastFrameTimeRef.current = currentTime;
     };
 
-    const updateLogic = () => {
+    // loop 함수 시작 (requestAnimationFrame이 자동으로 timestamp를 전달)
+    requestAnimationFrame(loop);
+
+    const updateLogic = (deltaTime: number) => {
       const world = worldRef.current;
       if (!world) return;
 
@@ -394,7 +433,7 @@ export function useBoxStackingGame() {
         const decay = 1.8;
         perfectHitRef.current = Math.max(
           0,
-          perfectHitRef.current - decay * TIME_STEP
+          perfectHitRef.current - decay * deltaTime
         );
       }
 
@@ -487,9 +526,8 @@ export function useBoxStackingGame() {
           const thresholdsCrossed = nextThreshold - prevThreshold;
           
           if (thresholdsCrossed > 0) {
-            // 넘어간 threshold 개수만큼 속도 증가
-            const dpr = window.devicePixelRatio || 1;
-            speedRef.current += getBoxSpeedIncrement(window.innerWidth, dpr) * thresholdsCrossed;
+            // 넘어간 threshold 개수만큼 속도 증가 (iOS/Safari 보정 포함)
+            speedRef.current += getBoxSpeedIncrement(window.innerWidth, isIOS) * thresholdsCrossed;
           }
 
           // 점수 업데이트
@@ -601,7 +639,7 @@ export function useBoxStackingGame() {
           const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y);
 
           if (speed < STABLE_SPEED && Math.abs(angVel) < STABLE_ANG) {
-            box.stableTime = (box.stableTime ?? 0) + TIME_STEP;
+            box.stableTime = (box.stableTime ?? 0) + deltaTime;
           } else if (speed > RESET_SPEED || Math.abs(angVel) > RESET_ANG) {
             box.stableTime = 0;
           }
@@ -739,17 +777,33 @@ export function useBoxStackingGame() {
       }
     };
 
-    const loopStart = () => {
+    // 초기 시작 시에도 동일한 시간 측정 적용
+    const startTime = performance.now();
+    lastFrameTimeRef.current = startTime;
+    
+    const loopStart = (currentTime: number) => {
       animationId = requestAnimationFrame(loopStart);
       if (!worldRef.current) return;
+      
+      // 실제 경과 시간 계산
+      const deltaTime = lastFrameTimeRef.current > 0 
+        ? (currentTime - lastFrameTimeRef.current) / 1000 
+        : TIME_STEP;
+      
+      // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
       world.step(TIME_STEP);
+      
       if (!gameOverRef.current) {
-        updateLogic();
+        // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
+        const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
+        updateLogic(clampedDeltaTime);
       }
       renderScene(ctx);
+      
+      lastFrameTimeRef.current = currentTime;
     };
 
-    loopStart();
+    loopStart(startTime);
 
     return () => {
       if (animationId !== undefined) cancelAnimationFrame(animationId);
@@ -821,9 +875,9 @@ export function useBoxStackingGame() {
     setGameOver(false);
     setScore(0);
     setIsEnding(false);
-    // 화면 너비와 픽셀 밀도에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
-    const dpr = window.devicePixelRatio || 1;
-    speedRef.current = getBoxSpeed(window.innerWidth, dpr);
+    // 화면 너비 기반 속도 설정 (iOS/Safari 보정 포함)
+    const isIOS = isIOSDevice();
+    speedRef.current = getBoxSpeed(window.innerWidth, isIOS);
     boxStackSoundRef.current?.play();
   };
 

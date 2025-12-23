@@ -4,7 +4,7 @@ export const TIME_STEP = 1 / 60;
 
 // 반응형 기준값
 export const BASE_SCREEN_HEIGHT = 800;
-export const BASE_GRAVITY = 10;
+export const BASE_GRAVITY = 5; // 떨어지는 속도 조정 (10 → 8)
 
 // settled 박스들 tilt 체크 기준 (10도)
 export const TILT_LIMIT = (10 * Math.PI) / 180;
@@ -50,52 +50,64 @@ export const getGravityValue = (screenHeight: number) => {
   return BASE_GRAVITY * gravityScale;
 };
 
-// 화면 너비와 픽셀 밀도에 비례한 박스 속도 계산 (모든 기기에서 일관된 시각적 속도)
-export const getBoxSpeed = (screenWidth: number, devicePixelRatio?: number) => {
-  const dpr = devicePixelRatio ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1);
-  const isTablet = screenWidth >= 768;
+// iOS/Safari 감지 (앱의 웹뷰 포함)
+export const isIOSDevice = (): boolean => {
+  if (typeof window === 'undefined') return false;
   
-  // 픽셀 밀도 보정 계수
-  // DPR이 높을수록(Retina 등) 시각적으로 느려 보이므로 속도 보정 필요
-  // DPR 1.0 → 1.0x (보정 없음)
-  // DPR 2.0 → 1.15x (약간 빠르게)
-  // DPR 3.0 → 1.25x (더 빠르게)
-  const dprMultiplier = Math.min(1.0 + (dpr - 1) * 0.15, 1.3); // 최대 1.3배까지만
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  const isIOS = /iphone|ipad|ipod/.test(userAgent);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+  const isWebView = /(iphone|ipad|ipod).*version.*safari/i.test(userAgent) || 
+                    (isIOS && !isSafari); // iOS 웹뷰는 Safari가 아님
+  
+  return isIOS || isWebView || isSafari;
+};
+
+// 화면 너비에 비례한 박스 속도 계산
+export const getBoxSpeed = (screenWidth: number, isIOS?: boolean) => {
+  const isTablet = screenWidth >= 768;
   
   let pixelsPerSecond: number;
   
   if (isTablet) {
     // 태블릿: 비율을 낮추고 최대값 제한
-    pixelsPerSecond = screenWidth * 0.20 * dprMultiplier; // 픽셀 밀도 보정 적용
+    pixelsPerSecond = screenWidth * 0.18; // 0.20 → 0.18로 감소
   } else {
-    // 모바일: 비율을 높여서 충분히 빠르게
-    const baseRatio = 0.30; // 기본 비율
-    pixelsPerSecond = screenWidth * baseRatio * dprMultiplier; // 픽셀 밀도 보정 적용
+    // 모바일: 비율 감소
+    const baseRatio = 0.26; // 0.30 → 0.26으로 감소
+    pixelsPerSecond = screenWidth * baseRatio;
+  }
+  
+  // iOS/Safari 보정 (렌더링 성능 차이 보정)
+  if (isIOS ?? isIOSDevice()) {
+    pixelsPerSecond *= 1.10; // 1.15 → 1.10으로 감소
   }
   
   const speed = pixelsPerSecond / SCALE; // m/s로 변환
   
   // 최소/최대 속도 제한
-  const MIN_SPEED = 1.2; // 최소 속도
-  const MAX_SPEED = 2.0; // 최대 속도
+  const MIN_SPEED = 0.7; // 최소 속도
+  const MAX_SPEED = 0.7; // 최대 속도
   
   return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
 };
 
-// 화면 너비와 픽셀 밀도에 비례한 박스 속도 증가량 계산
-export const getBoxSpeedIncrement = (screenWidth: number, devicePixelRatio?: number) => {
-  const dpr = devicePixelRatio ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1);
+// 화면 너비에 비례한 박스 속도 증가량 계산
+export const getBoxSpeedIncrement = (screenWidth: number, isIOS?: boolean) => {
   const isTablet = screenWidth >= 768;
   
-  // 픽셀 밀도 보정 계수 (기본 속도와 동일)
-  const dprMultiplier = Math.min(1.0 + (dpr - 1) * 0.15, 1.3);
-  
   // 기본 속도의 증가량
-  const baseIncrement = isTablet ? 0.06 : 0.05;
-  const pixelsPerSecond = screenWidth * baseIncrement * dprMultiplier; // 픽셀 밀도 보정 적용
+  const baseIncrement = isTablet ? 0.05 : 0.04; // 0.06 → 0.05, 0.05 → 0.04로 감소
+  let pixelsPerSecond = screenWidth * baseIncrement;
+  
+  // iOS/Safari 보정 (기본 속도와 동일한 보정)
+  if (isIOS ?? isIOSDevice()) {
+    pixelsPerSecond *= 1.10; // 1.15 → 1.10으로 감소
+  }
+  
   const increment = pixelsPerSecond / SCALE;
   
   // 증가량도 최대값 제한 (너무 빨라지지 않도록)
-  const MAX_INCREMENT = 0.5;
+  const MAX_INCREMENT = 0.4; // 0.5 → 0.4로 감소
   return Math.min(MAX_INCREMENT, increment);
 };
