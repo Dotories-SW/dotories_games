@@ -77,15 +77,15 @@ function CrosswordPuzzles() {
           <div className="bg-white rounded-3xl p-[4vh] shadow-lg border-0">
             <div className="text-center mb-[4vh]">
               <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-purple-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
-                <div className="text-white text-[10vw] font-bold">🧩</div>
+                <div className="text-white font-bold" style={{ fontSize: 'clamp(40px, 10vw, 48px)' }}>🧩</div>
               </div>
-              <h1 className="text-[7vw] font-bold text-gray-900 mb-[1.5vh]">
+              <h1 className="font-bold text-gray-900 mb-[1.5vh]" style={{ fontSize: 'clamp(28px, 7vw, 32px)' }}>
                 낱말 퀴즈
               </h1>
-              <p className="text-gray-500 text-[4vw] mb-[0.5vh]">
+              <p className="text-gray-500 mb-[0.5vh]" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
                 빈칸을 채워서
               </p>
-              <p className="text-gray-500 text-[4vw]">
+              <p className="text-gray-500" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
                 단어를 완성해보세요!
               </p>
             </div>
@@ -114,28 +114,30 @@ function CrosswordPuzzles() {
                           <div className="flex-1 text-left">
                             <div className="flex items-center gap-[1.5vw] mb-[0.5vh]">
                               {isCompleted && (
-                                <span className="text-[4vw]">✅</span>
+                                <span style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>✅</span>
                               )}
                               <div
-                                className={`font-bold text-[5.5vw] ${
+                                className={`font-bold ${
                                   isSelected
                                     ? "text-white"
                                     : isCompleted
                                     ? "text-green-600"
                                     : "text-gray-900"
                                 }`}
+                                style={{ fontSize: 'clamp(22px, 5.5vw, 26px)' }}
                               >
                                 {config.name}
                               </div>
                             </div>
                           <div
-                            className={`text-[4.5vw] ${
+                            className={`${
                               isSelected
                                 ? "text-white/90"
                                 : isCompleted
                                 ? "text-green-600/80"
                                 : "text-gray-600"
                             }`}
+                            style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}
                           >
                             {isCompleted ? <span>완료됨</span> : <span>도전 가능</span>}
                           </div>
@@ -145,11 +147,12 @@ function CrosswordPuzzles() {
                               isSelected ? "bg-white/20" : "bg-orange-50"
                             }`}
                           >
-                            <span className="text-[4vw]">🪙</span>
+                            <span style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>🪙</span>
                             <span
-                              className={`font-bold text-[4vw] ${
+                              className={`font-bold ${
                                 isSelected ? "text-white" : "text-orange-600"
                               }`}
+                              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
                             >
                               {config.coin}
                             </span>
@@ -167,11 +170,12 @@ function CrosswordPuzzles() {
                     selectedDifficulty &&
                     startGameWithDifficulty(selectedDifficulty)
                   }
-                  className={`w-full py-[3.5vh] rounded-2xl font-bold text-[4vw] transition-all active:scale-[0.98] shadow-lg ${
+                  className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all active:scale-[0.98] shadow-lg ${
                     selectedDifficulty
                       ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-purple-400/50"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
+                  style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
                 >
                   게임 시작
                 </button>
@@ -200,27 +204,30 @@ function CrosswordPuzzles() {
           }
         `}</style>
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
-          <div className="text-[15vw] mb-[3vh] animate-bounce">🎉</div>
-          <h2 className="text-[6vw] font-bold text-gray-900 mb-[2vh]">완료!</h2>
-          <p className="text-[3.5vw] mb-[3vh] text-gray-600">
+          <div className="mb-[3vh] animate-bounce" style={{ fontSize: 'clamp(60px, 15vw, 72px)' }}>🎉</div>
+          <h2 className="font-bold text-gray-900 mb-[2vh]" style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}>완료!</h2>
+          <p className="mb-[3vh] text-gray-600" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
             모든 단어를 완성했습니다!
           </p>
           <div className="space-y-[2vh]">
             <button
               onClick={goToDifficultySelect}
-              className="w-full py-[3.5vh] text-[4vw] bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+              className="w-full py-[3.5vh] bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
             >
               다른 난이도 선택
             </button>
             <button
               onClick={() => (window.location.href = "/crossword_puzzles")}
-              className="w-full py-[3.5vh] text-[4vw] bg-gray-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+              className="w-full py-[3.5vh] bg-gray-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
             >
               메인화면으로
             </button>
             <div className="flex gap-[2vw]">
               <button
-                className="flex-1 py-[2.5vh] border-2 border-purple-500 text-purple-500 rounded-2xl font-bold text-[3.5vw] active:scale-[0.98] transition-all bg-white"
+                className="flex-1 py-[2.5vh] border-2 border-purple-500 text-purple-500 rounded-2xl font-bold active:scale-[0.98] transition-all bg-white"
+                style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}
                 onClick={() =>
                   handleEndGame(
                     "noAds",
@@ -234,7 +241,7 @@ function CrosswordPuzzles() {
                   DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty]
                     .localIndex
                 ] ? (
-                  <span className="text-[3vw]">코인 수령 완료</span>
+                  <span style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>코인 수령 완료</span>
                 ) : (
                   <span>
                     🪙{" "}
@@ -247,7 +254,8 @@ function CrosswordPuzzles() {
                 DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
               ] && (
                 <button
-                  className="flex-1 py-[2.5vh] bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-2xl font-bold text-[3.5vw] active:scale-[0.98] transition-all shadow-lg"
+                  className="flex-1 py-[2.5vh] bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-lg"
+                  style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}
                   onClick={() =>
                     handleEndGame(
                       "ads",
@@ -259,7 +267,7 @@ function CrosswordPuzzles() {
                 >
                   <span>광고보고</span>
                   <br />
-                  <span className="text-[2.5vw]">2배 받기</span>
+                  <span style={{ fontSize: 'clamp(10px, 2.5vw, 14px)' }}>2배 받기</span>
                 </button>
               )}
             </div>
@@ -278,7 +286,7 @@ function CrosswordPuzzles() {
       >
         <div className="text-center">
           <div className="w-[10vw] h-[10vw] border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-[2vh]"></div>
-          <p className="text-[3vw] text-gray-600">퍼즐을 준비하고 있어요...</p>
+          <p className="text-gray-600" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>퍼즐을 준비하고 있어요...</p>
         </div>
       </div>
     );
@@ -312,14 +320,14 @@ function CrosswordPuzzles() {
           <div className="bg-white/95 backdrop-blur-md border-2 border-purple-200/60 rounded-2xl p-[3vh] shadow-lg mb-[2vh]">
             <div className="flex items-center justify-between mb-[1.5vh]">
               <div className="flex items-center gap-[1.5vw]">
-                <span className="text-[4.5vw] font-bold text-gray-700">
+                <span className="font-bold text-gray-700" style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}>
                   진행률
                 </span>
-                <span className="text-[4vw] text-gray-500">
+                <span className="text-gray-500" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
                   {correctCount} / {totalBlanks}
                 </span>
               </div>
-              <span className="text-[4.5vw] font-bold text-purple-600">
+              <span className="font-bold text-purple-600" style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}>
                 {progress}%
               </span>
             </div>
@@ -377,7 +385,7 @@ function CrosswordPuzzles() {
                       onClick={() => handleCellClick(rowIndex, colIndex)}
                     >
                       {wordsAtCell.length > 0 && (
-                        <span className="absolute top-[0%] left-[5%] text-[2.5vw] text-purple-600 font-semibold">
+                        <span className="absolute top-[0%] left-[5%] text-purple-600 font-semibold" style={{ fontSize: 'clamp(10px, 2.5vw, 14px)' }}>
                           {wordsAtCell.map((w) => w.id).join(",")}
                         </span>
                       )}
@@ -385,12 +393,12 @@ function CrosswordPuzzles() {
                       {isBlockedCell ? (
                         ""
                       ) : isFixed ? (
-                        <span className="text-gray-700 text-[6vw]">
+                        <span className="text-gray-700" style={{ fontSize: 'clamp(24px, 6vw, 32px)' }}>
                           {cell}
                         </span>
                       ) : (
                         <span
-                          className={`text-[6vw] ${
+                          className={`${
                             userCell
                               ? currentPuzzle.solution[rowIndex][colIndex] ===
                                 userCell
@@ -398,6 +406,7 @@ function CrosswordPuzzles() {
                                 : "text-purple-600"
                               : "text-gray-400"
                           }`}
+                          style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}
                         >
                           {userCell}
                         </span>
@@ -426,13 +435,14 @@ function CrosswordPuzzles() {
                     <button
                       onClick={() => handleLetterSelect(letter, index)}
                       disabled={!canSelect || isUsed}
-                      className={`w-full h-full rounded-lg font-bold text-[6vw] transition-all duration-300 ease-in-out transform ${
+                      className={`w-full h-full rounded-lg font-bold transition-all duration-300 ease-in-out transform ${
                         isUsed
                           ? "scale-0 opacity-0 pointer-events-none"
                           : canSelect
                           ? "scale-100 opacity-100 bg-purple-100 text-purple-700 hover:bg-purple-200 hover:scale-105 active:scale-95"
                           : "scale-100 opacity-100 bg-gray-100 text-gray-400 cursor-not-allowed"
                       }`}
+                      style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}
                     >
                       {letter}
                     </button>
@@ -448,24 +458,25 @@ function CrosswordPuzzles() {
             {selectedWords.length > 1 && (
               <div className="flex gap-[1vw] mb-[2vh]">
                 {selectedWords.map((word) => (
-                  <button
-                    key={word.id}
-                    onClick={() => {
-                      setSelectedDirection(word.direction);
-                      setShowHint(false);
-                    }}
-                    className={`flex-1 py-[1.5vh] rounded-lg font-semibold text-[4vw] transition-all ${
-                      selectedDirection === word.direction
-                        ? "bg-purple-500 text-white shadow-md"
-                        : "bg-white text-gray-600 hover:bg-purple-100"
-                    }`}
-                  >
-                    <div className="flex items-center justify-center gap-1">
-                      <span>
-                        {word.direction === "horizontal" ? "가로" : "세로"}
-                      </span>
-                    </div>
-                  </button>
+                    <button
+                      key={word.id}
+                      onClick={() => {
+                        setSelectedDirection(word.direction);
+                        setShowHint(false);
+                      }}
+                      className={`flex-1 py-[1.5vh] rounded-lg font-semibold transition-all ${
+                        selectedDirection === word.direction
+                          ? "bg-purple-500 text-white shadow-md"
+                          : "bg-white text-gray-600 hover:bg-purple-100"
+                      }`}
+                      style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
+                    >
+                      <div className="flex items-center justify-center gap-1">
+                        <span>
+                          {word.direction === "horizontal" ? "가로" : "세로"}
+                        </span>
+                      </div>
+                    </button>
                 ))}
               </div>
             )}
@@ -480,10 +491,10 @@ function CrosswordPuzzles() {
                 <>
                   <div className="flex items-center justify-between mb-[1vh]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[3vw] font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center">
+                      <span className="font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>
                         {currentWord.id}
                       </span>
-                      <span className="text-[3.5vw] font-semibold text-gray-700">
+                      <span className="font-semibold text-gray-700" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
                         {currentWord.direction === "horizontal"
                           ? "가로"
                           : "세로"}
@@ -491,7 +502,8 @@ function CrosswordPuzzles() {
                     </div>
                     <button
                       onClick={() => setShowHint(!showHint)}
-                      className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg text-[4vw] font-semibold hover:bg-purple-600 transition-colors"
+                      className="px-[2vw] py-[1vh] bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 transition-colors"
+                      style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
                     >
                       {showHint ? "힌트 숨기기" : "💡 힌트 보기"}
                     </button>
@@ -499,10 +511,10 @@ function CrosswordPuzzles() {
 
                   {showHint && (
                     <div className="p-[1.5vh] bg-white rounded-lg border border-purple-200">
-                      <p className="text-[3.8vw] text-gray-600 mb-[0.5vh]">
+                      <p className="text-gray-600 mb-[0.5vh]" style={{ fontSize: 'clamp(15px, 3.8vw, 19px)' }}>
                         💬 힌트
                       </p>
-                      <p className="text-[4.5vw] text-gray-700">
+                      <p className="text-gray-700" style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}>
                         {currentWord.hint}
                       </p>
                     </div>
@@ -526,7 +538,7 @@ function CrosswordPuzzles() {
                     currentPuzzle.grid[selectedCell.row][selectedCell.col] !==
                       "?")
                 }
-                className={`w-full py-[2vh] text-[4.5vw] rounded-xl font-semibold transition-colors ${
+                className={`w-full py-[2vh] rounded-xl font-semibold transition-colors ${
                   selectedCell &&
                   (currentPuzzle.grid[selectedCell.row][selectedCell.col] ===
                     "" ||
@@ -535,6 +547,7 @@ function CrosswordPuzzles() {
                     ? "bg-red-400 text-white hover:bg-red-500"
                     : "bg-gray-300 text-gray-400 cursor-not-allowed"
                 }`}
+                style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}
               >
                 🗑️ 지우기
               </button>
@@ -542,11 +555,12 @@ function CrosswordPuzzles() {
               <button
                 onClick={undo}
                 disabled={history.length === 0}
-                className={`w-full py-[2vh] text-[4.5vw] rounded-xl font-semibold transition-colors ${
+                className={`w-full py-[2vh] rounded-xl font-semibold transition-colors ${
                   history.length > 0
                     ? "border-red-400 border-2 text-black hover:bg-red-400 hover:text-white"
                     : "bg-gray-300 text-gray-400 cursor-not-allowed"
                 }`}
+                style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}
               >
                 ↩️ 실행 취소
               </button>
@@ -554,7 +568,8 @@ function CrosswordPuzzles() {
 
             <button
               onClick={handleReset}
-              className="w-full mx-auto py-[2vh] text-[4.8vw] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500 block"
+              className="w-full mx-auto py-[2vh] rounded-xl font-semibold transition-colors bg-purple-400 text-white hover:bg-purple-500 block"
+              style={{ fontSize: 'clamp(19px, 4.8vw, 23px)' }}
             >
               🔄 전체 초기화
             </button>

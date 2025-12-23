@@ -26,6 +26,12 @@ export const DUST_IMAGE_PATHS = [
   "/box/effect/dust_4.png",
 ];
 
+export const SCORE_IMAGE_PATHS: { [key: number]: string } = {
+  5: "/box/score/score_5.png",
+  7: "/box/score/score_7.png",
+  10: "/box/score/score_10.png",
+};
+
 export const FALLING_SOUND_PATH = "/sounds/box_stacking/falling_box.mp3";
 export const BOX_STACK_SOUND_PATH = "/sounds/box_stacking/box_stacking_bgm.mp3";
 

@@ -22,12 +22,13 @@ import {
   CAMERA_MAX_STEP,
   BOX_IMAGE_PATHS,
   DUST_IMAGE_PATHS,
+  SCORE_IMAGE_PATHS,
   FALLING_SOUND_PATH,
   getWorldSize,
   getGravityValue,
   BOX_STACK_SOUND_PATH,
 } from "./utils";
-import type { BoxInfo, CurrentBox, DustEffect } from "./types";
+import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
 import { useGameTimer } from "../_hooks/useGameTimer";
 
 export function useBoxStackingGame() {
@@ -66,6 +67,8 @@ export function useBoxStackingGame() {
   const perfectHitRef = useRef<number>(0);
   const dustEffectsRef = useRef<DustEffect[]>([]);
   const dustFramesRef = useRef<HTMLImageElement[]>([]);
+  const scoreEffectsRef = useRef<ScoreEffect[]>([]);
+  const scoreImagesRef = useRef<{ [key: number]: HTMLImageElement }>({});
   const pendingFailRef = useRef<boolean>(false);
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
   const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -135,13 +138,31 @@ export function useBoxStackingGame() {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
 
-      const shorterSide = Math.min(width, height);
-      const boxPixelSize = shorterSide * 0.28;
+      // 게임 영역 폭 제한 (큰 화면에서 최대 600px)
+      const MAX_GAME_WIDTH = 600;
+      const effectiveWidth = Math.min(width, MAX_GAME_WIDTH);
+      
+      // 화면 비율 계산 (태블릿 vs 스마트폰 구분)
+      const aspectRatio = width / height;
+      const isTablet = aspectRatio > 0.7; // 태블릿은 가로가 더 넓음
+      const isLargeTablet = width >= 1024; // 큰 태블릿
+      
+      const shorterSide = Math.min(effectiveWidth, height);
+      // 큰 태블릿: 0.20, 일반 태블릿: 0.22, 스마트폰: 0.28
+      let boxSizeRatio = 0.28;
+      if (isLargeTablet) {
+        boxSizeRatio = 0.20;
+      } else if (isTablet) {
+        boxSizeRatio = 0.22;
+      }
+      
+      const boxPixelSize = shorterSide * boxSizeRatio;
       // 픽셀 단위를 월드 단위로 변환하고, 상한선 설정 (최대 5m)
       const boxSizeWorld = boxPixelSize / SCALE;
       boxSizeRef.current = Math.min(boxSizeWorld, 5);
 
       // 스폰 위치 (스크린 기준 픽셀 오프셋)
+      // 모든 기기에서 동일하게 0.2 적용
       spawnOffsetScreenRef.current = height * 0.2;
 
       // resize 시 중력값도 업데이트
@@ -214,9 +235,19 @@ export function useBoxStackingGame() {
       return img;
     });
 
+    // 점수 이미지 로드
+    const scoreImgs: { [key: number]: HTMLImageElement } = {};
+    Object.entries(SCORE_IMAGE_PATHS).forEach(([score, src]) => {
+      const img = new Image();
+      img.src = src;
+      scoreImgs[Number(score)] = img;
+    });
+
     imagesRef.current = imgs;
     dustFramesRef.current = dustImgs;
+    scoreImagesRef.current = scoreImgs;
     dustEffectsRef.current = [];
+    scoreEffectsRef.current = [];
 
     boxesRef.current = [];
     currentBoxRef.current = null;
@@ -404,6 +435,19 @@ export function useBoxStackingGame() {
             pointsToAdd = 0;
           }
 
+          // 점수 이펙트 생성
+          if (pointsToAdd > 0 && (pointsToAdd === 5 || pointsToAdd === 7 || pointsToAdd === 10)) {
+            const boxPos = body.getPosition();
+            const BOX_SIZE = boxSizeRef.current ?? 3.3;
+            scoreEffectsRef.current.push({
+              x: boxPos.x + BOX_SIZE / 2,
+              y: boxPos.y - BOX_SIZE / 2,
+              score: pointsToAdd as 5 | 7 | 10,
+              life: 1.0,
+              opacity: 1.0,
+            });
+          }
+
           setScore((prev) => {
             const next = prev + pointsToAdd;
             const prevInterval = Math.floor(prev / 70);
@@ -447,8 +491,21 @@ export function useBoxStackingGame() {
         const pos = body.getPosition();
         const vel = body.getLinearVelocity();
 
-        const leftMargin = WORLD_WIDTH * 0.15;
-        const rightMargin = WORLD_WIDTH * 0.85;
+        // 큰 태블릿(1024px 이상)에서는 이동 범위를 중앙으로 제한
+        const screenWidth = window.innerWidth;
+        const isLargeTablet = screenWidth >= 1024;
+        
+        let leftMargin, rightMargin;
+        if (isLargeTablet) {
+          // 큰 태블릿: 25% ~ 75% 범위
+          leftMargin = WORLD_WIDTH * 0.25;
+          rightMargin = WORLD_WIDTH * 0.75;
+        } else {
+          // 일반 기기: 15% ~ 85% 범위
+          leftMargin = WORLD_WIDTH * 0.15;
+          rightMargin = WORLD_WIDTH * 0.85;
+        }
+        
         if (pos.x < leftMargin && vel.x < 0) {
           body.setLinearVelocity(Vec2(Math.abs(vel.x), 0));
         } else if (pos.x > rightMargin && vel.x > 0) {
@@ -461,6 +518,14 @@ export function useBoxStackingGame() {
       for (const d of dustEffectsRef.current) {
         d.life = Math.max(0, d.life - 0.012);
         d.y -= 0.005;
+      }
+
+      // 점수 이펙트 업데이트
+      scoreEffectsRef.current = scoreEffectsRef.current.filter((s) => s.life > 0);
+      for (const s of scoreEffectsRef.current) {
+        s.life = Math.max(0, s.life - 0.015);
+        s.opacity = s.life;
+        s.y -= 0.02; // 위로 올라감
       }
 
       if (!gameOverRef.current) {
@@ -596,6 +661,21 @@ export function useBoxStackingGame() {
         ctx.save();
         ctx.globalAlpha = d.life;
         ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+        ctx.restore();
+      }
+
+      // 점수 이펙트 렌더링
+      for (const s of scoreEffectsRef.current) {
+        const img = scoreImagesRef.current[s.score];
+        if (!img || !img.complete) continue;
+
+        const { x, y } = worldToScreen(s.x, s.y);
+        const width = BOX_SIZE * SCALE * 1.2;
+        const height = (img.height / img.width) * width;
+
+        ctx.save();
+        ctx.globalAlpha = s.opacity;
+        ctx.drawImage(img, x - width / 2, y - height / 2, width, height);
         ctx.restore();
       }
     };

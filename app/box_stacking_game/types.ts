@@ -22,3 +22,11 @@ export interface DustEffect {
   frame: number;
   life: number;
 }
+
+export interface ScoreEffect {
+  x: number;
+  y: number;
+  score: 5 | 7 | 10;
+  life: number;
+  opacity: number;
+}

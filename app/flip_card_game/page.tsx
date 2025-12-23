@@ -61,12 +61,12 @@ function FlipCardGame() {
           <div className="bg-white rounded-3xl p-[4vh] shadow-lg border-0">
             <div className="text-center mb-[4vh]">
               <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-gradient-to-br from-red-400 to-red-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
-                <div className="text-white text-[10vw]">🎴</div>
+                <div className="text-white" style={{ fontSize: 'clamp(40px, 10vw, 48px)' }}>🎴</div>
               </div>
-              <h2 className="text-[7vw] font-bold text-gray-900 mb-[1.5vh]">
+              <h2 className="font-bold text-gray-900 mb-[1.5vh]" style={{ fontSize: 'clamp(28px, 7vw, 32px)' }}>
                 난이도를 선택하세요
               </h2>
-              <p className="text-gray-500 text-[4vw]">
+              <p className="text-gray-500" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
                 같은 그림을 찾아 카드를 매칭하세요
               </p>
             </div>
@@ -94,28 +94,30 @@ function FlipCardGame() {
                       <div className="flex-1 text-left">
                         <div className="flex items-center gap-[1.5vw] mb-[0.5vh]">
                           {completedGames[config.localIndex] && (
-                            <span className="text-[4vw]">✅</span>
+                            <span style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>✅</span>
                           )}
                           <div
-                            className={`font-bold text-[5.5vw] ${
+                            className={`font-bold ${
                               selectedDifficulty === key
                                 ? "text-white"
                                 : completedGames[config.localIndex]
                                 ? "text-green-600"
                                 : "text-gray-900"
                             }`}
+                            style={{ fontSize: 'clamp(22px, 5.5vw, 26px)' }}
                           >
                             {config.name}
                           </div>
                         </div>
                         <div
-                          className={`text-[4.5vw] ${
+                          className={`${
                             selectedDifficulty === key
                               ? "text-white/90"
                               : completedGames[config.localIndex]
                               ? "text-green-600/80"
                               : "text-gray-600"
                           }`}
+                          style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}
                         >
                           {completedGames[config.localIndex] ? (
                             <span>완료됨</span>
@@ -129,13 +131,14 @@ function FlipCardGame() {
                           ? "bg-white/20"
                           : "bg-orange-50"
                       }`}>
-                        <span className="text-[4vw]">🪙</span>
+                        <span style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>🪙</span>
                         <span
-                          className={`font-bold text-[4vw] ${
+                          className={`font-bold ${
                             selectedDifficulty === key
                               ? "text-white"
                               : "text-orange-600"
                           }`}
+                          style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
                         >
                           {config.coin}
                         </span>
@@ -150,11 +153,12 @@ function FlipCardGame() {
                   onClick={() =>
                     startGameWithDifficulty(selectedDifficulty as Difficulty)
                   }
-                  className={`w-full py-[3.5vh] rounded-2xl font-bold text-[4vw] transition-all active:scale-[0.98] shadow-lg ${
+                  className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all active:scale-[0.98] shadow-lg ${
                     selectedDifficulty
                       ? "bg-gradient-to-r from-red-400 to-red-500 text-white shadow-red-400/50"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
+                  style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
                   disabled={!selectedDifficulty}
                 >
                   게임 시작
@@ -175,22 +179,23 @@ function FlipCardGame() {
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
-          <div className="text-[15vw] mb-[3vh] animate-bounce">💔</div>
-          <h2 className="text-[6vw] font-bold text-gray-900 mb-[2vh]">
+          <div className="mb-[3vh] animate-bounce" style={{ fontSize: 'clamp(60px, 15vw, 72px)' }}>💔</div>
+          <h2 className="font-bold text-gray-900 mb-[2vh]" style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}>
             게임 오버
           </h2>
-          <p className="text-[3.5vw] mb-[3vh] text-gray-600">
+          <p className="mb-[3vh] text-gray-600" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
             하트를 모두 소진했습니다
           </p>
           <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-[3vh] mb-[4vh]">
-            <p className="text-[3vw] text-gray-600 mb-[1vh]">최종 점수</p>
-            <p className="text-[7vw] font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+            <p className="text-gray-600 mb-[1vh]" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>최종 점수</p>
+            <p className="font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent" style={{ fontSize: 'clamp(28px, 7vw, 32px)' }}>
               {score}점
             </p>
           </div>
           <button
             onClick={restartGame}
-            className="w-full py-[3.5vh] text-[4vw] bg-gradient-to-r from-red-400 to-red-500 text-white rounded-2xl font-bold shadow-lg active:scale-[0.98] transition-all"
+            className="w-full py-[3.5vh] bg-gradient-to-r from-red-400 to-red-500 text-white rounded-2xl font-bold shadow-lg active:scale-[0.98] transition-all"
+            style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
           >
             다시하기
           </button>
@@ -207,17 +212,17 @@ function FlipCardGame() {
         style={{ backgroundColor: "#F5F1E8" }}
       >
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
-          <div className="text-[15vw] mb-[3vh] animate-bounce">🎉</div>
-          <h2 className="text-[6vw] font-bold text-gray-900 mb-[2vh]">완료!</h2>
+          <div className="mb-[3vh] animate-bounce" style={{ fontSize: 'clamp(60px, 15vw, 72px)' }}>🎉</div>
+          <h2 className="font-bold text-gray-900 mb-[2vh]" style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}>완료!</h2>
 
           <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-[3vh] mb-[3vh]">
             <div className="flex justify-between items-center mb-[2vh]">
-              <span className="text-[5vw] text-gray-600">시도 횟수</span>
-              <span className="text-[6vw] font-bold text-gray-900">{moveCount}</span>
+              <span className="text-gray-600" style={{ fontSize: 'clamp(20px, 5vw, 24px)' }}>시도 횟수</span>
+              <span className="font-bold text-gray-900" style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}>{moveCount}</span>
             </div>
             <div className="border-t border-gray-200 pt-[2vh]">
-              <p className="text-[3vw] text-gray-600 mb-[1vh]">최종 점수</p>
-              <p className="text-[7vw] font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+              <p className="text-gray-600 mb-[1vh]" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>최종 점수</p>
+              <p className="font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent" style={{ fontSize: 'clamp(28px, 7vw, 32px)' }}>
                 {score}점
               </p>
             </div>
@@ -226,7 +231,8 @@ function FlipCardGame() {
             {/* 코인 받기 버튼들 */}
             <div className="flex gap-[2vw]">
               <button
-                className="flex-1 py-[2.5vh] border-2 border-red-400 text-red-400 rounded-2xl font-bold text-[3.5vw] active:scale-[0.98] transition-all bg-white"
+                className="flex-1 py-[2.5vh] border-2 border-red-400 text-red-400 rounded-2xl font-bold active:scale-[0.98] transition-all bg-white"
+                style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}
                 onClick={() =>
                   handleEndGame(
                     "noAds",
@@ -240,7 +246,7 @@ function FlipCardGame() {
                   DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty]
                     .localIndex
                 ] ? (
-                  <span className="text-[3vw]">코인 수령 완료</span>
+                  <span style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>코인 수령 완료</span>
                 ) : (
                   <span>
                     🪙 {DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].coin} 코인 받기
@@ -251,7 +257,8 @@ function FlipCardGame() {
                 DIFFICULTY_CONFIGS[selectedDifficulty as Difficulty].localIndex
               ] && (
                 <button
-                  className="flex-1 py-[2.5vh] bg-gradient-to-r from-red-400 to-red-500 text-white rounded-2xl font-bold text-[3.5vw] active:scale-[0.98] transition-all shadow-lg"
+                  className="flex-1 py-[2.5vh] bg-gradient-to-r from-red-400 to-red-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-lg"
+                  style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}
                   onClick={() =>
                     handleEndGame(
                       "ads",
@@ -263,14 +270,15 @@ function FlipCardGame() {
                 >
                   <span>광고보고</span>
                   <br />
-                  <span className="text-[2.5vw]">2배 받기</span>
+                  <span style={{ fontSize: 'clamp(10px, 2.5vw, 14px)' }}>2배 받기</span>
                 </button>
               )}
             </div>
             
             <button
               onClick={() => setShowDifficultySelect(true)}
-              className="w-full py-[3.5vh] text-[4vw] bg-gradient-to-r from-red-300 to-pink-300 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+              className="w-full py-[3.5vh] bg-gradient-to-r from-red-300 to-pink-300 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
+              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
             >
               다른 난이도 선택
             </button>
@@ -353,7 +361,7 @@ function FlipCardGame() {
       {encouragementMessage && (
         <div className="fixed top-[calc(10vh)] left-1/2 transform -translate-x-1/2 z-[60] encouragement-toast">
           <div className="bg-gradient-to-r from-red-300 to-pink-300 text-white px-[5vw] py-[2vh] rounded-2xl shadow-2xl border-2 border-white/30">
-            <p className="text-[3.5vw] font-bold text-center whitespace-nowrap">
+            <p className="font-bold text-center whitespace-nowrap" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
               {encouragementMessage}
             </p>
           </div>
@@ -365,7 +373,7 @@ function FlipCardGame() {
         <div className="flex items-center justify-between px-[5vw] h-full">
           {/* 하트 섹션 */}
           <div className="flex items-center gap-[1vw] border-2 bg-white shadow-sm border-red-200/60 rounded-full px-[3vw] py-[1.5vh]">
-            <div className="text-[6.5vw] leading-none">
+            <div className="leading-none" style={{ fontSize: 'clamp(26px, 6.5vw, 30px)' }}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <span key={i} className={`mr-[0.3vw] ${i < lives ? "" : "opacity-20"}`}>
                   {i < lives ? "❤️" : "🤍"}
@@ -376,8 +384,8 @@ function FlipCardGame() {
           
           {/* 점수 섹션 */}
           <div className="flex items-center gap-[1.5vw] border-2 bg-white shadow-sm border-red-200/60 rounded-full px-[3vw] py-[1.5vh]">
-            <span className="text-[3.5vw] font-semibold text-gray-500">점수</span>
-            <span className="text-[5.5vw] font-bold text-red-500">
+            <span className="font-semibold text-gray-500" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>점수</span>
+            <span className="font-bold text-red-500" style={{ fontSize: 'clamp(22px, 5.5vw, 26px)' }}>
               {score}
             </span>
           </div>
@@ -388,11 +396,11 @@ function FlipCardGame() {
       {showPrepareModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-[5vh] mx-[4vw] w-[85%] max-w-md text-center shadow-2xl">
-            <div className="text-[12vw] mb-[3vh] animate-bounce">🎴</div>
-            <p className="text-[4vw] font-semibold text-gray-900 mb-[1vh]">
+            <div className="mb-[3vh] animate-bounce" style={{ fontSize: 'clamp(48px, 12vw, 56px)' }}>🎴</div>
+            <p className="font-semibold text-gray-900 mb-[1vh]" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
               카드를 기억하세요
             </p>
-            <p className="text-[3.5vw] text-gray-600">
+            <p className="text-gray-600" style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}>
               잠시 후 카드가 뒤집힙니다
             </p>
           </div>
@@ -402,7 +410,7 @@ function FlipCardGame() {
       {/* 카운트다운 */}
       {showingCards && countdown > 0 && (
         <div className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none">
-          <div className="text-[20vw] font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl">
+          <div className="font-bold text-red-400 opacity-80 animate-bounce drop-shadow-2xl" style={{ fontSize: 'clamp(80px, 20vw, 96px)' }}>
             {countdown}
           </div>
         </div>
