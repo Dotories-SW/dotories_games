@@ -80,7 +80,7 @@ export const getBoxSpeed = (screenWidth: number, isIOS?: boolean) => {
   
   // iOS/Safari 보정 (렌더링 성능 차이 보정)
   if (isIOS ?? isIOSDevice()) {
-    pixelsPerSecond *= 1.10; // 1.15 → 1.10으로 감소
+    pixelsPerSecond *= 1.50; 
   }
   
   const speed = pixelsPerSecond / SCALE; // m/s로 변환
