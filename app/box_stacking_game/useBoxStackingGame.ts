@@ -263,8 +263,9 @@ export function useBoxStackingGame() {
     spawnYRef.current = spawnOffsetScreenRef.current / SCALE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
-    // 화면 너비에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
-    speedRef.current = getBoxSpeed(window.innerWidth);
+    // 화면 너비와 픽셀 밀도에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
+    const dpr = window.devicePixelRatio || 1;
+    speedRef.current = getBoxSpeed(window.innerWidth, dpr);
     setScore(0);
     setGameOver(false);
 
@@ -487,7 +488,8 @@ export function useBoxStackingGame() {
           
           if (thresholdsCrossed > 0) {
             // 넘어간 threshold 개수만큼 속도 증가
-            speedRef.current += getBoxSpeedIncrement(window.innerWidth) * thresholdsCrossed;
+            const dpr = window.devicePixelRatio || 1;
+            speedRef.current += getBoxSpeedIncrement(window.innerWidth, dpr) * thresholdsCrossed;
           }
 
           // 점수 업데이트
@@ -819,8 +821,9 @@ export function useBoxStackingGame() {
     setGameOver(false);
     setScore(0);
     setIsEnding(false);
-    // 화면 너비에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
-    speedRef.current = getBoxSpeed(window.innerWidth);
+    // 화면 너비와 픽셀 밀도에 비례한 속도 설정 (모든 기기에서 일관된 시각적 속도)
+    const dpr = window.devicePixelRatio || 1;
+    speedRef.current = getBoxSpeed(window.innerWidth, dpr);
     boxStackSoundRef.current?.play();
   };
 

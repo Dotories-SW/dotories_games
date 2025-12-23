@@ -50,36 +50,49 @@ export const getGravityValue = (screenHeight: number) => {
   return BASE_GRAVITY * gravityScale;
 };
 
-// 화면 너비에 비례한 박스 속도 계산 (모든 기기에서 일관된 시각적 속도)
-export const getBoxSpeed = (screenWidth: number) => {
+// 화면 너비와 픽셀 밀도에 비례한 박스 속도 계산 (모든 기기에서 일관된 시각적 속도)
+export const getBoxSpeed = (screenWidth: number, devicePixelRatio?: number) => {
+  const dpr = devicePixelRatio ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1);
   const isTablet = screenWidth >= 768;
+  
+  // 픽셀 밀도 보정 계수
+  // DPR이 높을수록(Retina 등) 시각적으로 느려 보이므로 속도 보정 필요
+  // DPR 1.0 → 1.0x (보정 없음)
+  // DPR 2.0 → 1.15x (약간 빠르게)
+  // DPR 3.0 → 1.25x (더 빠르게)
+  const dprMultiplier = Math.min(1.0 + (dpr - 1) * 0.15, 1.3); // 최대 1.3배까지만
   
   let pixelsPerSecond: number;
   
   if (isTablet) {
     // 태블릿: 비율을 낮추고 최대값 제한
-    pixelsPerSecond = screenWidth * 0.20; // 화면 너비의 20%
+    pixelsPerSecond = screenWidth * 0.20 * dprMultiplier; // 픽셀 밀도 보정 적용
   } else {
     // 모바일: 비율을 높여서 충분히 빠르게
-    pixelsPerSecond = screenWidth * 0.28; // 화면 너비의 28%
+    const baseRatio = 0.30; // 기본 비율
+    pixelsPerSecond = screenWidth * baseRatio * dprMultiplier; // 픽셀 밀도 보정 적용
   }
   
   const speed = pixelsPerSecond / SCALE; // m/s로 변환
   
   // 최소/최대 속도 제한
-  const MIN_SPEED = 1; // 최소 2.5 m/s (모바일에서도 충분히 빠름)
-  const MAX_SPEED = 2; // 최대 3.5 m/s (태블릿에서 너무 빠르지 않음)
+  const MIN_SPEED = 1.2; // 최소 속도
+  const MAX_SPEED = 2.0; // 최대 속도
   
   return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
 };
 
-// 화면 너비에 비례한 박스 속도 증가량 계산
-export const getBoxSpeedIncrement = (screenWidth: number) => {
+// 화면 너비와 픽셀 밀도에 비례한 박스 속도 증가량 계산
+export const getBoxSpeedIncrement = (screenWidth: number, devicePixelRatio?: number) => {
+  const dpr = devicePixelRatio ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1);
   const isTablet = screenWidth >= 768;
   
-  // 기본 속도의 약 12% 증가
-  const baseIncrement = isTablet ? 0.06 : 0.045; // 태블릿은 조금 더 천천히 증가
-  const pixelsPerSecond = screenWidth * baseIncrement;
+  // 픽셀 밀도 보정 계수 (기본 속도와 동일)
+  const dprMultiplier = Math.min(1.0 + (dpr - 1) * 0.15, 1.3);
+  
+  // 기본 속도의 증가량
+  const baseIncrement = isTablet ? 0.06 : 0.05;
+  const pixelsPerSecond = screenWidth * baseIncrement * dprMultiplier; // 픽셀 밀도 보정 적용
   const increment = pixelsPerSecond / SCALE;
   
   // 증가량도 최대값 제한 (너무 빨라지지 않도록)
