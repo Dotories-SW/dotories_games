@@ -1,7 +1,7 @@
 // app/crossword_puzzles/page.tsx
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import LoadingSpinner from "../_component/LoadingSpinner";
 import { useCrosswordGame } from "./useCrosswordGame";
 import { DIFFICULTY_CONFIGS, Difficulty } from "./types";
@@ -46,6 +46,13 @@ function CrosswordPuzzles() {
     getWordsAtCell,
     handleEndGame,
   } = useCrosswordGame();
+
+  // 게임 화면으로 전환될 때 스크롤을 맨 위로 이동
+  useEffect(() => {
+    if (!showDifficultySelect && !loading && currentPuzzle) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [showDifficultySelect, loading, currentPuzzle]);
 
   // 난이도 선택 화면
   if (showDifficultySelect) {

@@ -361,8 +361,8 @@ function FlipCardGame() {
       )}
 
       {/* 상단 헤더 - 모바일 스타일 */}
-      <div className="absolute top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-200/30">
-        <div className="flex items-center justify-between px-[5vw] py-[3vh] pt-[calc(3vh)]">
+      <div className="absolute top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-gray-200/30" style={{ height: '12vh' }}>
+        <div className="flex items-center justify-between px-[5vw] h-full">
           {/* 하트 섹션 */}
           <div className="flex items-center gap-[1vw] border-2 bg-white shadow-sm border-red-200/60 rounded-full px-[3vw] py-[1.5vh]">
             <div className="text-[6.5vw] leading-none">
@@ -408,7 +408,7 @@ function FlipCardGame() {
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto flex justify-center items-center h-full pt-[calc(8vh)] pb-[calc(2vh)] px-[4vw]">
+      <div className="max-w-2xl mx-auto flex justify-center items-center h-full" style={{ paddingTop: '13vh', paddingBottom: '2vh', paddingLeft: '4vw', paddingRight: '4vw' }}>
         <div
           className={`grid w-full`}
           style={{

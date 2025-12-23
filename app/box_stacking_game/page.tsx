@@ -54,7 +54,7 @@ function BoxStackingPage() {
   // 시작 화면
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-[4vw]">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
         <style jsx global>{`
           body {
             margin: 0;
@@ -65,7 +65,8 @@ function BoxStackingPage() {
           }
 
         `}</style>
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-[5vh] text-center">
+        <div className="w-full px-[4vw] py-[3vh] pb-[6vh]">
+          <div className="bg-white rounded-3xl p-[4vh] shadow-lg border-0 text-center">
           <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-gradient-to-br from-blue-400 to-blue-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
             <div className="text-white text-[10vw]">📦</div>
           </div>
@@ -97,6 +98,7 @@ function BoxStackingPage() {
           >
             게임 시작하기
           </button>
+          </div>
         </div>
       </div>
     );
