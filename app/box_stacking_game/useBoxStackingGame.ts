@@ -173,9 +173,9 @@ export function useBoxStackingGame() {
 
       // 스폰 위치 (스크린 기준 픽셀 오프셋)
       // 태블릿에서는 더 위쪽에서 spawn하여 간격 확보
-      let spawnOffsetRatio = 0.2; // 모바일 기본값
+      let spawnOffsetRatio = 0.12; // 모바일 기본값
       if (isLargeTablet || isTablet) {
-        spawnOffsetRatio = 0.12; // 큰 태블릿: 훨씬 더 위쪽
+        spawnOffsetRatio = 0.06; // 큰 태블릿: 훨씬 더 위쪽
       }
       spawnOffsetScreenRef.current = height * spawnOffsetRatio;
 
