@@ -83,7 +83,7 @@ function BoxStackingPage() {
             <p className="text-gray-700" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
               화면을 클릭하면 <br/> 상자가 떨어집니다.
             </p>
-            <p className="text-red-700 mt-4" style={{ fontSize: 'clamp(12px, 4vw, 16px)' }}>
+            <p className="text-red-700 mt-4" style={{ fontSize: 'clamp(12px, 4vw, 14px)' }}>
               * 혹시, 박스가 흔들린다면 조금 기다린 다음, 다시 쌓아주세요.
             </p>
           </div>
