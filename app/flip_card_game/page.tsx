@@ -420,11 +420,29 @@ function FlipCardGame() {
         <div
           className={`grid w-full`}
           style={{
-            gridTemplateColumns: `repeat(${
-              gameCards.length / (gameCards.length / 4)
-            }, 1fr)`,
+            gridTemplateColumns: (() => {
+              const isTablet = typeof window !== 'undefined' && window.innerWidth >= 700;
+              
+              if (gameCards.length === 8) {
+                return "repeat(4, 1fr)"; // 쉬움: 4x2
+              } else if (gameCards.length === 16) {
+                return "repeat(4, 1fr)"; // 보통: 모든 화면에서 4x4
+              } else if (gameCards.length === 20) {
+                // 어려움: 700px 이상에서 5x4, 모바일에서는 4x5
+                return isTablet ? "repeat(5, 1fr)" : "repeat(4, 1fr)";
+              }
+              return "repeat(4, 1fr)";
+            })(),
             gap: gameCards.length === 8 ? "2vw" : gameCards.length === 16 ? "1.8vw" : "1.5vw",
-            maxWidth: gameCards.length === 8 ? "85%" : gameCards.length === 16 ? "90%" : "85%",
+            maxWidth: (() => {
+              const isTablet = typeof window !== 'undefined' && window.innerWidth >= 700;
+              if (gameCards.length === 8) return "85%";
+              if (gameCards.length === 16) {
+                // 보통: 태블릿에서는 70%로 제한하여 카드가 너무 커지지 않도록
+                return isTablet ? "65%" : "90%";
+              }
+              return "85%";
+            })(),
             margin: "0 auto",
           }}
         >

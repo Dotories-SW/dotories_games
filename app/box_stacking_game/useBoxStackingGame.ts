@@ -162,8 +162,12 @@ export function useBoxStackingGame() {
       boxSizeRef.current = Math.min(boxSizeWorld, 5);
 
       // 스폰 위치 (스크린 기준 픽셀 오프셋)
-      // 모든 기기에서 동일하게 0.2 적용
-      spawnOffsetScreenRef.current = height * 0.2;
+      // 태블릿에서는 더 위쪽에서 spawn하여 간격 확보
+      let spawnOffsetRatio = 0.2; // 모바일 기본값
+      if (isLargeTablet || isTablet) {
+        spawnOffsetRatio = 0.12; // 큰 태블릿: 훨씬 더 위쪽
+      }
+      spawnOffsetScreenRef.current = height * spawnOffsetRatio;
 
       // resize 시 중력값도 업데이트
       if (worldRef.current) {
@@ -253,8 +257,8 @@ export function useBoxStackingGame() {
     currentBoxRef.current = null;
     lastPlacedBoxRef.current = null;
     cameraYRef.current = 0;
-    spawnYRef.current =
-      (spawnOffsetScreenRef.current || window.innerHeight * 0.33) / SCALE;
+    // 초기 spawn Y 위치도 spawnOffsetScreenRef에 맞춰 설정
+    spawnYRef.current = spawnOffsetScreenRef.current / SCALE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
     speedRef.current = 2;

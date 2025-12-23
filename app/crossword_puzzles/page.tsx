@@ -314,7 +314,7 @@ function CrosswordPuzzles() {
           }
         `}</style>
 
-        <div className="w-full max-w-2xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
           
           {/* 프로그레스바 */}
           <div className="bg-white/95 backdrop-blur-md border-2 border-purple-200/60 rounded-2xl p-[3vh] shadow-lg mb-[2vh]">
@@ -340,6 +340,10 @@ function CrosswordPuzzles() {
             </div>
           </div>
 
+          {/* 2단 레이아웃: 700px 이상에서 그리드와 컨트롤을 좌우 배치 */}
+          <div className="flex flex-col md:flex-row gap-[2vh]">
+            {/* 왼쪽: 게임 그리드 */}
+            <div className="flex-1">
           {/* 게임 그리드 */}
           <div className="bg-white rounded-2xl p-[2vh] shadow-lg mb-[1vh]">
             <div
@@ -417,7 +421,10 @@ function CrosswordPuzzles() {
               )}
             </div>
           </div>
+            </div>
 
+            {/* 오른쪽: 컨트롤 영역 */}
+            <div className="flex-1 space-y-[1vh]">
           {/* 글자 선택 패널 */}
           <div className="bg-white rounded-2xl p-[2vh] shadow-sm mb-[1vh]">
             <div className="grid grid-cols-6 gap-[1vw] mb-[2vh]">
@@ -573,6 +580,8 @@ function CrosswordPuzzles() {
             >
               🔄 전체 초기화
             </button>
+          </div>
+            </div>
           </div>
         </div>
 
