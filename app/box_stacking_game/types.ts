@@ -7,6 +7,8 @@ export interface BoxInfo {
   settled: boolean;
   frozen?: boolean;
   stableTime?: number;
+  frozenPosition?: { x: number; y: number };
+  frozenAngle?: number;
 }
 
 export interface CurrentBox {

@@ -4,6 +4,7 @@
 import React, { Suspense } from "react";
 import LoadingSpinner from "../_component/LoadingSpinner";
 import { useBoxStackingGame } from "./useBoxStackingGame";
+import { getBoxSpeed } from "./utils";
 
 export default function BoxStackingGame() {
   return (
@@ -65,7 +66,7 @@ function BoxStackingPage() {
           }
 
         `}</style>
-        <div className="w-full px-[4vw] py-[3vh] pb-[6vh]">
+        <div className="w-full px-[4vw] py-[3vh] pb-[6vh] ">
           <div className="bg-white rounded-3xl p-[4vh] shadow-lg border-0 text-center">
           <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-gradient-to-br from-blue-400 to-blue-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
             <div className="text-white" style={{ fontSize: 'clamp(40px, 10vw, 48px)' }}>📦</div>
@@ -81,6 +82,9 @@ function BoxStackingPage() {
             </p>
             <p className="text-gray-700" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
               화면을 클릭하면 <br/> 상자가 떨어집니다.
+            </p>
+            <p className="text-red-700 mt-4" style={{ fontSize: 'clamp(12px, 4vw, 16px)' }}>
+              * 혹시, 박스가 흔들린다면 조금 기다린 다음, 다시 쌓아주세요.
             </p>
           </div>
 

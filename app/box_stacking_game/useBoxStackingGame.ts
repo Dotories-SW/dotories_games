@@ -272,34 +272,57 @@ export function useBoxStackingGame() {
     const freezeOldBoxes = () => {
       const boxes = boxesRef.current;
 
+      // settled된 박스 중 아직 freeze 안 된 것들 필터링
       const settledBoxes = boxes.filter(
-        (b) => b.settled && !b.frozen && (b.stableTime || 0) > 0.5
+        (b) => b.settled && !b.frozen && (b.stableTime || 0) > 0.4
       );
+      
+      // 최소 3개 이상 쌓여야 freeze 시작
       if (settledBoxes.length <= 2) return;
 
+      // Y 좌표 오름차순 정렬 (위쪽 박스부터)
       settledBoxes.sort(
         (a, b) => a.body.getPosition().y - b.body.getPosition().y
       );
 
+      // 위 2개는 제외하고 나머지(아래쪽) freeze
       const freezeTargets = settledBoxes.slice(2);
-      const SNAP_LIMIT = (5 * Math.PI) / 180;
+      
+      // 각도 허용 범위
+      const SMALL_ANGLE = (5 * Math.PI) / 180;  // 5도: 거의 평평 → 0도로 보정
+      const MAX_ANGLE = (12 * Math.PI) / 180;    // 12도: 최대 허용 각도
 
       for (const box of freezeTargets) {
         if (box.frozen) continue;
         const angle = box.body.getAngle();
+        const absAngle = Math.abs(angle);
 
-        if (Math.abs(angle) > SNAP_LIMIT) {
+        // 12도 이상 기울어진 박스는 freeze 안 함 (불안정)
+        if (absAngle > MAX_ANGLE) {
           continue;
         }
 
         const pos = box.body.getPosition();
-        box.body.setTransform(pos, 0);
+        
+        // 각도별 차등 처리
+        if (absAngle <= SMALL_ANGLE) {
+          // 5도 이하: 거의 평평 → 0도로 보정해서 freeze (완벽하게 평행)
+          box.body.setTransform(pos, 0);
+        } else {
+          // 5~12도: 약간 기울어짐 → 현재 각도 유지하되 freeze
+          // (아래쪽 박스들은 약간 기울어져도 괜찮음)
+          box.body.setTransform(pos, angle);
+        }
 
         box.body.setType("static");
         box.body.setLinearVelocity(Vec2(0, 0));
         box.body.setAngularVelocity(0);
         box.body.setAwake(false);
-
+        
+        // Frozen 박스를 더 확실하게 보호
+        // 위치와 각도를 저장하여 나중에 강제로 복원할 수 있도록
+        box.frozenPosition = { x: pos.x, y: pos.y };
+        box.frozenAngle = absAngle <= SMALL_ANGLE ? 0 : angle;
         box.frozen = true;
       }
     };
@@ -455,22 +478,26 @@ export function useBoxStackingGame() {
             });
           }
 
-          setScore((prev) => {
-            const next = prev + pointsToAdd;
-            const prevInterval = Math.floor(prev / 70);
-            const nextInterval = Math.floor(next / 70);
-            if (nextInterval > prevInterval && next > 0) {
-              // 화면 너비에 비례한 속도 증가 (모든 기기에서 일관된 가속)
-              speedRef.current += getBoxSpeedIncrement(window.innerWidth);
-            }
-            return next;
-          });
+          // 70점 단위로 속도 증가 체크 (spawnBox 전에 먼저 처리!)
+          const currentScore = scoreRef.current;
+          const nextScore = currentScore + pointsToAdd;
+          const prevThreshold = Math.floor(currentScore / 70);
+          const nextThreshold = Math.floor(nextScore / 70);
+          const thresholdsCrossed = nextThreshold - prevThreshold;
+          
+          if (thresholdsCrossed > 0) {
+            // 넘어간 threshold 개수만큼 속도 증가
+            speedRef.current += getBoxSpeedIncrement(window.innerWidth) * thresholdsCrossed;
+          }
+
+          // 점수 업데이트
+          setScore(nextScore);
 
           const boxInfo = boxes.find((b) => b.body === body);
           if (boxInfo) boxInfo.settled = true;
 
           freezeOldBoxes();
-          spawnBox();
+          spawnBox(); // 이제 업데이트된 속도로 새 박스 생성!
         }
       }
 
@@ -537,6 +564,28 @@ export function useBoxStackingGame() {
       }
 
       if (!gameOverRef.current) {
+        // Frozen 박스들의 위치 강제 고정 (충돌로 인한 움직임 방지)
+        for (const box of boxes) {
+          if (box.frozen && box.frozenPosition && box.frozenAngle !== undefined) {
+            const currentPos = box.body.getPosition();
+            const currentAngle = box.body.getAngle();
+            
+            // 위치나 각도가 조금이라도 변했으면 강제로 복원
+            const posDiff = Math.abs(currentPos.x - box.frozenPosition.x) + 
+                           Math.abs(currentPos.y - box.frozenPosition.y);
+            const angleDiff = Math.abs(currentAngle - box.frozenAngle);
+            
+            if (posDiff > 0.001 || angleDiff > 0.001) {
+              box.body.setTransform(
+                Vec2(box.frozenPosition.x, box.frozenPosition.y),
+                box.frozenAngle
+              );
+              box.body.setLinearVelocity(Vec2(0, 0));
+              box.body.setAngularVelocity(0);
+            }
+          }
+        }
+
         const STABLE_SPEED = 0.08;
         const STABLE_ANG = 0.08;
         const RESET_SPEED = 0.4;

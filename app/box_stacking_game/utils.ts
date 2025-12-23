@@ -52,15 +52,37 @@ export const getGravityValue = (screenHeight: number) => {
 
 // 화면 너비에 비례한 박스 속도 계산 (모든 기기에서 일관된 시각적 속도)
 export const getBoxSpeed = (screenWidth: number) => {
-  // 화면 너비의 22%/초를 기준으로 속도 계산
-  // 이렇게 하면 모든 기기에서 동일한 시각적 속도를 보여줌
-  const pixelsPerSecond = screenWidth * 0.22; // 화면 너비의 22%
-  return pixelsPerSecond / SCALE; // m/s로 변환
+  const isTablet = screenWidth >= 768;
+  
+  let pixelsPerSecond: number;
+  
+  if (isTablet) {
+    // 태블릿: 비율을 낮추고 최대값 제한
+    pixelsPerSecond = screenWidth * 0.20; // 화면 너비의 20%
+  } else {
+    // 모바일: 비율을 높여서 충분히 빠르게
+    pixelsPerSecond = screenWidth * 0.28; // 화면 너비의 28%
+  }
+  
+  const speed = pixelsPerSecond / SCALE; // m/s로 변환
+  
+  // 최소/최대 속도 제한
+  const MIN_SPEED = 1; // 최소 2.5 m/s (모바일에서도 충분히 빠름)
+  const MAX_SPEED = 2; // 최대 3.5 m/s (태블릿에서 너무 빠르지 않음)
+  
+  return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
 };
 
 // 화면 너비에 비례한 박스 속도 증가량 계산
 export const getBoxSpeedIncrement = (screenWidth: number) => {
-  // 화면 너비의 3%/초씩 증가 (기본 속도의 약 13.6%)
-  const pixelsPerSecond = screenWidth * 0.03;
-  return pixelsPerSecond / SCALE; // m/s로 변환
+  const isTablet = screenWidth >= 768;
+  
+  // 기본 속도의 약 12% 증가
+  const baseIncrement = isTablet ? 0.06 : 0.045; // 태블릿은 조금 더 천천히 증가
+  const pixelsPerSecond = screenWidth * baseIncrement;
+  const increment = pixelsPerSecond / SCALE;
+  
+  // 증가량도 최대값 제한 (너무 빨라지지 않도록)
+  const MAX_INCREMENT = 0.5;
+  return Math.min(MAX_INCREMENT, increment);
 };
