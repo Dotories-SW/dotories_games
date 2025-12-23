@@ -50,25 +50,12 @@ export const getGravityValue = (screenHeight: number) => {
   return BASE_GRAVITY * gravityScale;
 };
 
-// iOS/Safari 감지 (앱의 웹뷰 포함)
-export const isIOSDevice = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  const isIOS = /iphone|ipad|ipod/.test(userAgent);
-  const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
-  const isWebView = /(iphone|ipad|ipod).*version.*safari/i.test(userAgent) || 
-                    (isIOS && !isSafari); // iOS 웹뷰는 Safari가 아님
-  
-  return isIOS || isWebView || isSafari;
-};
-
-// 화면 너비에 비례한 박스 속도 계산
-export const getBoxSpeed = (screenWidth: number, isIOS?: boolean) => {
+// 화면 너비에 비례한 박스 속도 계산 (OS 기반)
+export const getBoxSpeed = (screenWidth: number, os?: string) => {
   const isTablet = screenWidth >= 768;
-  
+
   let pixelsPerSecond: number;
-  
+
   if (isTablet) {
     // 태블릿: 비율을 낮추고 최대값 제한
     pixelsPerSecond = screenWidth * 0.18; // 0.20 → 0.18로 감소
@@ -77,36 +64,31 @@ export const getBoxSpeed = (screenWidth: number, isIOS?: boolean) => {
     const baseRatio = 0.26; // 0.30 → 0.26으로 감소
     pixelsPerSecond = screenWidth * baseRatio;
   }
-  
-  // iOS/Safari 보정 (렌더링 성능 차이 보정)
-  if (isIOS ?? isIOSDevice()) {
-    pixelsPerSecond *= 1.50; 
-  }
-  
+
   const speed = pixelsPerSecond / SCALE; // m/s로 변환
-  
+
   // 최소/최대 속도 제한
-  const MIN_SPEED = 3; // 최소 속도
-  const MAX_SPEED = 3; // 최대 속도
-  
-  return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
+  if (os === "ios") {
+    const MAX_SPEED = 2.5;
+    const MIN_SPEED = 2.5;
+    return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
+  } else {
+    const MIN_SPEED = 1; // 최소 속도
+    const MAX_SPEED = 1; // 최대 속도
+    return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
+  }
 };
 
-// 화면 너비에 비례한 박스 속도 증가량 계산
-export const getBoxSpeedIncrement = (screenWidth: number, isIOS?: boolean) => {
+// 화면 너비에 비례한 박스 속도 증가량 계산 (OS 기반)
+export const getBoxSpeedIncrement = (screenWidth: number, os?: string) => {
   const isTablet = screenWidth >= 768;
-  
+
   // 기본 속도의 증가량
   const baseIncrement = isTablet ? 0.05 : 0.04; // 0.06 → 0.05, 0.05 → 0.04로 감소
-  let pixelsPerSecond = screenWidth * baseIncrement;
-  
-  // iOS/Safari 보정 (기본 속도와 동일한 보정)
-  if (isIOS ?? isIOSDevice()) {
-    pixelsPerSecond *= 1.10; // 1.15 → 1.10으로 감소
-  }
-  
+  const pixelsPerSecond = screenWidth * baseIncrement;
+
   const increment = pixelsPerSecond / SCALE;
-  
+
   // 증가량도 최대값 제한 (너무 빨라지지 않도록)
   const MAX_INCREMENT = 0.4; // 0.5 → 0.4로 감소
   return Math.min(MAX_INCREMENT, increment);

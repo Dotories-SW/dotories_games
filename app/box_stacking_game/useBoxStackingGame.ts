@@ -28,7 +28,6 @@ import {
   getGravityValue,
   getBoxSpeed,
   getBoxSpeedIncrement,
-  isIOSDevice,
   BOX_STACK_SOUND_PATH,
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
@@ -50,6 +49,7 @@ export function useBoxStackingGame() {
   const loginId: string = params.get("id")
     ? (params.get("id") as string)
     : BASE_LOGIN_ID;
+  const os: string = params.get("os") || "android"; // URL에서 os 파라미터 가져오기 (기본값: android)
 
   const router = useRouter();
 
@@ -267,15 +267,13 @@ export function useBoxStackingGame() {
     currentBoxRef.current = null;
     lastPlacedBoxRef.current = null;
     cameraYRef.current = 0;
-    // iOS 감지
-    const isIOS = isIOSDevice();
     
     // 초기 spawn Y 위치도 spawnOffsetScreenRef에 맞춰 설정
     spawnYRef.current = spawnOffsetScreenRef.current / SCALE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
-    // 화면 너비 기반 속도 설정 (iOS/Safari 보정 포함)
-    speedRef.current = getBoxSpeed(window.innerWidth, isIOS);
+    // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
+    speedRef.current = getBoxSpeed(window.innerWidth, os);
     setScore(0);
     setGameOver(false);
 
@@ -526,8 +524,8 @@ export function useBoxStackingGame() {
           const thresholdsCrossed = nextThreshold - prevThreshold;
           
           if (thresholdsCrossed > 0) {
-            // 넘어간 threshold 개수만큼 속도 증가 (iOS/Safari 보정 포함)
-            speedRef.current += getBoxSpeedIncrement(window.innerWidth, isIOS) * thresholdsCrossed;
+            // 넘어간 threshold 개수만큼 속도 증가 (OS 기반 보정 포함)
+            speedRef.current += getBoxSpeedIncrement(window.innerWidth, os) * thresholdsCrossed;
           }
 
           // 점수 업데이트
@@ -810,7 +808,7 @@ export function useBoxStackingGame() {
       window.removeEventListener("resize", handleResize);
       worldRef.current = null;
     };
-  }, [gameStarted, resetToken]);
+  }, [gameStarted, resetToken, os]);
 
   // 클릭 시 상자 떨어뜨리기
   const handleClick = useCallback(() => {
@@ -875,9 +873,8 @@ export function useBoxStackingGame() {
     setGameOver(false);
     setScore(0);
     setIsEnding(false);
-    // 화면 너비 기반 속도 설정 (iOS/Safari 보정 포함)
-    const isIOS = isIOSDevice();
-    speedRef.current = getBoxSpeed(window.innerWidth, isIOS);
+    // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
+    speedRef.current = getBoxSpeed(window.innerWidth, os);
     boxStackSoundRef.current?.play();
   };
 
