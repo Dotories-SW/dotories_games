@@ -86,8 +86,8 @@ export const getBoxSpeed = (screenWidth: number, isIOS?: boolean) => {
   const speed = pixelsPerSecond / SCALE; // m/s로 변환
   
   // 최소/최대 속도 제한
-  const MIN_SPEED = 0.7; // 최소 속도
-  const MAX_SPEED = 0.7; // 최대 속도
+  const MIN_SPEED = 3; // 최소 속도
+  const MAX_SPEED = 3; // 최대 속도
   
   return Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed));
 };
