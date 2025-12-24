@@ -15,6 +15,24 @@ export default function CrosswordPuzzlesPage() {
 }
 
 function CrosswordPuzzles() {
+  // 화면 방향 감지를 위한 상태 (화면 회전 시 자동 반응)
+  const [isLongWidth, setIsLongWidth] = React.useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth > window.innerHeight;
+    }
+    return false;
+  });
+
+  // 화면 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLongWidth(window.innerWidth > window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   const {
     currentPuzzle,
     userGrid,
@@ -329,7 +347,7 @@ function CrosswordPuzzles() {
           </div> */}
 
           {/* 2단 레이아웃: 700px 이상에서 그리드와 컨트롤을 좌우 배치 */}
-          <div className="flex flex-col md:flex-row gap-[2vh]">
+          <div className={`flex flex-col ${isLongWidth ? "flex-row" : "flex-col"} gap-[2vh]`}>
             {/* 왼쪽: 게임 그리드 */}
             <div className="flex-1">
           {/* 게임 그리드 */}
@@ -484,7 +502,7 @@ function CrosswordPuzzles() {
 
               return (
                 <>
-                  <div className="flex items-center justify-between mb-[1vh]">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-purple-600 bg-purple-200 rounded-full w-[5vw] h-[5vw] flex items-center justify-center" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>
                         {currentWord.id}
