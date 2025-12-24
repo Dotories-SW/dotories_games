@@ -420,8 +420,8 @@ function CrosswordPuzzles() {
                 })
               )}
             </div>
-          </div>
             </div>
+          </div>
 
             {/* 오른쪽: 컨트롤 영역 */}
             <div className="flex-1 space-y-[1vh]">
@@ -465,25 +465,25 @@ function CrosswordPuzzles() {
             {selectedWords.length > 1 && (
               <div className="flex gap-[1vw] mb-[2vh]">
                 {selectedWords.map((word) => (
-                    <button
-                      key={word.id}
-                      onClick={() => {
-                        setSelectedDirection(word.direction);
-                        setShowHint(false);
-                      }}
+                  <button
+                    key={word.id}
+                    onClick={() => {
+                      setSelectedDirection(word.direction);
+                      setShowHint(false);
+                    }}
                       className={`flex-1 py-[1.5vh] rounded-lg font-semibold transition-all ${
-                        selectedDirection === word.direction
-                          ? "bg-purple-500 text-white shadow-md"
-                          : "bg-white text-gray-600 hover:bg-purple-100"
-                      }`}
+                      selectedDirection === word.direction
+                        ? "bg-purple-500 text-white shadow-md"
+                        : "bg-white text-gray-600 hover:bg-purple-100"
+                    }`}
                       style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
-                    >
-                      <div className="flex items-center justify-center gap-1">
-                        <span>
-                          {word.direction === "horizontal" ? "가로" : "세로"}
-                        </span>
-                      </div>
-                    </button>
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      <span>
+                        {word.direction === "horizontal" ? "가로" : "세로"}
+                      </span>
+                    </div>
+                  </button>
                 ))}
               </div>
             )}

@@ -158,12 +158,12 @@ export function useBoxStackingGame() {
       const isLargeTablet = width >= 1024; // 큰 태블릿
       
       const shorterSide = Math.min(effectiveWidth, height);
-      // 큰 태블릿: 0.20, 일반 태블릿: 0.22, 스마트폰: 0.28
-      let boxSizeRatio = 0.28;
+      // 큰 태블릿: 0.18, 일반 태블릿: 0.2, 스마트폰: 0.22 (모바일만 살짝 축소)
+      let boxSizeRatio = 0.22;
       if (isLargeTablet) {
-        boxSizeRatio = 0.20;
+        boxSizeRatio = 0.18;
       } else if (isTablet) {
-        boxSizeRatio = 0.22;
+        boxSizeRatio = 0.2;
       }
       
       const boxPixelSize = shorterSide * boxSizeRatio;
@@ -175,7 +175,7 @@ export function useBoxStackingGame() {
       // 태블릿에서는 더 위쪽에서 spawn하여 간격 확보
       let spawnOffsetRatio = 0.12; // 모바일 기본값
       if (isLargeTablet || isTablet) {
-        spawnOffsetRatio = 0.06; // 큰 태블릿: 훨씬 더 위쪽
+        spawnOffsetRatio = 0.08; // 큰 태블릿: 훨씬 더 위쪽
       }
       spawnOffsetScreenRef.current = height * spawnOffsetRatio;
 
@@ -268,8 +268,8 @@ export function useBoxStackingGame() {
     lastPlacedBoxRef.current = null;
     cameraYRef.current = 0;
     
-    // 초기 spawn Y 위치도 spawnOffsetScreenRef에 맞춰 설정
-    spawnYRef.current = spawnOffsetScreenRef.current / SCALE;
+    // 초기 spawn Y 위치를 이후 스폰 로직과 동일하게 설정
+    spawnYRef.current = cameraYRef.current + spawnOffsetScreenRef.current / SCALE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
     // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
@@ -343,7 +343,7 @@ export function useBoxStackingGame() {
       const camY = cameraYRef.current;
       const spawnOffsetScreen =
         spawnOffsetScreenRef.current || window.innerHeight * 0.33;
-      const startY = camY + spawnOffsetScreen / SCALE;
+      const startY = camY - 1 + spawnOffsetScreen / SCALE;
       spawnYRef.current = startY;
 
       const startX = WORLD_WIDTH / 2;
