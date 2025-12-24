@@ -433,7 +433,7 @@ function CrosswordPuzzles() {
             <div className="flex-1 space-y-[1vh]">
           {/* 글자 선택 패널 */}
           <div className="bg-white rounded-2xl p-[2vh] shadow-sm mb-[1vh]">
-            <div className="grid grid-cols-6 gap-[1vw] mb-[2vh]">
+            <div className={`grid grid-cols-6 ${isLongWidth ? "" : "lg:grid-cols-9"} gap-[1vw] mb-[2vh]`}>
               {availableLetters.map((letter, index) => {
                 const isUsed = usedLetters.has(index);
                 const canSelect =
@@ -455,7 +455,7 @@ function CrosswordPuzzles() {
                           ? "scale-100 opacity-100 bg-purple-100 text-purple-700 hover:bg-purple-200 hover:scale-105 active:scale-95"
                           : "scale-100 opacity-100 bg-gray-100 text-gray-400 cursor-not-allowed"
                       }`}
-                      style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}
+                      style={{ fontSize: 'clamp(24px, 6vw, 32px)' }}
                     >
                       {letter}
                     </button>
