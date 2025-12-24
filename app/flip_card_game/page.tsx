@@ -423,9 +423,9 @@ function FlipCardGame() {
               if (gameCards.length === 8) return "85%";
               if (gameCards.length === 16) {
                 // 보통: 태블릿에서는 70%로 제한하여 카드가 너무 커지지 않도록
-                return isTablet ? "65%" : "90%";
+                return isTablet ? "90%" : "90%";
               }
-              return "85%";
+              return "100%";
             })(),
             margin: "0 auto",
           }}
