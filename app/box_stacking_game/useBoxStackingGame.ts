@@ -161,7 +161,7 @@ export function useBoxStackingGame() {
       // 큰 태블릿: 0.18, 일반 태블릿: 0.2, 스마트폰: 0.22 (모바일만 살짝 축소)
       let boxSizeRatio = 0.22;
       if (isLargeTablet) {
-        boxSizeRatio = 0.18;
+        boxSizeRatio = 0.16;
       } else if (isTablet) {
         boxSizeRatio = 0.2;
       }
@@ -343,7 +343,7 @@ export function useBoxStackingGame() {
       const camY = cameraYRef.current;
       const spawnOffsetScreen =
         spawnOffsetScreenRef.current || window.innerHeight * 0.33;
-      const startY = camY - 1 + spawnOffsetScreen / SCALE;
+      const startY = camY - 0.5 + spawnOffsetScreen / SCALE;
       spawnYRef.current = startY;
 
       const startX = WORLD_WIDTH / 2;

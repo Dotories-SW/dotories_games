@@ -80,7 +80,7 @@ function ArithmeticGame() {
                   <button
                     key={key}
                     onClick={() => setSelectedDifficulty(key)}
-                    className={`w-full p-[3vh] rounded-2xl transition-all active:scale-[0.98] ${
+                    className={`w-full p-[2vh] rounded-2xl transition-all active:scale-[0.98] ${
                       selectedDifficulty === key
                         ? "bg-gradient-to-br from-blue-400 to-blue-500 border-0 shadow-lg"
                         : completedGames[config.localIndex]
@@ -106,22 +106,6 @@ function ArithmeticGame() {
                           >
                             {config.name}
                           </div>
-                        </div>
-                        <div
-                          className={`${
-                            selectedDifficulty === key
-                              ? "text-white/90"
-                              : completedGames[config.localIndex]
-                              ? "text-green-600/80"
-                              : "text-gray-600"
-                          }`}
-                          style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}
-                        >
-                          {completedGames[config.localIndex] ? (
-                            <span>완료됨</span>
-                          ) : (
-                            config.description
-                          )}
                         </div>
                       </div>
                       <div
@@ -154,7 +138,7 @@ function ArithmeticGame() {
                     startGameWithDifficulty(selectedDifficulty as Difficulty)
                   }
                   disabled={!selectedDifficulty}
-                  className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all active:scale-[0.98] shadow-lg ${
+                  className={`w-full py-[2vh] rounded-2xl font-bold transition-all active:scale-[0.98] shadow-lg ${
                     selectedDifficulty
                       ? "bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-blue-400/50"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"

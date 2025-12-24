@@ -102,7 +102,7 @@ function CrosswordPuzzles() {
                       <button
                         key={key}
                         onClick={() => setSelectedDifficulty(key)}
-                        className={`w-full p-[3vh] rounded-2xl transition-all active:scale-[0.98] ${
+                        className={`w-full p-[2vh] rounded-2xl transition-all active:scale-[0.98] ${
                           isSelected
                             ? "bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-lg"
                             : isCompleted
@@ -129,18 +129,6 @@ function CrosswordPuzzles() {
                                 {config.name}
                               </div>
                             </div>
-                          <div
-                            className={`${
-                              isSelected
-                                ? "text-white/90"
-                                : isCompleted
-                                ? "text-green-600/80"
-                                : "text-gray-600"
-                            }`}
-                            style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}
-                          >
-                            {isCompleted ? <span>완료됨</span> : <span>도전 가능</span>}
-                          </div>
                           </div>
                           <div
                             className={`flex items-center gap-[1vw] px-[2vw] py-[1vh] rounded-xl ${
@@ -170,7 +158,7 @@ function CrosswordPuzzles() {
                     selectedDifficulty &&
                     startGameWithDifficulty(selectedDifficulty)
                   }
-                  className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all active:scale-[0.98] shadow-lg ${
+                  className={`w-full py-[2vh] rounded-2xl font-bold transition-all active:scale-[0.98] shadow-lg ${
                     selectedDifficulty
                       ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-purple-400/50"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -317,7 +305,7 @@ function CrosswordPuzzles() {
         <div className="w-full max-w-6xl mx-auto">
           
           {/* 프로그레스바 */}
-          <div className="bg-white/95 backdrop-blur-md border-2 border-purple-200/60 rounded-2xl p-[3vh] shadow-lg mb-[2vh]">
+          {/* <div className="bg-white/95 backdrop-blur-md border-2 border-purple-200/60 rounded-2xl p-[3vh] shadow-lg mb-[2vh]">
             <div className="flex items-center justify-between mb-[1.5vh]">
               <div className="flex items-center gap-[1.5vw]">
                 <span className="font-bold text-gray-700" style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}>
@@ -338,7 +326,7 @@ function CrosswordPuzzles() {
                 style={{ width: `${progress}%` }}
               />
             </div>
-          </div>
+          </div> */}
 
           {/* 2단 레이아웃: 700px 이상에서 그리드와 컨트롤을 좌우 배치 */}
           <div className="flex flex-col md:flex-row gap-[2vh]">
