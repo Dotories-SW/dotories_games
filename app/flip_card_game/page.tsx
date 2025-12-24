@@ -425,7 +425,7 @@ function FlipCardGame() {
                 // 보통: 태블릿에서는 70%로 제한하여 카드가 너무 커지지 않도록
                 return isTablet ? "90%" : "90%";
               }
-              return "100%";
+              return isTablet ? "100%" : "85%";
             })(),
             margin: "0 auto",
           }}
