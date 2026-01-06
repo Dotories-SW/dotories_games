@@ -8,7 +8,6 @@ import {
   useState,
   type RefObject,
 } from "react";
-import type { TouchEvent } from "react";
 import planck, { Vec2, World, Body } from "planck-js";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getGameCompleted, patchCompletedGame } from "../_api/gameApi";
@@ -127,6 +126,8 @@ export function useBoxStackingGame() {
     boxStackSoundRef.current = new Audio(BOX_STACK_SOUND_PATH);
     boxStackSoundRef.current.loop = true;
     boxStackSoundRef.current.volume = 0.1;
+    // 게임 시작시 BGM 자동 재생
+    boxStackSoundRef.current.play().catch(console.error);
 
     // 반응형 중력
     const gravityValue = getGravityValue(window.innerHeight);
@@ -225,12 +226,13 @@ export function useBoxStackingGame() {
       window.innerHeight
     );
 
-    // 바닥
+    // 바닥 - 화면 하단 바로 위에 위치하도록 수정
+    const groundY = WORLD_HEIGHT - 0.2; // 화면 하단에서 아주 조금만 위쪽에 바닥 생성
     const ground = world.createBody({
       type: "static",
-      position: Vec2(WORLD_WIDTH / 2, WORLD_HEIGHT - 0.25),
+      position: Vec2(WORLD_WIDTH / 2, groundY),
     });
-    ground.createFixture(planck.Box(WORLD_WIDTH, 0.25), {
+    ground.createFixture(planck.Box(WORLD_WIDTH / 2, 0.2), { // 바닥 두께를 얇게 조정
       friction: 0.8,
       restitution: 0.0,
     });
@@ -269,7 +271,8 @@ export function useBoxStackingGame() {
     cameraYRef.current = 0;
     
     // 초기 spawn Y 위치를 이후 스폰 로직과 동일하게 설정
-    spawnYRef.current = cameraYRef.current + spawnOffsetScreenRef.current / SCALE;
+    const BOX_SIZE = boxSizeRef.current;
+    spawnYRef.current = cameraYRef.current + BOX_SIZE;
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
     // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
@@ -341,9 +344,9 @@ export function useBoxStackingGame() {
     const spawnBox = () => {
       const BOX_SIZE = boxSizeRef.current;
       const camY = cameraYRef.current;
-      const spawnOffsetScreen =
-        spawnOffsetScreenRef.current || window.innerHeight * 0.33;
-      const startY = camY - 0.5 + spawnOffsetScreen / SCALE;
+      
+      // 화면 상단에서 박스 크기만큼 위쪽에 스폰 (확실히 보이도록)
+      const startY = camY + BOX_SIZE; // 카메라 위치에서 박스 크기만큼 위쪽
       spawnYRef.current = startY;
 
       const startX = WORLD_WIDTH / 2;
@@ -806,7 +809,67 @@ export function useBoxStackingGame() {
     return () => {
       if (animationId !== undefined) cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
-      worldRef.current = null;
+      
+      // 모든 오디오 정지 및 정리
+      if (boxStackSoundRef.current) {
+        boxStackSoundRef.current.pause();
+        boxStackSoundRef.current.currentTime = 0;
+      }
+      if (fallingSoundRef.current) {
+        fallingSoundRef.current.pause();
+        fallingSoundRef.current.currentTime = 0;
+      }
+      
+      // 물리 엔진 완전 정리
+      if (worldRef.current) {
+        try {
+          // 모든 박스 Body들을 안전하게 제거
+          for (const box of boxesRef.current) {
+            if (box.body && worldRef.current) {
+              try {
+                // Body가 아직 World에 존재하는지 확인
+                if (box.body.getWorld() === worldRef.current) {
+                  worldRef.current.destroyBody(box.body);
+                }
+              } catch (e) {
+                console.warn("Error destroying box body:", e);
+              }
+            }
+          }
+          
+          // 바닥 Body 안전하게 제거
+          if (groundRef.current && worldRef.current) {
+            try {
+              if (groundRef.current.getWorld() === worldRef.current) {
+                worldRef.current.destroyBody(groundRef.current);
+              }
+            } catch (e) {
+              console.warn("Error destroying ground body:", e);
+            }
+          }
+        } catch (e) {
+          console.warn("Error during physics cleanup:", e);
+        }
+        
+        // World 객체 완전 정리
+        worldRef.current = null;
+      }
+      
+      // 모든 ref 초기화
+      groundRef.current = null;
+      boxesRef.current = [];
+      currentBoxRef.current = null;
+      lastPlacedBoxRef.current = null;
+      cameraYRef.current = 0;
+      spawnYRef.current = 0;
+      gameOverRef.current = false;
+      speedRef.current = 2;
+      perfectHitRef.current = 0;
+      dustEffectsRef.current = [];
+      scoreEffectsRef.current = [];
+      pendingFailRef.current = false;
+      scoreRef.current = 0;
+      failedBoxPositionRef.current = null;
     };
   }, [gameStarted, resetToken, os]);
 
@@ -865,17 +928,105 @@ export function useBoxStackingGame() {
     setResetToken((v) => v + 1);
     reset();
     start();
-    boxStackSoundRef.current?.play();
+    // BGM은 useEffect에서 Audio 객체 생성 후 자동으로 재생됩니다
   };
 
   const handleRetry = () => {
-    setGameStarted(false);
+    // 기존 BGM 정지 및 초기화
+    if (boxStackSoundRef.current) {
+      boxStackSoundRef.current.pause();
+      boxStackSoundRef.current.currentTime = 0;
+    }
+    if (fallingSoundRef.current) {
+      fallingSoundRef.current.pause();
+      fallingSoundRef.current.currentTime = 0;
+    }
+    
+    // 현재 World에서 모든 박스만 제거하고 World는 유지
+    if (worldRef.current) {
+      // 모든 박스 Body들만 제거
+      for (const box of boxesRef.current) {
+        if (box.body && worldRef.current) {
+          try {
+            if (box.body.getWorld() === worldRef.current) {
+              worldRef.current.destroyBody(box.body);
+            }
+          } catch (e) {
+            console.warn("Error destroying box body:", e);
+          }
+        }
+      }
+    }
+    
+    // 게임 상태 초기화
     setGameOver(false);
     setScore(0);
     setIsEnding(false);
+    
+    // ref 상태들 완전 초기화
+    gameOverRef.current = false;
+    scoreRef.current = 0;
+    perfectHitRef.current = 0;
+    pendingFailRef.current = false;
+    failedBoxPositionRef.current = null;
+    cameraYRef.current = 0;
+    dustEffectsRef.current = [];
+    scoreEffectsRef.current = [];
+    
+    // 박스 관련 ref 초기화
+    boxesRef.current = [];
+    currentBoxRef.current = null;
+    lastPlacedBoxRef.current = null;
+    
     // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
     speedRef.current = getBoxSpeed(window.innerWidth, os);
-    boxStackSoundRef.current?.play();
+    
+    // 타이머 리셋 및 재시작
+    reset();
+    start();
+    
+    // 스폰 위치 재설정
+    const BOX_SIZE = boxSizeRef.current;
+    spawnYRef.current = cameraYRef.current + BOX_SIZE;
+    
+    // 새로운 박스 즉시 생성 (World는 그대로 유지)
+    if (worldRef.current) {
+      const { width: WORLD_WIDTH } = getWorldSize(window.innerWidth, window.innerHeight);
+      const startX = WORLD_WIDTH / 2;
+      const startY = spawnYRef.current;
+
+      const body = worldRef.current.createBody({
+        type: "kinematic",
+        position: Vec2(startX, startY),
+        fixedRotation: false,
+      });
+
+      body.createFixture(planck.Box(BOX_SIZE / 2, BOX_SIZE / 2), {
+        density: 1.0,
+        friction: 0.6,
+        restitution: 0.05,
+      });
+
+      const direction = Math.random() < 0.5 ? -1 : 1;
+      const speed = speedRef.current;
+      body.setLinearVelocity(Vec2(direction * speed, 0));
+
+      const spriteIndex = Math.floor(Math.random() * 4);
+      const info: BoxInfo = {
+        body,
+        spriteIndex,
+        settled: false,
+        frozen: false,
+        stableTime: 0,
+      };
+      boxesRef.current.push(info);
+      currentBoxRef.current = { body, isDropping: false, hasLanded: false };
+    }
+    
+    // BGM 재시작
+    if (boxStackSoundRef.current) {
+      boxStackSoundRef.current.play().catch(console.error);
+    }
   };
 
   const handleEndGame = async (mode: string, index: number) => {
