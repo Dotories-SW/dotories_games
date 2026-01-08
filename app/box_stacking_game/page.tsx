@@ -22,6 +22,7 @@ function BoxStackingPage() {
     score,
     isEnding,
     isCompleted,
+    isResetting,
     handleClick,
     handleStartGame,
     handleRetry,
@@ -29,10 +30,10 @@ function BoxStackingPage() {
     goBack,
   } = useBoxStackingGame();
 
-  // 종료 중 화면
+  // 종료 중 또는 정리 중 화면
   if (isEnding) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 z-[1000]">
         <style jsx global>{`
           body {
             margin: 0;
@@ -53,7 +54,7 @@ function BoxStackingPage() {
             className="font-bold text-gray-800 mb-[2vh]"
             style={{ fontSize: "clamp(20px, 5vw, 24px)" }}
           >
-            오늘의 도전을 종료하는 중이에요
+            {gameOver ? "게임을 정리하는 중이에요" : "오늘의 도전을 종료하는 중이에요"}
           </h2>
           <p
             className="text-gray-600"
@@ -221,10 +222,15 @@ function BoxStackingPage() {
             <div className="space-y-[2vh]">
               <button
                 onClick={handleRetry}
-                className="w-full py-[3.5vh] bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-lg"
+                disabled={isResetting}
+                className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all shadow-lg ${
+                  isResetting 
+                    ? "bg-gray-400 cursor-not-allowed" 
+                    : "bg-gradient-to-r from-blue-500 to-blue-600 active:scale-[0.98]"
+                } text-white`}
                 style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
               >
-                다시 하기
+                {isResetting ? "게임을 정리하는 중이에요..." : "다시 하기"}
               </button>
 
               {score >= 70 && (

@@ -43,6 +43,7 @@ export function useBoxStackingGame() {
   const [resetToken, setResetToken] = useState(0);
   const [isEnding, setIsEnding] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const params = useSearchParams();
   const loginId: string = params.get("id")
@@ -72,6 +73,7 @@ export function useBoxStackingGame() {
   const scoreEffectsRef = useRef<ScoreEffect[]>([]);
   const scoreImagesRef = useRef<{ [key: number]: HTMLImageElement }>({});
   const pendingFailRef = useRef<boolean>(false);
+  const pendingFailTimeRef = useRef<number>(0);  // fail 판정 후 경과 시간
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
   const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
   const scoreRef = useRef<number>(0);
@@ -388,11 +390,14 @@ export function useBoxStackingGame() {
     fpsRef.current = 60;
 
     let animationId: number | undefined;
+    let active = true;
 
     const loop = (currentTime: number) => {
-      animationId = requestAnimationFrame(loop);
+      if (!active) return;
+      const w = worldRef.current;
+      if (!w) return;
 
-      if (!worldRef.current) return;
+      animationId = requestAnimationFrame(loop);
 
       // FPS 모니터링 (1초마다 업데이트)
       frameCountRef.current++;
@@ -408,7 +413,7 @@ export function useBoxStackingGame() {
         : TIME_STEP;
       
       // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
-      world.step(TIME_STEP);
+      w.step(TIME_STEP);
       
       if (!gameOverRef.current) {
         // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
@@ -468,17 +473,35 @@ export function useBoxStackingGame() {
           // 3. 수평으로 너무 멀리 벗어남 (X 위치 체크)
           const lastX = lastBody.getPosition().x;
           const horizontalDistance = Math.abs(pos.x - lastX);
-          const tooFarAway = horizontalDistance > BOX_SIZE * 2; // 박스 크기의 2배 이상 멀어지면
+          const tooFarAway = horizontalDistance > BOX_SIZE * 2;
 
           if (belowStack || outOfView || tooFarAway) {
-            // 무너져 내린 경우 fail로 처리
-            failedBoxPositionRef.current = { x: pos.x, y: pos.y };
-            current.hitAccuracy = "fail";
-            pendingFailRef.current = false;
-            current.isDropping = false;
-            setGameOver(true);
-            gameOverRef.current = true;
-            return;
+            // fail 판정이지만, 최소 0.5초는 기회를 줌
+            if (pendingFailRef.current) {
+              pendingFailTimeRef.current += deltaTime;
+              
+              // 0.5초 이상 경과하거나, 완전히 화면 밖으로 나간 경우만 게임 오버
+              if (pendingFailTimeRef.current > 0.5 || outOfView) {
+                failedBoxPositionRef.current = { x: pos.x, y: pos.y };
+                current.hitAccuracy = "fail";
+                pendingFailRef.current = false;
+                pendingFailTimeRef.current = 0;
+                current.isDropping = false;
+                setGameOver(true);
+                gameOverRef.current = true;
+                return;
+              }
+            } else {
+              // 처음 fail 조건 만족 시 타이머 시작
+              pendingFailRef.current = true;
+              pendingFailTimeRef.current = 0;
+            }
+          } else {
+            // 조건을 벗어나면 fail 판정 리셋 (착지 성공 가능성)
+            if (pendingFailRef.current) {
+              pendingFailRef.current = false;
+              pendingFailTimeRef.current = 0;
+            }
           }
         }
 
@@ -486,6 +509,28 @@ export function useBoxStackingGame() {
 
         if (speed < SETTLE_SPEED && Math.abs(angVel) < 0.05) {
           current.isDropping = false;
+
+          // "쌓이지 않았는데도 성공 처리"되는 케이스 방지:
+          // 박스가 멈췄더라도, 마지막 박스 위(충분히 위쪽)에 올라가지 못했다면 실패 처리
+          if (lastBody) {
+            const lastPos = lastBody.getPosition();
+            const dx = Math.abs(pos.x - lastPos.x);
+            const dy = lastPos.y - pos.y; // 양수면 현재 박스가 마지막 박스보다 위(정상 스택 방향)
+
+            // 정상적으로 쌓이면 dy는 대략 BOX_SIZE 근처가 됨 (센터 간 거리)
+            // 바닥/옆에 착지한 경우 dy가 작거나(≈0) dx가 너무 큼
+            const stackedEnough = dy > BOX_SIZE * 0.5 && dx < BOX_SIZE * 0.9;
+
+            if (!stackedEnough) {
+              failedBoxPositionRef.current = { x: pos.x, y: pos.y };
+              current.hitAccuracy = "fail";
+              pendingFailRef.current = false;
+              pendingFailTimeRef.current = 0;
+              setGameOver(true);
+              gameOverRef.current = true;
+              return;
+            }
+          }
 
           if (pendingFailRef.current) {
             // 실제로 떨어진 박스의 위치를 저장
@@ -682,6 +727,31 @@ export function useBoxStackingGame() {
             // 각도가 정상이면 tiltTime 리셋
             box.tiltTime = 0;
           }
+          
+          // settled 박스가 스택에서 떨어졌는지 체크 (frozen 제외)
+          if (!box.frozen && lastPlacedBoxRef.current) {
+            const boxPos = box.body.getPosition();
+            const lastPos = lastPlacedBoxRef.current.getPosition();
+            const worldHeight = window.innerHeight / SCALE;
+            const cameraY = cameraYRef.current;
+            
+            // 1. 마지막 박스보다 아래로 많이 떨어짐
+            const belowStack = boxPos.y > lastPos.y + BOX_SIZE * 2;
+            
+            // 2. 화면 밖으로 나감
+            const outOfView = boxPos.y - cameraY > worldHeight + BOX_SIZE;
+            
+            // 3. 수평으로 너무 멀리 떨어짐
+            const horizontalDistance = Math.abs(boxPos.x - lastPos.x);
+            const tooFarAway = horizontalDistance > BOX_SIZE * 3;
+            
+            if (belowStack || outOfView || tooFarAway) {
+              failedBoxPositionRef.current = { x: boxPos.x, y: boxPos.y };
+              setGameOver(true);
+              gameOverRef.current = true;
+              break;
+            }
+          }
         }
       }
     };
@@ -802,35 +872,8 @@ export function useBoxStackingGame() {
       }
     };
 
-    // 초기 시작 시에도 동일한 시간 측정 적용
-    const startTime = performance.now();
-    lastFrameTimeRef.current = startTime;
-    
-    const loopStart = (currentTime: number) => {
-      animationId = requestAnimationFrame(loopStart);
-      if (!worldRef.current) return;
-      
-      // 실제 경과 시간 계산
-      const deltaTime = lastFrameTimeRef.current > 0 
-        ? (currentTime - lastFrameTimeRef.current) / 1000 
-        : TIME_STEP;
-      
-      // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
-      world.step(TIME_STEP);
-      
-      if (!gameOverRef.current) {
-        // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
-        const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
-        updateLogic(clampedDeltaTime);
-      }
-      renderScene(ctx);
-      
-      lastFrameTimeRef.current = currentTime;
-    };
-
-    loopStart(startTime);
-
     return () => {
+      active = false;
       if (animationId !== undefined) cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
       
@@ -955,102 +998,28 @@ export function useBoxStackingGame() {
     // BGM은 useEffect에서 Audio 객체 생성 후 자동으로 재생됩니다
   };
 
+  // 게임오버 시 버튼 비활성화 타이머
+  useEffect(() => {
+    if (!gameOver) return;
+    
+    // 게임 오버 시 3초간 버튼 비활성화
+    setIsResetting(true);
+    
+    const timer = setTimeout(() => {
+      setIsResetting(false);
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  }, [gameOver]);
+
   const handleRetry = () => {
-    // 기존 BGM 정지 및 초기화
-    if (boxStackSoundRef.current) {
-      boxStackSoundRef.current.pause();
-      boxStackSoundRef.current.currentTime = 0;
-    }
-    if (fallingSoundRef.current) {
-      fallingSoundRef.current.pause();
-      fallingSoundRef.current.currentTime = 0;
-    }
+    // 이미 정리 중이면 무시
+    if (isResetting) return;
     
-    // 현재 World에서 모든 박스만 제거하고 World는 유지
-    if (worldRef.current) {
-      // 모든 박스 Body들만 제거
-      for (const box of boxesRef.current) {
-        if (box.body && worldRef.current) {
-          try {
-            if (box.body.getWorld() === worldRef.current) {
-              worldRef.current.destroyBody(box.body);
-            }
-          } catch (e) {
-            console.warn("Error destroying box body:", e);
-          }
-        }
-      }
-    }
-    
-    // 게임 상태 초기화
+    // 시작 화면으로 돌아가기 (이때 물리 엔진 cleanup이 실행됨)
+    setGameStarted(false);
     setGameOver(false);
     setScore(0);
-    setIsEnding(false);
-    
-    // ref 상태들 완전 초기화
-    gameOverRef.current = false;
-    scoreRef.current = 0;
-    perfectHitRef.current = 0;
-    pendingFailRef.current = false;
-    failedBoxPositionRef.current = null;
-    cameraYRef.current = 0;
-    dustEffectsRef.current = [];
-    scoreEffectsRef.current = [];
-    
-    // 박스 관련 ref 초기화
-    boxesRef.current = [];
-    currentBoxRef.current = null;
-    lastPlacedBoxRef.current = null;
-    
-    // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
-    speedRef.current = getBoxSpeed(window.innerWidth, os);
-    
-    // 타이머 리셋 및 재시작
-    reset();
-    start();
-    
-    // 스폰 위치 재설정
-    const BOX_SIZE = boxSizeRef.current;
-    spawnYRef.current = cameraYRef.current + BOX_SIZE;
-    
-    // 새로운 박스 즉시 생성 (World는 그대로 유지)
-    if (worldRef.current) {
-      const { width: WORLD_WIDTH } = getWorldSize(window.innerWidth, window.innerHeight);
-      const startX = WORLD_WIDTH / 2;
-      const startY = spawnYRef.current;
-
-      const body = worldRef.current.createBody({
-        type: "kinematic",
-        position: Vec2(startX, startY),
-        fixedRotation: false,
-      });
-
-      body.createFixture(planck.Box(BOX_SIZE / 2, BOX_SIZE / 2), {
-        density: 1.0,
-        friction: 0.6,
-        restitution: 0.05,
-      });
-
-      const direction = Math.random() < 0.5 ? -1 : 1;
-      const speed = speedRef.current;
-      body.setLinearVelocity(Vec2(direction * speed, 0));
-
-      const spriteIndex = Math.floor(Math.random() * 4);
-      const info: BoxInfo = {
-        body,
-        spriteIndex,
-        settled: false,
-        frozen: false,
-        stableTime: 0,
-      };
-      boxesRef.current.push(info);
-      currentBoxRef.current = { body, isDropping: false, hasLanded: false };
-    }
-    
-    // BGM 재시작
-    if (boxStackSoundRef.current) {
-      boxStackSoundRef.current.play().catch(console.error);
-    }
   };
 
   const handleEndGame = async (mode: string, index: number) => {
@@ -1138,6 +1107,7 @@ export function useBoxStackingGame() {
     gameOver,
     isEnding,
     isCompleted,
+    isResetting,
 
     // handlers
     handleClick,
