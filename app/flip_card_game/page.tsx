@@ -365,8 +365,7 @@ function FlipCardGame() {
     <div
       className="h-screen overflow-hidden relative"
       style={{
-        background:
-          "linear-gradient(to bottom, #FFE5E5 0%, #FFF5F0 50%, #F5F1E8 100%)",
+        background: "#F5F1E8",
       }}
     >
       <style jsx global>{`

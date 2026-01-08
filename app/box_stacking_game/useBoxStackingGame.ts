@@ -768,7 +768,7 @@ export function useBoxStackingGame() {
       const currentHeight = window.innerHeight;
       ctx.clearRect(0, 0, currentWidth, currentHeight);
 
-      ctx.fillStyle = "#E0F2FE";
+      ctx.fillStyle = "#F5F1E8";
       ctx.fillRect(0, 0, currentWidth, currentHeight);
 
       const cameraY = cameraYRef.current;

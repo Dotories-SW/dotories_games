@@ -4,7 +4,6 @@
 import React, { Suspense } from "react";
 import LoadingSpinner from "../_component/LoadingSpinner";
 import { useBoxStackingGame } from "./useBoxStackingGame";
-import { getBoxSpeed } from "./utils";
 
 export default function BoxStackingGame() {
   return (
@@ -33,7 +32,7 @@ function BoxStackingPage() {
   // 종료 중 또는 정리 중 화면
   if (isEnding) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 z-[1000]">
+      <div className="fixed inset-0 flex items-center justify-center z-[1000]" style={{ backgroundColor: "#F5F1E8" }}>
         <style jsx global>{`
           body {
             margin: 0;
@@ -70,7 +69,7 @@ function BoxStackingPage() {
   // 시작 화면
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F1E8" }}>
         <style jsx global>{`
           body {
             margin: 0;
@@ -146,7 +145,7 @@ function BoxStackingPage() {
 
   // 실제 게임 화면
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 to-blue-100 cursor-pointer">
+    <div className="fixed inset-0 cursor-pointer" style={{ backgroundColor: "#F5F1E8" }}>
       <style jsx global>{`
         body {
           margin: 0;
