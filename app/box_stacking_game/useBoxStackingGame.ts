@@ -34,7 +34,7 @@ import { useGameTimer } from "../_hooks/useGameTimer";
 
 export function useBoxStackingGame() {
   // 속도 스케일 (좌우 이동/낙하 공통)
-  const SPEED_SCALE = 1.2;
+  const SPEED_SCALE = 1.4;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boxSizeRef = useRef<number>(3.3);
