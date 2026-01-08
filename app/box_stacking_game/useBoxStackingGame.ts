@@ -33,6 +33,9 @@ import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
 import { useGameTimer } from "../_hooks/useGameTimer";
 
 export function useBoxStackingGame() {
+  // 속도 스케일 (좌우 이동/낙하 공통)
+  const SPEED_SCALE = 1.2;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boxSizeRef = useRef<number>(3.3);
 
@@ -132,7 +135,7 @@ export function useBoxStackingGame() {
     boxStackSoundRef.current.play().catch(console.error);
 
     // 반응형 중력
-    const gravityValue = getGravityValue(window.innerHeight);
+    const gravityValue = getGravityValue(window.innerHeight) * SPEED_SCALE;
 
     const world = new planck.World({
       gravity: Vec2(0, gravityValue),
@@ -184,7 +187,7 @@ export function useBoxStackingGame() {
 
       // resize 시 중력값도 업데이트
       if (worldRef.current) {
-        const newGravityValue = getGravityValue(height);
+        const newGravityValue = getGravityValue(height) * SPEED_SCALE;
         worldRef.current.setGravity(Vec2(0, newGravityValue));
       }
     };
@@ -278,7 +281,7 @@ export function useBoxStackingGame() {
     pendingFailRef.current = false;
     failedBoxPositionRef.current = null;
     // 화면 너비 기반 속도 설정 (OS 기반 보정 포함)
-    speedRef.current = getBoxSpeed(window.innerWidth, os);
+    speedRef.current = getBoxSpeed(window.innerWidth, os) * SPEED_SCALE;
     setScore(0);
     setGameOver(false);
 
@@ -581,7 +584,10 @@ export function useBoxStackingGame() {
           
           if (thresholdsCrossed > 0) {
             // 넘어간 threshold 개수만큼 속도 증가 (OS 기반 보정 포함)
-            speedRef.current += getBoxSpeedIncrement(window.innerWidth, os) * thresholdsCrossed;
+            speedRef.current +=
+              getBoxSpeedIncrement(window.innerWidth, os) *
+              SPEED_SCALE *
+              thresholdsCrossed;
           }
 
           // 점수 업데이트
