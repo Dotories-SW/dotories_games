@@ -453,17 +453,25 @@ export function useBoxStackingGame() {
         const pos = body.getPosition();
         const lastBody = lastPlacedBoxRef.current;
 
-        if (pendingFailRef.current && lastBody) {
+        // 떨어지는 박스가 스택에서 벗어나거나 화면 밖으로 나가면 게임 오버
+        if (lastBody) {
           const worldHeight = window.innerHeight / SCALE;
           const cameraY = cameraYRef.current;
           const lastY = lastBody.getPosition().y;
 
-          const belowStack = pos.y > lastY + BOX_SIZE * 1.2;
+          // 1. 스택 아래로 떨어짐 (Y 위치 체크)
+          const belowStack = pos.y > lastY + BOX_SIZE * 1.5;
+          
+          // 2. 화면 밖으로 나감
           const outOfView = pos.y - cameraY > worldHeight + BOX_SIZE;
+          
+          // 3. 수평으로 너무 멀리 벗어남 (X 위치 체크)
+          const lastX = lastBody.getPosition().x;
+          const horizontalDistance = Math.abs(pos.x - lastX);
+          const tooFarAway = horizontalDistance > BOX_SIZE * 2; // 박스 크기의 2배 이상 멀어지면
 
-          if (belowStack || outOfView) {
+          if (belowStack || outOfView || tooFarAway) {
             // 무너져 내린 경우 fail로 처리
-            // 실제로 떨어진 박스의 위치를 저장
             failedBoxPositionRef.current = { x: pos.x, y: pos.y };
             current.hitAccuracy = "fail";
             pendingFailRef.current = false;
@@ -653,10 +661,26 @@ export function useBoxStackingGame() {
           if (!box.settled) continue;
 
           const angle = Math.abs(box.body.getAngle());
+          
+          // 기울어진 상태 체크
           if (angle > TILT_LIMIT) {
-            setGameOver(true);
-            gameOverRef.current = true;
-            break;
+            // tiltTime 초기화 (없으면 0)
+            if (box.tiltTime === undefined) {
+              box.tiltTime = 0;
+            }
+            
+            // 기울어진 시간 누적
+            box.tiltTime += deltaTime;
+            
+            // 0.3초 이상 기울어진 상태가 지속되면 게임 오버
+            if (box.tiltTime > 0.3) {
+              setGameOver(true);
+              gameOverRef.current = true;
+              break;
+            }
+          } else {
+            // 각도가 정상이면 tiltTime 리셋
+            box.tiltTime = 0;
           }
         }
       }

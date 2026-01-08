@@ -7,6 +7,7 @@ export interface BoxInfo {
   settled: boolean;
   frozen?: boolean;
   stableTime?: number;
+  tiltTime?: number;  // 기울어진 시간 추적
   frozenPosition?: { x: number; y: number };
   frozenAngle?: number;
 }
