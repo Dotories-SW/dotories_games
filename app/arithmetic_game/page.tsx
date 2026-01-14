@@ -39,10 +39,7 @@ function ArithmeticGame() {
   // 난이도 선택 화면
   if (showDifficultySelect) {
     return (
-      <div
-        className="min-h-screen"
-        style={{ backgroundColor: "#F5F1E8" }}
-      >
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F1E8" }}>
         <style jsx global>{`
           body {
             margin: 0;
@@ -52,19 +49,29 @@ function ArithmeticGame() {
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
           }
-
         `}</style>
 
         <div className="w-full px-[4vw] py-[3vh] pb-[6vh]">
           <div className="bg-white rounded-3xl p-[4vh] shadow-lg border-0">
             <div className="text-center mb-[4vh]">
               <div className="w-[20vw] h-[20vw] max-w-[100px] max-h-[100px] bg-gradient-to-br from-blue-400 to-blue-500 rounded-3xl mx-auto mb-[3vh] flex items-center justify-center shadow-lg">
-                <div className="text-white" style={{ fontSize: 'clamp(40px, 10vw, 48px)' }}>🧮</div>
+                <div
+                  className="text-white"
+                  style={{ fontSize: "clamp(40px, 10vw, 48px)" }}
+                >
+                  🧮
+                </div>
               </div>
-              <h1 className="font-bold text-gray-900 mb-[1.5vh]" style={{ fontSize: 'clamp(28px, 7vw, 32px)' }}>
+              <h1
+                className="font-bold text-gray-900 mb-[1.5vh]"
+                style={{ fontSize: "clamp(28px, 7vw, 32px)" }}
+              >
                 사칙연산 게임
               </h1>
-              <p className="text-gray-500" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
+              <p
+                className="text-gray-500"
+                style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
+              >
                 빠르게 계산하고 정답을 맞춰보세요!
               </p>
             </div>
@@ -92,7 +99,11 @@ function ArithmeticGame() {
                       <div className="flex-1 text-left">
                         <div className="flex items-center gap-[1.5vw] mb-[0.5vh]">
                           {completedGames[config.localIndex] && (
-                            <span style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>✅</span>
+                            <span
+                              style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
+                            >
+                              ✅
+                            </span>
                           )}
                           <div
                             className={`font-bold ${
@@ -102,7 +113,7 @@ function ArithmeticGame() {
                                 ? "text-green-600"
                                 : "text-gray-900"
                             }`}
-                            style={{ fontSize: 'clamp(22px, 5.5vw, 26px)' }}
+                            style={{ fontSize: "clamp(22px, 5.5vw, 26px)" }}
                           >
                             {config.name}
                           </div>
@@ -115,14 +126,16 @@ function ArithmeticGame() {
                             : "bg-orange-50"
                         }`}
                       >
-                        <span style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>🪙</span>
+                        <span style={{ fontSize: "clamp(16px, 4vw, 20px)" }}>
+                          🪙
+                        </span>
                         <span
                           className={`font-bold ${
                             selectedDifficulty === key
                               ? "text-white"
                               : "text-orange-600"
                           }`}
-                          style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
+                          style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
                         >
                           {config.coin}
                         </span>
@@ -143,7 +156,7 @@ function ArithmeticGame() {
                       ? "bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-blue-400/50"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
-                  style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
+                  style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
                 >
                   게임 시작
                 </button>
@@ -170,22 +183,47 @@ function ArithmeticGame() {
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
           }
-
         `}</style>
         <div className="bg-white p-[5vh] rounded-3xl shadow-2xl text-center w-full max-w-md">
-          <div className="mb-[3vh] animate-bounce" style={{ fontSize: 'clamp(60px, 15vw, 72px)' }}>🎉</div>
-          <h2 className="font-bold text-gray-900 mb-[2vh]" style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}>완료!</h2>
+          <div
+            className="mb-[3vh] animate-bounce"
+            style={{ fontSize: "clamp(60px, 15vw, 72px)" }}
+          >
+            🎉
+          </div>
+          <h2
+            className="font-bold text-gray-900 mb-[2vh]"
+            style={{ fontSize: "clamp(24px, 6vw, 28px)" }}
+          >
+            완료!
+          </h2>
 
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-[3vh] mb-[3vh]">
             <div className="flex justify-between items-center mb-[2vh]">
-              <span className="text-gray-600" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>틀린 문제</span>
-              <span className="font-bold text-gray-900" style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>
+              <span
+                className="text-gray-600"
+                style={{ fontSize: "clamp(12px, 3vw, 16px)" }}
+              >
+                틀린 문제
+              </span>
+              <span
+                className="font-bold text-gray-900"
+                style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
+              >
                 {inCorrectCount}개
               </span>
             </div>
             <div className="border-t border-gray-200 pt-[2vh]">
-              <p className="text-gray-600 mb-[1vh]" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>정답률</p>
-              <p className="font-bold text-blue-600" style={{ fontSize: 'clamp(28px, 7vw, 32px)' }}>
+              <p
+                className="text-gray-600 mb-[1vh]"
+                style={{ fontSize: "clamp(12px, 3vw, 16px)" }}
+              >
+                정답률
+              </p>
+              <p
+                className="font-bold text-blue-600"
+                style={{ fontSize: "clamp(28px, 7vw, 32px)" }}
+              >
                 {Math.round(
                   (score / (MAX_QUESTIONS + inCorrectCount || 1)) * 100
                 )}
@@ -199,7 +237,7 @@ function ArithmeticGame() {
             <div className="flex gap-[2vw]">
               <button
                 className="flex-1 py-[2.5vh] border-2 border-blue-400 text-blue-400 rounded-2xl font-bold active:scale-[0.98] transition-all bg-white"
-                style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}
+                style={{ fontSize: "clamp(14px, 3.5vw, 18px)" }}
                 onClick={() =>
                   handleEndGame(
                     "noAds",
@@ -209,7 +247,9 @@ function ArithmeticGame() {
                 }
               >
                 {completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] ? (
-                  <span style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>코인 수령 완료</span>
+                  <span style={{ fontSize: "clamp(12px, 3vw, 16px)" }}>
+                    코인 수령 완료
+                  </span>
                 ) : (
                   <span>
                     🪙 {DIFFICULTY_CONFIGS[difficulty].coin} 코인 받기
@@ -219,7 +259,7 @@ function ArithmeticGame() {
               {!completedGames[DIFFICULTY_CONFIGS[difficulty].localIndex] && (
                 <button
                   className="flex-1 py-[2.5vh] bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-lg"
-                  style={{ fontSize: 'clamp(14px, 3.5vw, 18px)' }}
+                  style={{ fontSize: "clamp(14px, 3.5vw, 18px)" }}
                   onClick={() =>
                     handleEndGame(
                       "ads",
@@ -230,7 +270,9 @@ function ArithmeticGame() {
                 >
                   <span>광고보고</span>
                   <br />
-                  <span style={{ fontSize: 'clamp(10px, 2.5vw, 14px)' }}>2배 받기</span>
+                  <span style={{ fontSize: "clamp(10px, 2.5vw, 14px)" }}>
+                    2배 받기
+                  </span>
                 </button>
               )}
             </div>
@@ -238,7 +280,7 @@ function ArithmeticGame() {
             <button
               onClick={() => setShowDifficultySelect(true)}
               className="w-full py-[3.5vh] bg-gradient-to-r from-blue-300 to-blue-400 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
-              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
+              style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
             >
               다른 난이도 선택
             </button>
@@ -268,10 +310,16 @@ function ArithmeticGame() {
           {/* 진행 상황 */}
           <div className="mb-[3vh] bg-white/95 backdrop-blur-md border-2 border-blue-200/60 rounded-2xl p-[3vh] shadow-lg">
             <div className="flex justify-between items-center mb-[1.5vh]">
-              <span className="text-black font-semibold" style={{ fontSize: 'clamp(18px, 4.5vw, 22px)' }}>
+              <span
+                className="text-black font-semibold"
+                style={{ fontSize: "clamp(18px, 4.5vw, 22px)" }}
+              >
                 정답
               </span>
-              <span className="text-blue-600 font-bold" style={{ fontSize: 'clamp(22px, 5.5vw, 26px)' }}>
+              <span
+                className="text-blue-600 font-bold"
+                style={{ fontSize: "clamp(22px, 5.5vw, 26px)" }}
+              >
                 {score} / {MAX_QUESTIONS}
               </span>
             </div>
@@ -289,7 +337,16 @@ function ArithmeticGame() {
           {currentQuestion && (
             <div className="bg-white rounded-3xl p-[5vh] shadow-lg mb-[3vh]">
               <div className="text-center mb-[5vh]">
-                <div className="font-bold text-gray-800 mb-[2vh]" style={{ fontSize: 'clamp(48px, 12vw, 56px)' }}>
+                <div
+                  className="font-bold text-gray-800 mb-[2vh]"
+                  style={{
+                    fontSize: `${
+                      currentQuestion.text.includes("[이전 답]")
+                        ? "clamp(36px, 9vw, 48px)"
+                        : "clamp(48px, 12vw, 56px)"
+                    }`,
+                  }}
+                >
                   {currentQuestion.text} = ?
                 </div>
               </div>
@@ -314,10 +371,13 @@ function ArithmeticGame() {
                           ? "bg-gradient-to-r from-red-400 to-red-500 text-white shadow-lg"
                           : "bg-gray-100 text-gray-800 hover:bg-gray-200 shadow-md"
                       } ${showResult ? "cursor-default" : "cursor-pointer"}`}
-                      style={{ fontSize: 'clamp(40px, 10vw, 48px)' }}
+                      style={{ fontSize: "clamp(40px, 10vw, 48px)" }}
                     >
                       {(showCorrectAnswer || showWrongAnswer) && (
-                        <span className="mb-[1vh]" style={{ fontSize: 'clamp(24px, 6vw, 28px)' }}>
+                        <span
+                          className="mb-[1vh]"
+                          style={{ fontSize: "clamp(24px, 6vw, 28px)" }}
+                        >
                           {showCorrectAnswer ? "✓" : "✗"}
                         </span>
                       )}
