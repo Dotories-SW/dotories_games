@@ -31,7 +31,6 @@ import {
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
 import { useGameTimer } from "../_hooks/useGameTimer";
-import { Sleeping } from "matter-js";
 
 export function useBoxStackingGame() {
   // 속도 스케일 (좌우 이동/낙하 공통)
@@ -439,8 +438,19 @@ export function useBoxStackingGame() {
           : TIME_STEP;
       const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
 
-      // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
-      w.step(TIME_STEP);
+      // 물리 엔진은 고정 시간 스텝 + accumulator 패턴 (프레임 독립적)
+      physicsAccumulatorRef.current += clampedDeltaTime;
+      const maxSteps = 3; // 프레임 드랍 시에도 최대 3스텝으로 제한
+      let steps = 0;
+      while (physicsAccumulatorRef.current >= TIME_STEP && steps < maxSteps) {
+        w.step(TIME_STEP);
+        physicsAccumulatorRef.current -= TIME_STEP;
+        steps++;
+      }
+      // 남은 누적시간이 너무 크면 버림 (장시간 탭 전환 등 방지)
+      if (physicsAccumulatorRef.current > TIME_STEP * 2) {
+        physicsAccumulatorRef.current = 0;
+      }
 
       if (!gameOverRef.current) {
         // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
@@ -646,13 +656,8 @@ export function useBoxStackingGame() {
         cameraYRef.current = currentCameraY + clampedStep;
       }
       
-      async function sleep() {
-        return await new Promise(resolve => setTimeout(resolve, 10));
-      }
-
       // 좌우 왕복 이동
       if (currentBoxRef.current && !currentBoxRef.current.isDropping) {
-        sleep();
         const body = currentBoxRef.current.body;
         const pos = body.getPosition();
         const vel = body.getLinearVelocity();
@@ -679,51 +684,38 @@ export function useBoxStackingGame() {
         }
       }
 
-      // 먼지 업데이트
-      dustEffectsRef.current = dustEffectsRef.current.filter((d) => d.life > 0);
-      for (const d of dustEffectsRef.current) {
-        d.life = Math.max(0, d.life - 0.012);
-        d.y -= 0.005;
+      // 먼지 업데이트 (in-place, 새 배열 생성 없음)
+      {
+        const dusts = dustEffectsRef.current;
+        let writeIdx = 0;
+        for (let i = 0; i < dusts.length; i++) {
+          const d = dusts[i];
+          d.life = Math.max(0, d.life - 0.012);
+          d.y -= 0.005;
+          if (d.life > 0) {
+            dusts[writeIdx++] = d;
+          }
+        }
+        dusts.length = writeIdx;
       }
 
-      // 점수 이펙트 업데이트
-      scoreEffectsRef.current = scoreEffectsRef.current.filter(
-        (s) => s.life > 0,
-      );
-      for (const s of scoreEffectsRef.current) {
-        s.life = Math.max(0, s.life - 0.015);
-        s.opacity = s.life;
-        s.y -= 0.02; // 위로 올라감
+      // 점수 이펙트 업데이트 (in-place, 새 배열 생성 없음)
+      {
+        const scores = scoreEffectsRef.current;
+        let writeIdx = 0;
+        for (let i = 0; i < scores.length; i++) {
+          const s = scores[i];
+          s.life = Math.max(0, s.life - 0.015);
+          s.opacity = s.life;
+          s.y -= 0.02;
+          if (s.life > 0) {
+            scores[writeIdx++] = s;
+          }
+        }
+        scores.length = writeIdx;
       }
 
       if (!gameOverRef.current) {
-        // Frozen 박스들의 위치 강제 고정 (충돌로 인한 움직임 방지)
-        for (const box of boxes) {
-          if (
-            box.frozen &&
-            box.frozenPosition &&
-            box.frozenAngle !== undefined
-          ) {
-            const currentPos = box.body.getPosition();
-            const currentAngle = box.body.getAngle();
-
-            // 위치나 각도가 조금이라도 변했으면 강제로 복원
-            const posDiff =
-              Math.abs(currentPos.x - box.frozenPosition.x) +
-              Math.abs(currentPos.y - box.frozenPosition.y);
-            const angleDiff = Math.abs(currentAngle - box.frozenAngle);
-
-            if (posDiff > 0.001 || angleDiff > 0.001) {
-              box.body.setTransform(
-                Vec2(box.frozenPosition.x, box.frozenPosition.y),
-                box.frozenAngle,
-              );
-              box.body.setLinearVelocity(Vec2(0, 0));
-              box.body.setAngularVelocity(0);
-            }
-          }
-        }
-
         const STABLE_SPEED = 0.08;
         const STABLE_ANG = 0.08;
         const RESET_SPEED = 0.4;
