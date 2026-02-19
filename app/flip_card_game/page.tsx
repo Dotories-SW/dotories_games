@@ -348,13 +348,6 @@ function FlipCardGame() {
               )}
             </div>
 
-            <button
-              onClick={() => setShowDifficultySelect(true)}
-              className="w-full py-[3.5vh] bg-gradient-to-r from-red-300 to-pink-300 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
-              style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
-            >
-              다른 난이도 선택
-            </button>
           </div>
         </div>
       </div>

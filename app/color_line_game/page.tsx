@@ -144,12 +144,6 @@ function ColorLineGame() {
           </div>
           <div className="space-y-[1.5vh]">
             <button
-              onClick={() => setShowLevelSelect(true)}
-              className="w-full px-6 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-colors font-semibold"
-            >
-              레벨 선택
-            </button>
-            <button
               onClick={() => window.history.back()}
               className="w-full px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors font-semibold"
             >

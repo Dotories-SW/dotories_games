@@ -216,20 +216,6 @@ function CrosswordPuzzles() {
             모든 단어를 완성했습니다!
           </p>
           <div className="space-y-[2vh]">
-            <button
-              onClick={goToDifficultySelect}
-              className="w-full py-[3.5vh] bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
-              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
-            >
-              다른 난이도 선택
-            </button>
-            <button
-              onClick={() => (window.location.href = "/crossword_puzzles")}
-              className="w-full py-[3.5vh] bg-gray-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-md"
-              style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
-            >
-              메인화면으로
-            </button>
             <div className="flex gap-[2vw]">
               <button
                 className="flex-1 py-[2.5vh] border-2 border-purple-500 text-purple-500 rounded-2xl font-bold active:scale-[0.98] transition-all bg-white"
