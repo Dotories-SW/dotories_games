@@ -1,6 +1,6 @@
 // box-stacking/utils.ts
 export const SCALE = 40; // 1 meter = 40 px
-export const TIME_STEP = 1 / 60;
+export const TIME_STEP = 1 / 30;
 
 // 반응형 기준값
 export const BASE_SCREEN_HEIGHT = 800;

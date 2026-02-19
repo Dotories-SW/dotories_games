@@ -414,7 +414,7 @@ export function useBoxStackingGame() {
     lastFrameTimeRef.current = performance.now();
     lastFpsUpdateRef.current = performance.now();
     frameCountRef.current = 0;
-    fpsRef.current = 60;
+    fpsRef.current = 30;
 
     let animationId: number | undefined;
     let active = true;
