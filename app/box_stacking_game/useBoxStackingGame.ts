@@ -31,6 +31,7 @@ import {
 } from "./utils";
 import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
 import { useGameTimer } from "../_hooks/useGameTimer";
+import { Sleeping } from "matter-js";
 
 export function useBoxStackingGame() {
   // 속도 스케일 (좌우 이동/낙하 공통)
@@ -76,12 +77,12 @@ export function useBoxStackingGame() {
   const scoreEffectsRef = useRef<ScoreEffect[]>([]);
   const scoreImagesRef = useRef<{ [key: number]: HTMLImageElement }>({});
   const pendingFailRef = useRef<boolean>(false);
-  const pendingFailTimeRef = useRef<number>(0);  // fail 판정 후 경과 시간
+  const pendingFailTimeRef = useRef<number>(0); // fail 판정 후 경과 시간
   const fallingSoundRef = useRef<HTMLAudioElement | null>(null);
   const boxStackSoundRef = useRef<HTMLAudioElement | null>(null);
   const scoreRef = useRef<number>(0);
   const failedBoxPositionRef = useRef<{ x: number; y: number } | null>(null);
-  
+
   // 시간 측정 및 FPS 모니터링용 refs
   const lastFrameTimeRef = useRef<number>(0);
   const fpsRef = useRef<number>(60);
@@ -90,7 +91,7 @@ export function useBoxStackingGame() {
   const screenWidthRef = useRef<number>(0);
   const screenHeightRef = useRef<number>(0);
   const physicsAccumulatorRef = useRef<number>(0);
-  
+
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // gameOver 상태와 ref 동기화
@@ -163,12 +164,12 @@ export function useBoxStackingGame() {
       // 게임 영역 폭 제한 (큰 화면에서 최대 600px)
       const MAX_GAME_WIDTH = 600;
       const effectiveWidth = Math.min(width, MAX_GAME_WIDTH);
-      
+
       // 화면 비율 계산 (태블릿 vs 스마트폰 구분)
       const aspectRatio = width / height;
       const isTablet = aspectRatio > 0.7; // 태블릿은 가로가 더 넓음
       const isLargeTablet = width >= 1024; // 큰 태블릿
-      
+
       const shorterSide = Math.min(effectiveWidth, height);
       // 큰 태블릿: 0.18, 일반 태블릿: 0.2, 스마트폰: 0.22 (모바일만 살짝 축소)
       let boxSizeRatio = 0.22;
@@ -177,7 +178,7 @@ export function useBoxStackingGame() {
       } else if (isTablet) {
         boxSizeRatio = 0.2;
       }
-      
+
       const boxPixelSize = shorterSide * boxSizeRatio;
       // 픽셀 단위를 월드 단위로 변환하고, 상한선 설정 (최대 5m)
       const boxSizeWorld = boxPixelSize / SCALE;
@@ -234,7 +235,7 @@ export function useBoxStackingGame() {
     // 월드 크기
     const { width: WORLD_WIDTH, height: WORLD_HEIGHT } = getWorldSize(
       window.innerWidth,
-      window.innerHeight
+      window.innerHeight,
     );
 
     // 바닥 - 화면 하단 바로 위에 위치하도록 수정
@@ -243,7 +244,8 @@ export function useBoxStackingGame() {
       type: "static",
       position: Vec2(WORLD_WIDTH / 2, groundY),
     });
-    ground.createFixture(planck.Box(WORLD_WIDTH / 2, 0.2), { // 바닥 두께를 얇게 조정
+    ground.createFixture(planck.Box(WORLD_WIDTH / 2, 0.2), {
+      // 바닥 두께를 얇게 조정
       friction: 0.8,
       restitution: 0.0,
     });
@@ -280,7 +282,7 @@ export function useBoxStackingGame() {
     currentBoxRef.current = null;
     lastPlacedBoxRef.current = null;
     cameraYRef.current = 0;
-    
+
     // 초기 spawn Y 위치를 이후 스폰 로직과 동일하게 설정
     const BOX_SIZE = boxSizeRef.current;
     spawnYRef.current = cameraYRef.current + BOX_SIZE;
@@ -297,24 +299,24 @@ export function useBoxStackingGame() {
 
       // 전체 settled 박스 가져오기 (freeze 여부 상관없이)
       const allSettledBoxes = boxes.filter((b) => b.settled);
-      
+
       // 최소 3개 이상 쌓여야 freeze 시작
       if (allSettledBoxes.length <= 2) return;
 
       // Y 좌표 오름차순 정렬 (위쪽 박스부터)
       allSettledBoxes.sort(
-        (a, b) => a.body.getPosition().y - b.body.getPosition().y
+        (a, b) => a.body.getPosition().y - b.body.getPosition().y,
       );
 
       // 위 2개는 제외하고 나머지(아래쪽)만 freeze 대상
       // 단, 이미 freeze된 것과 아직 안정화 시간이 부족한 것은 제외
-      const freezeTargets = allSettledBoxes.slice(2).filter(
-        (b) => !b.frozen && (b.stableTime || 0) > 0.4
-      );
-      
+      const freezeTargets = allSettledBoxes
+        .slice(2)
+        .filter((b) => !b.frozen && (b.stableTime || 0) > 0.4);
+
       // 각도 허용 범위
-      const SMALL_ANGLE = (5 * Math.PI) / 180;  // 5도: 거의 평평 → 0도로 보정
-      const MAX_ANGLE = (12 * Math.PI) / 180;    // 12도: 최대 허용 각도
+      const SMALL_ANGLE = (5 * Math.PI) / 180; // 5도: 거의 평평 → 0도로 보정
+      const MAX_ANGLE = (12 * Math.PI) / 180; // 12도: 최대 허용 각도
 
       for (const box of freezeTargets) {
         if (box.frozen) continue;
@@ -327,7 +329,7 @@ export function useBoxStackingGame() {
         }
 
         const pos = box.body.getPosition();
-        
+
         // 각도별 차등 처리
         if (absAngle <= SMALL_ANGLE) {
           // 5도 이하: 거의 평평 → 0도로 보정해서 freeze (완벽하게 평행)
@@ -371,7 +373,7 @@ export function useBoxStackingGame() {
     const spawnBox = () => {
       const BOX_SIZE = boxSizeRef.current;
       const camY = cameraYRef.current;
-      
+
       // 화면 상단에서 박스 크기만큼 위쪽에 스폰 (확실히 보이도록)
       const startY = camY + BOX_SIZE; // 카메라 위치에서 박스 크기만큼 위쪽
       spawnYRef.current = startY;
@@ -407,7 +409,7 @@ export function useBoxStackingGame() {
     };
 
     spawnBox();
-    
+
     // 시간 측정 초기화
     lastFrameTimeRef.current = performance.now();
     lastFpsUpdateRef.current = performance.now();
@@ -431,9 +433,10 @@ export function useBoxStackingGame() {
       }
 
       // 실제 경과 시간 계산 (밀리초 → 초)
-      const deltaTime = lastFrameTimeRef.current > 0
-        ? (currentTime - lastFrameTimeRef.current) / 1000
-        : TIME_STEP;
+      const deltaTime =
+        lastFrameTimeRef.current > 0
+          ? (currentTime - lastFrameTimeRef.current) / 1000
+          : TIME_STEP;
       const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
 
       // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
@@ -462,7 +465,7 @@ export function useBoxStackingGame() {
         const decay = 1.8;
         perfectHitRef.current = Math.max(
           0,
-          perfectHitRef.current - decay * deltaTime
+          perfectHitRef.current - decay * deltaTime,
         );
       }
 
@@ -489,10 +492,10 @@ export function useBoxStackingGame() {
 
           // 1. 스택 아래로 떨어짐 (Y 위치 체크)
           const belowStack = pos.y > lastY + BOX_SIZE * 1.5;
-          
+
           // 2. 화면 밖으로 나감
           const outOfView = pos.y - cameraY > worldHeight + BOX_SIZE;
-          
+
           // 3. 수평으로 너무 멀리 벗어남 (X 위치 체크)
           const lastX = lastBody.getPosition().x;
           const horizontalDistance = Math.abs(pos.x - lastX);
@@ -502,7 +505,7 @@ export function useBoxStackingGame() {
             // fail 판정이지만, 최소 0.5초는 기회를 줌
             if (pendingFailRef.current) {
               pendingFailTimeRef.current += deltaTime;
-              
+
               // 0.5초 이상 경과하거나, 완전히 화면 밖으로 나간 경우만 게임 오버
               if (pendingFailTimeRef.current > 0.5 || outOfView) {
                 failedBoxPositionRef.current = { x: pos.x, y: pos.y };
@@ -570,7 +573,7 @@ export function useBoxStackingGame() {
           // 정확도에 따른 차등 점수 부여
           const accuracy = current.hitAccuracy || "normal";
           let pointsToAdd = 0;
-          
+
           if (accuracy === "perfect") {
             pointsToAdd = 10;
           } else if (accuracy === "good") {
@@ -583,7 +586,10 @@ export function useBoxStackingGame() {
           }
 
           // 점수 이펙트 생성
-          if (pointsToAdd > 0 && (pointsToAdd === 5 || pointsToAdd === 7 || pointsToAdd === 10)) {
+          if (
+            pointsToAdd > 0 &&
+            (pointsToAdd === 5 || pointsToAdd === 7 || pointsToAdd === 10)
+          ) {
             const boxPos = body.getPosition();
             const BOX_SIZE = boxSizeRef.current ?? 3.3;
             scoreEffectsRef.current.push({
@@ -601,7 +607,7 @@ export function useBoxStackingGame() {
           const prevThreshold = Math.floor(currentScore / 70);
           const nextThreshold = Math.floor(nextScore / 70);
           const thresholdsCrossed = nextThreshold - prevThreshold;
-          
+
           if (thresholdsCrossed > 0) {
             // 넘어간 threshold 개수만큼 속도 증가 (OS 기반 보정 포함)
             speedRef.current +=
@@ -639,9 +645,14 @@ export function useBoxStackingGame() {
 
         cameraYRef.current = currentCameraY + clampedStep;
       }
+      
+      async function sleep() {
+        return await new Promise(resolve => setTimeout(resolve, 10));
+      }
 
       // 좌우 왕복 이동
       if (currentBoxRef.current && !currentBoxRef.current.isDropping) {
+        sleep();
         const body = currentBoxRef.current.body;
         const pos = body.getPosition();
         const vel = body.getLinearVelocity();
@@ -649,7 +660,7 @@ export function useBoxStackingGame() {
         // 큰 태블릿(1024px 이상)에서는 이동 범위를 중앙으로 제한
         const screenWidth = screenWidthRef.current;
         const isLargeTablet = screenWidth >= 1024;
-        
+
         let leftMargin, rightMargin;
         if (isLargeTablet) {
           // 큰 태블릿: 25% ~ 75% 범위
@@ -660,7 +671,7 @@ export function useBoxStackingGame() {
           leftMargin = WORLD_WIDTH * 0.15;
           rightMargin = WORLD_WIDTH * 0.85;
         }
-        
+
         if (pos.x < leftMargin && vel.x < 0) {
           body.setLinearVelocity(Vec2(Math.abs(vel.x), 0));
         } else if (pos.x > rightMargin && vel.x > 0) {
@@ -676,7 +687,9 @@ export function useBoxStackingGame() {
       }
 
       // 점수 이펙트 업데이트
-      scoreEffectsRef.current = scoreEffectsRef.current.filter((s) => s.life > 0);
+      scoreEffectsRef.current = scoreEffectsRef.current.filter(
+        (s) => s.life > 0,
+      );
       for (const s of scoreEffectsRef.current) {
         s.life = Math.max(0, s.life - 0.015);
         s.opacity = s.life;
@@ -686,19 +699,24 @@ export function useBoxStackingGame() {
       if (!gameOverRef.current) {
         // Frozen 박스들의 위치 강제 고정 (충돌로 인한 움직임 방지)
         for (const box of boxes) {
-          if (box.frozen && box.frozenPosition && box.frozenAngle !== undefined) {
+          if (
+            box.frozen &&
+            box.frozenPosition &&
+            box.frozenAngle !== undefined
+          ) {
             const currentPos = box.body.getPosition();
             const currentAngle = box.body.getAngle();
-            
+
             // 위치나 각도가 조금이라도 변했으면 강제로 복원
-            const posDiff = Math.abs(currentPos.x - box.frozenPosition.x) + 
-                           Math.abs(currentPos.y - box.frozenPosition.y);
+            const posDiff =
+              Math.abs(currentPos.x - box.frozenPosition.x) +
+              Math.abs(currentPos.y - box.frozenPosition.y);
             const angleDiff = Math.abs(currentAngle - box.frozenAngle);
-            
+
             if (posDiff > 0.001 || angleDiff > 0.001) {
               box.body.setTransform(
                 Vec2(box.frozenPosition.x, box.frozenPosition.y),
-                box.frozenAngle
+                box.frozenAngle,
               );
               box.body.setLinearVelocity(Vec2(0, 0));
               box.body.setAngularVelocity(0);
@@ -732,17 +750,17 @@ export function useBoxStackingGame() {
           if (!box.settled) continue;
 
           const angle = Math.abs(box.body.getAngle());
-          
+
           // 기울어진 상태 체크
           if (angle > TILT_LIMIT) {
             // tiltTime 초기화 (없으면 0)
             if (box.tiltTime === undefined) {
               box.tiltTime = 0;
             }
-            
+
             // 기울어진 시간 누적
             box.tiltTime += deltaTime;
-            
+
             // 0.3초 이상 기울어진 상태가 지속되면 게임 오버
             if (box.tiltTime > 0.3) {
               setGameOver(true);
@@ -753,24 +771,24 @@ export function useBoxStackingGame() {
             // 각도가 정상이면 tiltTime 리셋
             box.tiltTime = 0;
           }
-          
+
           // settled 박스가 스택에서 떨어졌는지 체크 (frozen 제외)
           if (!box.frozen && lastPlacedBoxRef.current) {
             const boxPos = box.body.getPosition();
             const lastPos = lastPlacedBoxRef.current.getPosition();
             const worldHeight = screenHeightRef.current / SCALE;
             const cameraY = cameraYRef.current;
-            
+
             // 1. 마지막 박스보다 아래로 많이 떨어짐
             const belowStack = boxPos.y > lastPos.y + BOX_SIZE * 2;
-            
+
             // 2. 화면 밖으로 나감
             const outOfView = boxPos.y - cameraY > worldHeight + BOX_SIZE;
-            
+
             // 3. 수평으로 너무 멀리 떨어짐
             const horizontalDistance = Math.abs(boxPos.x - lastPos.x);
             const tooFarAway = horizontalDistance > BOX_SIZE * 3;
-            
+
             if (belowStack || outOfView || tooFarAway) {
               failedBoxPositionRef.current = { x: boxPos.x, y: boxPos.y };
               setGameOver(true);
@@ -811,7 +829,7 @@ export function useBoxStackingGame() {
           x - hx * SCALE,
           y - hy * SCALE,
           hx * 2 * SCALE,
-          hy * 2 * SCALE
+          hy * 2 * SCALE,
         );
       }
 
@@ -900,7 +918,7 @@ export function useBoxStackingGame() {
       active = false;
       if (animationId !== undefined) cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
-      
+
       // 모든 오디오 정지 및 정리
       if (boxStackSoundRef.current) {
         boxStackSoundRef.current.pause();
@@ -912,7 +930,7 @@ export function useBoxStackingGame() {
         fallingSoundRef.current.currentTime = 0;
         fallingSoundRef.current = null;
       }
-      
+
       // 물리 엔진 완전 정리
       if (worldRef.current) {
         try {
@@ -929,7 +947,7 @@ export function useBoxStackingGame() {
               }
             }
           }
-          
+
           // 바닥 Body 안전하게 제거
           if (groundRef.current && worldRef.current) {
             try {
@@ -943,11 +961,11 @@ export function useBoxStackingGame() {
         } catch (e) {
           console.warn("Error during physics cleanup:", e);
         }
-        
+
         // World 객체 완전 정리
         worldRef.current = null;
       }
-      
+
       // 모든 ref 초기화
       groundRef.current = null;
       boxesRef.current = [];
@@ -992,20 +1010,20 @@ export function useBoxStackingGame() {
       const lastX = lastBody.getPosition().x;
       const offset = Math.abs(currX - lastX);
 
-      const perfectOffset = BOX_SIZE * 0.05;  // 5% 이내: Perfect
-      const goodOffset = BOX_SIZE * 0.25;      // 25% 이내: Good
-      const allowedOffset = Math.max(0.3, BOX_SIZE * 0.5);  // 50% 이내: Normal
-      
+      const perfectOffset = BOX_SIZE * 0.05; // 5% 이내: Perfect
+      const goodOffset = BOX_SIZE * 0.25; // 25% 이내: Good
+      const allowedOffset = Math.max(0.3, BOX_SIZE * 0.5); // 50% 이내: Normal
+
       // 정확도 레벨 결정 (3단계)
       if (offset <= perfectOffset) {
         perfectHitRef.current = 1;
-        current.hitAccuracy = "perfect";  // 10점: 매우 정확
+        current.hitAccuracy = "perfect"; // 10점: 매우 정확
       } else if (offset <= goodOffset) {
-        current.hitAccuracy = "good";     // 7점: 정확
+        current.hitAccuracy = "good"; // 7점: 정확
       } else if (offset <= allowedOffset) {
-        current.hitAccuracy = "normal";   // 5점: 보통
+        current.hitAccuracy = "normal"; // 5점: 보통
       } else {
-        current.hitAccuracy = "fail";     // 0점: 실패
+        current.hitAccuracy = "fail"; // 0점: 실패
         pendingFailRef.current = true;
       }
     } else {
@@ -1031,21 +1049,21 @@ export function useBoxStackingGame() {
   // 게임오버 시 버튼 비활성화 타이머
   useEffect(() => {
     if (!gameOver) return;
-    
+
     // 게임 오버 시 3초간 버튼 비활성화
     setIsResetting(true);
-    
+
     const timer = setTimeout(() => {
       setIsResetting(false);
     }, 3000);
-    
+
     return () => clearTimeout(timer);
   }, [gameOver]);
 
   const handleRetry = () => {
     // 이미 정리 중이면 무시
     if (isResetting) return;
-    
+
     // 시작 화면으로 돌아가기 (이때 물리 엔진 cleanup이 실행됨)
     setGameStarted(false);
     setGameOver(false);
@@ -1069,10 +1087,13 @@ export function useBoxStackingGame() {
     // 실제로 떨어진 박스가 왼쪽/오른쪽으로 떨어졌는지 판단
     let fallDirection: "left" | "right" = "left";
     if (failedBoxPositionRef.current) {
-      const { width: WORLD_WIDTH } = getWorldSize(window.innerWidth, window.innerHeight);
+      const { width: WORLD_WIDTH } = getWorldSize(
+        window.innerWidth,
+        window.innerHeight,
+      );
       const centerX = WORLD_WIDTH / 2;
       const failedBoxX = failedBoxPositionRef.current.x;
-      
+
       if (failedBoxX < centerX) {
         fallDirection = "left";
       } else {
@@ -1081,9 +1102,12 @@ export function useBoxStackingGame() {
     } else if (lastPlacedBoxRef.current) {
       // failedBoxPositionRef가 없는 경우 (상자가 기울어져서 게임 오버된 경우) 마지막 박스 사용
       const lastPos = lastPlacedBoxRef.current.getPosition();
-      const { width: WORLD_WIDTH } = getWorldSize(window.innerWidth, window.innerHeight);
+      const { width: WORLD_WIDTH } = getWorldSize(
+        window.innerWidth,
+        window.innerHeight,
+      );
       const centerX = WORLD_WIDTH / 2;
-      
+
       if (lastPos.x < centerX) {
         fallDirection = "left";
       } else {
@@ -1092,17 +1116,25 @@ export function useBoxStackingGame() {
     }
 
     console.log("fallDirection", fallDirection);
-    
+
     // 코인 계산: 70점 이상부터 10개, 이후 10점마다 1개씩 추가, 최대 25개
-    const acquiredCoin = score < 70 ? 0 : Math.min(25, 10 + Math.floor((score - 70) / 10));
+    const acquiredCoin =
+      score < 70 ? 0 : Math.min(25, 10 + Math.floor((score - 70) / 10));
 
     if (!isCompleted && mode === "ads") {
       window.parent.postMessage(
         {
           type: "fromApp",
-          payload: { advertise: true, coin: acquiredCoin * 2, index: index, durationsec: playDurationSec, score: score, description: fallDirection },
+          payload: {
+            advertise: true,
+            coin: acquiredCoin * 2,
+            index: index,
+            durationsec: playDurationSec,
+            score: score,
+            description: fallDirection,
+          },
         },
-        "*"
+        "*",
       );
     } else if (!isCompleted && mode === "noAds") {
       try {
@@ -1113,7 +1145,7 @@ export function useBoxStackingGame() {
           acquiredCoin,
           playDurationSec,
           score,
-          fallDirection
+          fallDirection,
         );
       } catch (e) {
         console.error("patchCompletedGame error", e);
