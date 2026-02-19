@@ -145,7 +145,7 @@ export function useBoxStackingGame() {
     const updateCanvasSize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = width * dpr;
       canvas.height = height * dpr;
@@ -416,8 +416,6 @@ export function useBoxStackingGame() {
       const w = worldRef.current;
       if (!w) return;
 
-      animationId = requestAnimationFrame(loop);
-
       // FPS 모니터링 (1초마다 업데이트)
       frameCountRef.current++;
       if (currentTime - lastFpsUpdateRef.current >= 1000) {
@@ -427,21 +425,21 @@ export function useBoxStackingGame() {
       }
 
       // 실제 경과 시간 계산 (밀리초 → 초)
-      const deltaTime = lastFrameTimeRef.current > 0 
-        ? (currentTime - lastFrameTimeRef.current) / 1000 
+      const deltaTime = lastFrameTimeRef.current > 0
+        ? (currentTime - lastFrameTimeRef.current) / 1000
         : TIME_STEP;
-      
+      const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
+
       // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
       w.step(TIME_STEP);
-      
+
       if (!gameOverRef.current) {
         // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
-        const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
         updateLogic(clampedDeltaTime);
+        renderScene(ctx);
+        animationId = requestAnimationFrame(loop);
       }
 
-      renderScene(ctx);
-      
       lastFrameTimeRef.current = currentTime;
     };
 
@@ -903,10 +901,12 @@ export function useBoxStackingGame() {
       if (boxStackSoundRef.current) {
         boxStackSoundRef.current.pause();
         boxStackSoundRef.current.currentTime = 0;
+        boxStackSoundRef.current = null;
       }
       if (fallingSoundRef.current) {
         fallingSoundRef.current.pause();
         fallingSoundRef.current.currentTime = 0;
+        fallingSoundRef.current = null;
       }
       
       // 물리 엔진 완전 정리
@@ -959,6 +959,9 @@ export function useBoxStackingGame() {
       pendingFailRef.current = false;
       scoreRef.current = 0;
       failedBoxPositionRef.current = null;
+      imagesRef.current = [];
+      dustFramesRef.current = [];
+      scoreImagesRef.current = {};
     };
   }, [gameStarted, resetToken, os]);
 
