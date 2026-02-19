@@ -445,18 +445,12 @@ export function useBoxStackingGame() {
         return;
       }
 
-      // 물리 엔진은 고정 시간 스텝 + accumulator 패턴 (프레임 독립적)
-      physicsAccumulatorRef.current += clampedDeltaTime;
-      const maxSteps = 3; // 프레임 드랍 시에도 최대 3스텝으로 제한
-      let steps = 0;
-      while (physicsAccumulatorRef.current >= TIME_STEP && steps < maxSteps) {
+      // 매 프레임 최소 1스텝 보장 + 프레임 드랍 시 추가 스텝으로 따라잡기
+      const stepsNeeded = Math.max(1, Math.round(deltaTime / TIME_STEP));
+      const maxSteps = 4;
+      const actualSteps = Math.min(stepsNeeded, maxSteps);
+      for (let i = 0; i < actualSteps; i++) {
         w.step(TIME_STEP);
-        physicsAccumulatorRef.current -= TIME_STEP;
-        steps++;
-      }
-      // 남은 누적시간이 너무 크면 버림 (장시간 탭 전환 등 방지)
-      if (physicsAccumulatorRef.current > TIME_STEP * 2) {
-        physicsAccumulatorRef.current = 0;
       }
 
       // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
