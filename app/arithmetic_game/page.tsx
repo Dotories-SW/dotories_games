@@ -335,7 +335,7 @@ function ArithmeticGame() {
                   style={{
                     fontSize: `${
                       currentQuestion.text.includes("[이전 답]")
-                        ? "clamp(36px, 9vw, 48px)"
+                        ? "clamp(24px, 9vw, 36px)"
                         : "clamp(48px, 12vw, 56px)"
                     }`,
                   }}
