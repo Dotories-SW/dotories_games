@@ -60,6 +60,7 @@ export function useCrosswordGame() {
 const [history, setHistory] = useState<HistoryState[]>([]);
 
 const crosswordSoundRef = useRef<HTMLAudioElement | null>(null);
+const abortControllerRef = useRef<AbortController | null>(null);
 const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // 진행률
@@ -80,6 +81,7 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
         crosswordSoundRef.current.pause();
         crosswordSoundRef.current = null;
       }
+      abortControllerRef.current?.abort();
     };
   }, []);
 
@@ -161,7 +163,11 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
 
     const fileName = getDifficultyFileName(difficulty);
 
-    fetch(`/game_json/crossword_puzzles/${fileName}`)
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    fetch(`/game_json/crossword_puzzles/${fileName}`, { signal: controller.signal })
       .then((response) => response.json())
       .then((data: Puzzle[]) => {
         setPuzzles(data);
@@ -191,6 +197,7 @@ const { start, stopAndGetDuration, reset } = useGameTimer();
         setLoading(false);
       })
       .catch((error) => {
+        if (error.name === "AbortError") return;
         console.error("퍼즐 로딩 실패:", error);
         setLoading(false);
       });

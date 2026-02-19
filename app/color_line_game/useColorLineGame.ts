@@ -1,5 +1,5 @@
 // game/color-line/useColorLineGame.ts
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CellType,
   Color,
@@ -37,6 +37,16 @@ export function useColorLineGame() {
 
   const [showLevelSelect, setShowLevelSelect] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<number>(1);
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const gameCompletionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      if (gameCompletionTimeoutRef.current) clearTimeout(gameCompletionTimeoutRef.current);
+    };
+  }, []);
 
   // 레벨 선택
   const selectLevel = (level: number) => {
@@ -158,7 +168,11 @@ export function useColorLineGame() {
     setLoading(true);
     const difficultyFileName = `color_line_game_${levelConfig.name}.json`;
 
-    fetch(`/game_json/color_line_game/${difficultyFileName}`)
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    fetch(`/game_json/color_line_game/${difficultyFileName}`, { signal: controller.signal })
       .then((response) => response.json())
       .then((data: PuzzleConfig[]) => {
         setPuzzles(data);
@@ -188,6 +202,7 @@ export function useColorLineGame() {
         setLoading(false);
       })
       .catch((error) => {
+        if (error.name === "AbortError") return;
         console.error("퍼즐 로딩 실패:", error);
         setLoading(false);
       });
@@ -273,7 +288,9 @@ export function useColorLineGame() {
           setIsDrawing(false);
           setCurrentColor(null);
           setCurrentPath([]);
-          setTimeout(() => {
+          if (gameCompletionTimeoutRef.current) clearTimeout(gameCompletionTimeoutRef.current);
+          gameCompletionTimeoutRef.current = setTimeout(() => {
+            gameCompletionTimeoutRef.current = null;
             checkGameCompletion();
           }, 100);
           return;

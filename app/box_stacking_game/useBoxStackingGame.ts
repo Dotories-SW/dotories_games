@@ -336,13 +336,29 @@ export function useBoxStackingGame() {
         box.body.setLinearVelocity(Vec2(0, 0));
         box.body.setAngularVelocity(0);
         box.body.setAwake(false);
-        
+
         // Frozen 박스를 더 확실하게 보호
         // 위치와 각도를 저장하여 나중에 강제로 복원할 수 있도록
         box.frozenPosition = { x: pos.x, y: pos.y };
         box.frozenAngle = absAngle <= SMALL_ANGLE ? 0 : angle;
         box.frozen = true;
       }
+
+      // 화면 아래로 멀리 벗어난 frozen 박스 제거 (메모리/성능 최적화)
+      const pruneY = cameraYRef.current + (window.innerHeight / SCALE) * 2;
+      boxesRef.current = boxesRef.current.filter((box) => {
+        if (!box.frozen) return true;
+        const pos = box.body.getPosition();
+        if (pos.y > pruneY) {
+          try {
+            world.destroyBody(box.body);
+          } catch (e) {
+            // ignore
+          }
+          return false;
+        }
+        return true;
+      });
     };
 
     // 새 상자 생성
@@ -430,7 +446,7 @@ export function useBoxStackingGame() {
     };
 
     // loop 함수 시작 (requestAnimationFrame이 자동으로 timestamp를 전달)
-    requestAnimationFrame(loop);
+    animationId = requestAnimationFrame(loop);
 
     const updateLogic = (deltaTime: number) => {
       const world = worldRef.current;

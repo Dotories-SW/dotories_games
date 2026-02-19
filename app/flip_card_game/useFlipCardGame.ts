@@ -51,6 +51,8 @@ export function useFlipCardGame() {
 
   const gameBgmRef = useRef<HTMLAudioElement | null>(null);
   const flipCardEffectRef = useRef<HTMLAudioElement | null>(null);
+  const mismatchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const encouragementTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const params = useSearchParams();
   const loginId: string = params.get("id")
@@ -89,7 +91,12 @@ export function useFlipCardGame() {
         gameBgmRef.current.pause();
         gameBgmRef.current = null;
       }
-      flipCardEffectRef.current = null;
+      if (flipCardEffectRef.current) {
+        flipCardEffectRef.current.pause();
+        flipCardEffectRef.current = null;
+      }
+      if (mismatchTimeoutRef.current) clearTimeout(mismatchTimeoutRef.current);
+      if (encouragementTimeoutRef.current) clearTimeout(encouragementTimeoutRef.current);
     };
   }, []);
 
@@ -275,7 +282,11 @@ export function useFlipCardGame() {
                 const messageIndex = messagePoints.indexOf(matchedPairs);
                 if (messageIndex !== -1) {
                   setEncouragementMessage(messages[messageIndex]);
-                  setTimeout(() => setEncouragementMessage(null), 2000);
+                  if (encouragementTimeoutRef.current) clearTimeout(encouragementTimeoutRef.current);
+                  encouragementTimeoutRef.current = setTimeout(() => {
+                    encouragementTimeoutRef.current = null;
+                    setEncouragementMessage(null);
+                  }, 2000);
                 }
               }
             }
@@ -300,7 +311,9 @@ export function useFlipCardGame() {
           setIsChecking(false);
         } else {
           // 매칭 실패
-          setTimeout(() => {
+          if (mismatchTimeoutRef.current) clearTimeout(mismatchTimeoutRef.current);
+          mismatchTimeoutRef.current = setTimeout(() => {
+            mismatchTimeoutRef.current = null;
             setFlippedCards([]);
             setIsChecking(false);
             setWrongAttempts((prev) => prev + 1);

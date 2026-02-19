@@ -46,6 +46,7 @@ export function useArithmeticGame() {
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
   const failSoundRef = useRef<HTMLAudioElement | null>(null);
   const arithmeticSoundRef = useRef<HTMLAudioElement | null>(null);
+  const pendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
   // 사운드 초기화
@@ -73,6 +74,12 @@ export function useArithmeticGame() {
         arithmeticSoundRef.current.pause();
         arithmeticSoundRef.current = null;
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
     };
   }, []);
 
@@ -156,7 +163,9 @@ export function useArithmeticGame() {
         const currentNum = currentQuestionNumber;
         const newScore = score + 1;
 
-        setTimeout(() => {
+        if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
+        pendingTimeoutRef.current = setTimeout(() => {
+          pendingTimeoutRef.current = null;
           if (newScore >= MAX_QUESTIONS) {
             setGameCompleted(true);
           } else {
@@ -166,7 +175,9 @@ export function useArithmeticGame() {
       } else {
         failSoundRef.current?.play();
 
-        setTimeout(() => {
+        if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
+        pendingTimeoutRef.current = setTimeout(() => {
+          pendingTimeoutRef.current = null;
           const newQuestion = generateQuestion(difficulty, null);
           setCurrentQuestion(newQuestion);
           setShowResult(false);
