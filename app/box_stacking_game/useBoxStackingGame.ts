@@ -445,7 +445,7 @@ export function useBoxStackingGame() {
         return;
       }
 
-      w.step(TIME_STEP);
+      w.step(clampedDeltaTime);
 
       // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
       updateLogic(clampedDeltaTime);
