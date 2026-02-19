@@ -32,12 +32,15 @@ function BoxStackingPage() {
   // 종료 중 또는 정리 중 화면
   if (isEnding) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center z-[1000]" style={{ backgroundColor: "#F5F1E8" }}>
+      <div
+        className="fixed inset-0 flex items-center justify-center z-[1000]"
+        style={{ backgroundColor: "#F5F1E8" }}
+      >
         <style jsx global>{`
           body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-              sans-serif;
+            font-family:
+              -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
           }
@@ -53,7 +56,9 @@ function BoxStackingPage() {
             className="font-bold text-gray-800 mb-[2vh]"
             style={{ fontSize: "clamp(20px, 5vw, 24px)" }}
           >
-            {gameOver ? "게임을 정리하는 중이에요" : "오늘의 도전을 종료하는 중이에요"}
+            {gameOver
+              ? "게임을 정리하는 중이에요"
+              : "오늘의 도전을 종료하는 중이에요"}
           </h2>
           <p
             className="text-gray-600"
@@ -73,8 +78,8 @@ function BoxStackingPage() {
         <style jsx global>{`
           body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-              sans-serif;
+            font-family:
+              -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             touch-action: manipulation;
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
@@ -145,12 +150,15 @@ function BoxStackingPage() {
 
   // 실제 게임 화면
   return (
-    <div className="fixed inset-0 cursor-pointer" style={{ backgroundColor: "#F5F1E8" }}>
+    <div
+      className="fixed inset-0 cursor-pointer"
+      style={{ backgroundColor: "#F5F1E8" }}
+    >
       <style jsx global>{`
         body {
           margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            sans-serif;
+          font-family:
+            -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           overflow: hidden;
           -webkit-tap-highlight-color: transparent;
         }
@@ -179,7 +187,7 @@ function BoxStackingPage() {
       <canvas
         ref={canvasRef}
         className="w-full h-full cursor-pointer touch-none"
-        style={{ display: gameOver ? 'none' : 'block' }}
+        style={{ display: gameOver ? "none" : "block" }}
         onClick={handleClick}
         onTouchEnd={(e) => {
           e.preventDefault(); // 화면 튕김 방지
@@ -219,63 +227,72 @@ function BoxStackingPage() {
             </div>
 
             <div className="space-y-[2vh]">
-              <button
-                onClick={handleRetry}
-                disabled={isResetting}
-                className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all shadow-lg ${
-                  isResetting 
-                    ? "bg-gray-400 cursor-not-allowed" 
-                    : "bg-gradient-to-r from-blue-500 to-blue-600 active:scale-[0.98]"
-                } text-white`}
-                style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
-              >
-                {isResetting ? "게임을 정리하는 중이에요..." : "다시 하기"}
-              </button>
-
-              {score >= 70 && (
-                <div className="flex gap-[2vw]">
-                  <button
-                    className="flex-1 py-[2.5vh] border-2 border-blue-400 text-blue-400 rounded-2xl font-bold active:scale-[0.98] transition-all bg-white"
-                    style={{ fontSize: "clamp(14px, 3.5vw, 18px)" }}
-                    onClick={() => {
-                      if (isCompleted) {
-                        goBack();
-                        return;
-                      }
-                      handleEndGame("noAds", 3);
-                    }}
+              {score >= 70 ? (
+                isResetting ? (
+                  <div
+                    className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all shadow-lg bg-gray-400 cursor-not-allowed text-white`}
+                    style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
                   >
-                    {isCompleted ? (
-                      <span style={{ fontSize: "clamp(12px, 3vw, 16px)" }}>
-                        코인 수령 완료
-                      </span>
-                    ) : (
-                      <span>
-                        🪙{" "}
-                        {score < 70
-                          ? 0
-                          : Math.min(
-                              25,
-                              10 + Math.floor((score - 70) / 10)
-                            )}{" "}
-                        코인 받기
-                      </span>
-                    )}
-                  </button>
-                  {!isCompleted && (
+                    게임을 정리하는 중이에요...
+                  </div>
+                ) : (
+                  <div className="flex gap-[2vw]">
                     <button
-                      className="flex-1 py-[2.5vh] bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-lg"
+                      className="flex-1 py-[2.5vh] border-2 border-blue-400 text-blue-400 rounded-2xl font-bold active:scale-[0.98] transition-all bg-white"
                       style={{ fontSize: "clamp(14px, 3.5vw, 18px)" }}
-                      onClick={() => handleEndGame("ads", 3)}
+                      onClick={() => {
+                        if (isCompleted) {
+                          goBack();
+                          return;
+                        }
+                        handleEndGame("noAds", 3);
+                      }}
                     >
-                      <span>광고보고</span>
-                      <br />
-                      <span style={{ fontSize: "clamp(10px, 2.5vw, 14px)" }}>
-                        2배 받기
-                      </span>
+                      {isCompleted ? (
+                        <span style={{ fontSize: "clamp(12px, 3vw, 16px)" }}>
+                          코인 수령 완료
+                        </span>
+                      ) : (
+                        <span>
+                          🪙{" "}
+                          {score < 70
+                            ? 0
+                            : Math.min(
+                                25,
+                                10 + Math.floor((score - 70) / 10),
+                              )}{" "}
+                          코인 받기
+                        </span>
+                      )}
                     </button>
-                  )}
-                </div>
+                    {!isCompleted && (
+                      <button
+                        className="flex-1 py-[2.5vh] bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-2xl font-bold active:scale-[0.98] transition-all shadow-lg"
+                        style={{ fontSize: "clamp(14px, 3.5vw, 18px)" }}
+                        onClick={() => handleEndGame("ads", 3)}
+                      >
+                        <span>광고보고</span>
+                        <br />
+                        <span style={{ fontSize: "clamp(10px, 2.5vw, 14px)" }}>
+                          2배 받기
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                )
+              ) : (
+                <button
+                  onClick={handleRetry}
+                  disabled={isResetting}
+                  className={`w-full py-[3.5vh] rounded-2xl font-bold transition-all shadow-lg ${
+                    isResetting
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-500 to-blue-600 active:scale-[0.98]"
+                  } text-white`}
+                  style={{ fontSize: "clamp(16px, 4vw, 20px)" }}
+                >
+                  {isResetting ? "게임을 정리하는 중이에요..." : "다시 하기"}
+                </button>
               )}
             </div>
           </div>
