@@ -445,13 +445,7 @@ export function useBoxStackingGame() {
         return;
       }
 
-      // 매 프레임 최소 1스텝 보장 + 프레임 드랍 시 추가 스텝으로 따라잡기
-      const stepsNeeded = Math.max(1, Math.round(deltaTime / TIME_STEP));
-      const maxSteps = 4;
-      const actualSteps = Math.min(stepsNeeded, maxSteps);
-      for (let i = 0; i < actualSteps; i++) {
-        w.step(TIME_STEP);
-      }
+      w.step(TIME_STEP);
 
       // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
       updateLogic(clampedDeltaTime);
