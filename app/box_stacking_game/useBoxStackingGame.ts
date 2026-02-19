@@ -414,7 +414,7 @@ export function useBoxStackingGame() {
     lastFrameTimeRef.current = performance.now();
     lastFpsUpdateRef.current = performance.now();
     frameCountRef.current = 0;
-    fpsRef.current = 30;
+    fpsRef.current = 60;
 
     let animationId: number | undefined;
     let active = true;
@@ -445,7 +445,11 @@ export function useBoxStackingGame() {
         return;
       }
 
-      w.step(clampedDeltaTime);
+      const stepsNeeded = Math.max(1, Math.round(deltaTime / TIME_STEP));
+      const actualSteps = Math.min(stepsNeeded, 4);
+      for (let i = 0; i < actualSteps; i++) {
+        w.step(TIME_STEP);
+      }
 
       // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
       updateLogic(clampedDeltaTime);
