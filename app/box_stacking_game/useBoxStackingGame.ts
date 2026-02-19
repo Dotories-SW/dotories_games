@@ -89,6 +89,7 @@ export function useBoxStackingGame() {
   const lastFpsUpdateRef = useRef<number>(0);
   const screenWidthRef = useRef<number>(0);
   const screenHeightRef = useRef<number>(0);
+  const physicsAccumulatorRef = useRef<number>(0);
   
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
@@ -433,10 +434,14 @@ export function useBoxStackingGame() {
       const deltaTime = lastFrameTimeRef.current > 0
         ? (currentTime - lastFrameTimeRef.current) / 1000
         : TIME_STEP;
-      const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
+      const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 4);
 
-      // 물리 엔진은 고정 시간 스텝 사용 (안정성을 위해)
-      w.step(TIME_STEP);
+      // 어큐뮬레이터: 경과 시간만큼 물리 스텝을 여러 번 실행해 끊김 방지
+      physicsAccumulatorRef.current += clampedDeltaTime;
+      while (physicsAccumulatorRef.current >= TIME_STEP) {
+        w.step(TIME_STEP);
+        physicsAccumulatorRef.current -= TIME_STEP;
+      }
 
       if (!gameOverRef.current) {
         // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
@@ -962,6 +967,7 @@ export function useBoxStackingGame() {
       pendingFailRef.current = false;
       scoreRef.current = 0;
       failedBoxPositionRef.current = null;
+      physicsAccumulatorRef.current = 0;
       imagesRef.current = [];
       dustFramesRef.current = [];
       scoreImagesRef.current = {};
