@@ -122,7 +122,7 @@ export function useBoxStackingGame() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
     perfectHitRef.current = 0;
@@ -157,6 +157,7 @@ export function useBoxStackingGame() {
       canvas.style.height = `${height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
+      ctx.imageSmoothingEnabled = false;
 
       // 게임 영역 폭 제한 (큰 화면에서 최대 600px)
       const MAX_GAME_WIDTH = 600;
