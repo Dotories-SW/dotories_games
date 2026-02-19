@@ -87,6 +87,8 @@ export function useBoxStackingGame() {
   const fpsRef = useRef<number>(60);
   const frameCountRef = useRef<number>(0);
   const lastFpsUpdateRef = useRef<number>(0);
+  const screenWidthRef = useRef<number>(0);
+  const screenHeightRef = useRef<number>(0);
   
   const { start, stopAndGetDuration, reset } = useGameTimer();
 
@@ -145,6 +147,8 @@ export function useBoxStackingGame() {
     const updateCanvasSize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
+      screenWidthRef.current = width;
+      screenHeightRef.current = height;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = width * dpr;
@@ -477,7 +481,7 @@ export function useBoxStackingGame() {
 
         // 떨어지는 박스가 스택에서 벗어나거나 화면 밖으로 나가면 게임 오버
         if (lastBody) {
-          const worldHeight = window.innerHeight / SCALE;
+          const worldHeight = screenHeightRef.current / SCALE;
           const cameraY = cameraYRef.current;
           const lastY = lastBody.getPosition().y;
 
@@ -620,7 +624,7 @@ export function useBoxStackingGame() {
       if (lastBody) {
         const lastPos = lastBody.getPosition();
         const currentCameraY = cameraYRef.current;
-        const screenH = window.innerHeight;
+        const screenH = screenHeightRef.current;
 
         const desiredScreenY = screenH * 0.8;
         const rawTargetY = lastPos.y - desiredScreenY / SCALE;
@@ -641,7 +645,7 @@ export function useBoxStackingGame() {
         const vel = body.getLinearVelocity();
 
         // 큰 태블릿(1024px 이상)에서는 이동 범위를 중앙으로 제한
-        const screenWidth = window.innerWidth;
+        const screenWidth = screenWidthRef.current;
         const isLargeTablet = screenWidth >= 1024;
         
         let leftMargin, rightMargin;
@@ -752,7 +756,7 @@ export function useBoxStackingGame() {
           if (!box.frozen && lastPlacedBoxRef.current) {
             const boxPos = box.body.getPosition();
             const lastPos = lastPlacedBoxRef.current.getPosition();
-            const worldHeight = window.innerHeight / SCALE;
+            const worldHeight = screenHeightRef.current / SCALE;
             const cameraY = cameraYRef.current;
             
             // 1. 마지막 박스보다 아래로 많이 떨어짐
@@ -778,8 +782,8 @@ export function useBoxStackingGame() {
 
     const renderScene = (ctx: CanvasRenderingContext2D) => {
       const BOX_SIZE = boxSizeRef.current;
-      const currentWidth = window.innerWidth;
-      const currentHeight = window.innerHeight;
+      const currentWidth = screenWidthRef.current;
+      const currentHeight = screenHeightRef.current;
       ctx.clearRect(0, 0, currentWidth, currentHeight);
 
       ctx.fillStyle = "#F5F1E8";
@@ -820,11 +824,9 @@ export function useBoxStackingGame() {
 
         ctx.save();
         if (glow > 0 && scoreRef.current > 0) {
-          ctx.shadowColor = `rgba(250, 204, 21, ${0.6 * glow})`;
-          ctx.shadowBlur = 25 * glow;
           ctx.lineWidth = 3 + 3 * glow;
           ctx.setLineDash([]);
-          ctx.strokeStyle = "rgba(253, 224, 71, 1)";
+          ctx.strokeStyle = `rgba(253, 204, 21, ${glow})`;
         } else {
           ctx.strokeStyle = "rgba(31,41,55,0.9)";
           ctx.setLineDash([6, 4]);
