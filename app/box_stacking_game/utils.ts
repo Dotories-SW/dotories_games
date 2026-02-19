@@ -4,7 +4,7 @@ export const TIME_STEP = 1 / 60;
 
 // 반응형 기준값
 export const BASE_SCREEN_HEIGHT = 800;
-export const BASE_GRAVITY = 5; // 떨어지는 속도 조정 (10 → 8)
+export const BASE_GRAVITY = 8; // 떨어지는 속도 조정 (10 → 8)
 
 // settled 박스들 tilt 체크 기준 (10도)
 export const TILT_LIMIT = (10 * Math.PI) / 180;
