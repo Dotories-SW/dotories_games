@@ -37,7 +37,7 @@ const ZERO_VEC = Vec2(0, 0);
 
 export function useBoxStackingGame() {
   // 속도 스케일 (좌우 이동/낙하 공통)
-  const SPEED_SCALE = 1.4;
+  const SPEED_SCALE = 0.6;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boxSizeRef = useRef<number>(3.3);
