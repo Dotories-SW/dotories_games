@@ -32,6 +32,9 @@ import {
 import type { BoxInfo, CurrentBox, DustEffect, ScoreEffect } from "./types";
 import { useGameTimer } from "../_hooks/useGameTimer";
 
+// 자주 쓰는 Vec2 상수 캐싱 (매번 새 객체 생성 방지)
+const ZERO_VEC = Vec2(0, 0);
+
 export function useBoxStackingGame() {
   // 속도 스케일 (좌우 이동/낙하 공통)
   const SPEED_SCALE = 1.4;
@@ -293,79 +296,77 @@ export function useBoxStackingGame() {
     setGameOver(false);
 
     // 일정 쌓인 부분을 얼려버리는 함수
+    const SMALL_ANGLE = (5 * Math.PI) / 180;  // 5도: 거의 평평 → 0도로 보정
+    const MAX_ANGLE = (12 * Math.PI) / 180;   // 12도: 최대 허용 각도
+
     const freezeOldBoxes = () => {
       const boxes = boxesRef.current;
 
-      // 전체 settled 박스 가져오기 (freeze 여부 상관없이)
-      const allSettledBoxes = boxes.filter((b) => b.settled);
+      // settled 개수를 카운트하면서 가장 높은 2개의 Y값을 추적 (sort 회피)
+      let settledCount = 0;
+      let topY1 = Infinity, topY2 = Infinity; // 가장 위쪽 2개의 Y좌표
+      for (let i = 0; i < boxes.length; i++) {
+        if (!boxes[i].settled) continue;
+        settledCount++;
+        const y = boxes[i].body.getPosition().y;
+        if (y < topY1) {
+          topY2 = topY1;
+          topY1 = y;
+        } else if (y < topY2) {
+          topY2 = y;
+        }
+      }
 
       // 최소 3개 이상 쌓여야 freeze 시작
-      if (allSettledBoxes.length <= 2) return;
+      if (settledCount <= 2) return;
 
-      // Y 좌표 오름차순 정렬 (위쪽 박스부터)
-      allSettledBoxes.sort(
-        (a, b) => a.body.getPosition().y - b.body.getPosition().y,
-      );
+      // 위 2개(topY1, topY2)를 제외하고 나머지만 freeze 대상
+      // 단일 순회로 freeze 처리
+      for (let i = 0; i < boxes.length; i++) {
+        const box = boxes[i];
+        if (!box.settled || box.frozen) continue;
+        if ((box.stableTime || 0) <= 0.4) continue;
 
-      // 위 2개는 제외하고 나머지(아래쪽)만 freeze 대상
-      // 단, 이미 freeze된 것과 아직 안정화 시간이 부족한 것은 제외
-      const freezeTargets = allSettledBoxes
-        .slice(2)
-        .filter((b) => !b.frozen && (b.stableTime || 0) > 0.4);
+        const pos = box.body.getPosition();
+        const y = pos.y;
+        // 위쪽 2개 박스는 freeze하지 않음
+        if (y <= topY2) continue;
 
-      // 각도 허용 범위
-      const SMALL_ANGLE = (5 * Math.PI) / 180; // 5도: 거의 평평 → 0도로 보정
-      const MAX_ANGLE = (12 * Math.PI) / 180; // 12도: 최대 허용 각도
-
-      for (const box of freezeTargets) {
-        if (box.frozen) continue;
         const angle = box.body.getAngle();
         const absAngle = Math.abs(angle);
 
         // 12도 이상 기울어진 박스는 freeze 안 함 (불안정)
-        if (absAngle > MAX_ANGLE) {
-          continue;
-        }
-
-        const pos = box.body.getPosition();
+        if (absAngle > MAX_ANGLE) continue;
 
         // 각도별 차등 처리
         if (absAngle <= SMALL_ANGLE) {
-          // 5도 이하: 거의 평평 → 0도로 보정해서 freeze (완벽하게 평행)
           box.body.setTransform(pos, 0);
         } else {
-          // 5~12도: 약간 기울어짐 → 현재 각도 유지하되 freeze
-          // (아래쪽 박스들은 약간 기울어져도 괜찮음)
           box.body.setTransform(pos, angle);
         }
 
         box.body.setType("static");
-        box.body.setLinearVelocity(Vec2(0, 0));
+        box.body.setLinearVelocity(ZERO_VEC);
         box.body.setAngularVelocity(0);
         box.body.setAwake(false);
 
-        // Frozen 박스를 더 확실하게 보호
-        // 위치와 각도를 저장하여 나중에 강제로 복원할 수 있도록
         box.frozenPosition = { x: pos.x, y: pos.y };
         box.frozenAngle = absAngle <= SMALL_ANGLE ? 0 : angle;
         box.frozen = true;
       }
 
-      // 화면 아래로 멀리 벗어난 frozen 박스 제거 (메모리/성능 최적화)
+      // 화면 아래로 멀리 벗어난 frozen 박스 제거 (in-place)
       const pruneY = cameraYRef.current + (window.innerHeight / SCALE) * 2;
-      boxesRef.current = boxesRef.current.filter((box) => {
-        if (!box.frozen) return true;
-        const pos = box.body.getPosition();
-        if (pos.y > pruneY) {
-          try {
-            world.destroyBody(box.body);
-          } catch (e) {
-            // ignore
-          }
-          return false;
+      let writeIdx = 0;
+      for (let i = 0; i < boxes.length; i++) {
+        const box = boxes[i];
+        if (box.frozen && box.body.getPosition().y > pruneY) {
+          try { world.destroyBody(box.body); } catch (e) { /* ignore */ }
+          continue;
         }
-        return true;
-      });
+        boxes[writeIdx++] = box;
+      }
+      boxes.length = writeIdx;
     };
 
     // 새 상자 생성
@@ -438,6 +439,12 @@ export function useBoxStackingGame() {
           : TIME_STEP;
       const clampedDeltaTime = Math.min(deltaTime, TIME_STEP * 2);
 
+      // gameOver면 더 이상 물리/로직/렌더링 불필요
+      if (gameOverRef.current) {
+        lastFrameTimeRef.current = currentTime;
+        return;
+      }
+
       // 물리 엔진은 고정 시간 스텝 + accumulator 패턴 (프레임 독립적)
       physicsAccumulatorRef.current += clampedDeltaTime;
       const maxSteps = 3; // 프레임 드랍 시에도 최대 3스텝으로 제한
@@ -452,12 +459,10 @@ export function useBoxStackingGame() {
         physicsAccumulatorRef.current = 0;
       }
 
-      if (!gameOverRef.current) {
-        // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
-        updateLogic(clampedDeltaTime);
-        renderScene(ctx);
-        animationId = requestAnimationFrame(loop);
-      }
+      // 게임 로직 업데이트는 실제 경과 시간 사용 (이펙트 등)
+      updateLogic(clampedDeltaTime);
+      renderScene(ctx);
+      animationId = requestAnimationFrame(loop);
 
       lastFrameTimeRef.current = currentTime;
     };
@@ -796,39 +801,36 @@ export function useBoxStackingGame() {
       const BOX_SIZE = boxSizeRef.current;
       const currentWidth = screenWidthRef.current;
       const currentHeight = screenHeightRef.current;
-      ctx.clearRect(0, 0, currentWidth, currentHeight);
 
+      // fillRect만으로 배경 채움 (alpha: false 컨텍스트이므로 clearRect 불필요)
       ctx.fillStyle = "#F5F1E8";
       ctx.fillRect(0, 0, currentWidth, currentHeight);
 
       const cameraY = cameraYRef.current;
 
-      const worldToScreen = (x: number, y: number) => {
-        return {
-          x: x * SCALE,
-          y: (y - cameraY) * SCALE,
-        };
-      };
-
+      // 바닥 렌더링
       const ground = groundRef.current;
       if (ground) {
         const pos = ground.getPosition();
         const hx = currentWidth / SCALE;
         const hy = 0.25;
-        const { x, y } = worldToScreen(pos.x, pos.y);
+        const gx = pos.x * SCALE;
+        const gy = (pos.y - cameraY) * SCALE;
         ctx.fillStyle = "#8B4513";
         ctx.fillRect(
-          x - hx * SCALE,
-          y - hy * SCALE,
+          gx - hx * SCALE,
+          gy - hy * SCALE,
           hx * 2 * SCALE,
           hy * 2 * SCALE,
         );
       }
 
+      // 가이드 라인 렌더링
       const lastBody = lastPlacedBoxRef.current;
       if (lastBody) {
         const lastPos = lastBody.getPosition();
-        const guide = worldToScreen(lastPos.x, spawnYRef.current);
+        const guideX = lastPos.x * SCALE;
+        const guideY = (spawnYRef.current - cameraY) * SCALE;
         const w = BOX_SIZE * SCALE;
         const h = BOX_SIZE * SCALE;
 
@@ -844,66 +846,75 @@ export function useBoxStackingGame() {
           ctx.setLineDash([6, 4]);
           ctx.lineWidth = 2;
         }
-        ctx.strokeRect(guide.x - w / 2, guide.y - h / 2, w, h);
+        ctx.strokeRect(guideX - w / 2, guideY - h / 2, w, h);
         ctx.restore();
       }
 
+      // 박스 렌더링 (화면 밖 컬링 적용)
       const imgs = imagesRef.current;
+      const boxScreenSize = BOX_SIZE * SCALE;
 
       for (const box of boxesRef.current) {
         const body = box.body;
         const pos = body.getPosition();
-        const angle = body.getAngle();
-        const { x, y } = worldToScreen(pos.x, pos.y);
+        const sx = pos.x * SCALE;
+        const sy = (pos.y - cameraY) * SCALE;
 
-        const w = BOX_SIZE * SCALE;
-        const h = BOX_SIZE * SCALE;
+        // 화면 밖 박스는 건너뛰기
+        if (sy < -boxScreenSize || sy > currentHeight + boxScreenSize ||
+            sx < -boxScreenSize || sx > currentWidth + boxScreenSize) continue;
+
+        const angle = body.getAngle();
 
         ctx.save();
-        ctx.translate(x, y);
+        ctx.translate(sx, sy);
         ctx.rotate(angle);
 
         const img = imgs[box.spriteIndex];
         if (img && img.complete) {
-          ctx.drawImage(img, -w / 2, -h / 2, w, h);
+          ctx.drawImage(img, -boxScreenSize / 2, -boxScreenSize / 2, boxScreenSize, boxScreenSize);
         } else {
           ctx.fillStyle = "#ffcc00";
-          ctx.fillRect(-w / 2, -h / 2, w, h);
+          ctx.fillRect(-boxScreenSize / 2, -boxScreenSize / 2, boxScreenSize, boxScreenSize);
         }
 
         ctx.restore();
       }
 
+      // 먼지 이펙트 렌더링 (save/restore 대신 globalAlpha 직접 복원)
+      const dustFrameCount = dustFramesRef.current.length || 1;
+      const dustSize = BOX_SIZE * SCALE * 1.6;
+
       for (const d of dustEffectsRef.current) {
-        const frames = dustFramesRef.current.length || 1;
         const progress = 1 - d.life;
-        let frameIndex = Math.floor(progress * frames);
-        if (frameIndex >= frames) frameIndex = frames - 1;
+        let frameIndex = Math.floor(progress * dustFrameCount);
+        if (frameIndex >= dustFrameCount) frameIndex = dustFrameCount - 1;
 
         const img = dustFramesRef.current[frameIndex];
-        const { x, y } = worldToScreen(d.x, d.y);
-        const size = BOX_SIZE * SCALE * 1.6;
+        const dx = d.x * SCALE;
+        const dy = (d.y - cameraY) * SCALE;
 
-        ctx.save();
         ctx.globalAlpha = d.life;
-        ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
-        ctx.restore();
+        ctx.drawImage(img, dx - dustSize / 2, dy - dustSize / 2, dustSize, dustSize);
       }
 
       // 점수 이펙트 렌더링
+      const scoreBaseWidth = BOX_SIZE * SCALE * 1.2;
+
       for (const s of scoreEffectsRef.current) {
         const img = scoreImagesRef.current[s.score];
         if (!img || !img.complete) continue;
 
-        const { x, y } = worldToScreen(s.x, s.y);
-        const width = BOX_SIZE * SCALE * 1.2;
-        const height = (img.height / img.width) * width;
+        const ex = s.x * SCALE;
+        const ey = (s.y - cameraY) * SCALE;
+        const eHeight = (img.height / img.width) * scoreBaseWidth;
 
-        ctx.save();
         ctx.globalAlpha = s.opacity;
-        ctx.drawImage(img, x - width / 2, y - height / 2, width, height);
-        ctx.restore();
+        ctx.drawImage(img, ex - scoreBaseWidth / 2, ey - eHeight / 2, scoreBaseWidth, eHeight);
       }
+
+      // globalAlpha 복원
+      ctx.globalAlpha = 1.0;
     };
 
     return () => {
@@ -1024,7 +1035,7 @@ export function useBoxStackingGame() {
     }
 
     body.setType("dynamic");
-    body.setLinearVelocity(Vec2(0, 0));
+    body.setLinearVelocity(ZERO_VEC);
     current.isDropping = true;
   }, []);
 
