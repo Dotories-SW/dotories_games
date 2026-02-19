@@ -41,7 +41,7 @@ export const getDivisors = (num: number): number[] => {
       divisors.push(i);
     }
   }
-  return divisors.length > 0 ? divisors : [2];
+  return divisors;
 };
 
 // 선택지 생성
