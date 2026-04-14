@@ -1,0 +1,90 @@
+{
+  "puzzles": [
+    {
+      "id": 1,
+      "image": "/hidden_picture_puzzle/1.png",
+      "items": [
+        { "id": "hat",     "name": "중절모", "x": 0.40, "y": 0.35 },
+        { "id": "boot",    "name": "장화",   "x": 0.56, "y": 0.54 },
+        { "id": "spoon",   "name": "숟가락", "x": 0.67, "y": 0.75 },
+        { "id": "mackerel","name": "고등어", "x": 0.33, "y": 0.75 },
+        { "id": "hammer",  "name": "망치",   "x": 0.19, "y": 0.90 }
+      ]
+    },
+    {
+      "id": 2,
+      "image": "/hidden_picture_puzzle/2.png",
+      "items": [
+        { "id": "banana",   "name": "바나나", "x": 0.81, "y": 0.53 },
+        { "id": "cone",     "name": "고깔",   "x": 0.75, "y": 0.28 },
+        { "id": "hammer",   "name": "망치",   "x": 0.60, "y": 0.88 },
+        { "id": "sock",     "name": "양말",   "x": 0.38, "y": 0.65 },
+        { "id": "umbrella", "name": "우산",   "x": 0.44, "y": 0.31 }
+      ]
+    },
+    {
+      "id": 3,
+      "image": "/hidden_picture_puzzle/3.png",
+      "items": [
+        { "id": "map",   "name": "대한민국 지도", "x": 0.12, "y": 0.28 },
+        { "id": "apple", "name": "사과",         "x": 0.43, "y": 0.85 },
+        { "id": "knife", "name": "칼",           "x": 0.46, "y": 0.37 },
+        { "id": "hat",   "name": "삿갓",         "x": 0.57, "y": 0.20 }
+      ]
+    },
+    {
+      "id": 4,
+      "image": "/hidden_picture_puzzle/4.png",
+      "items": [
+        { "id": "umbrella", "name": "우산",    "x": 0.28, "y": 0.42 },
+        { "id": "ladle",    "name": "국자",    "x": 0.21, "y": 0.65 },
+        { "id": "board",    "name": "도마",    "x": 0.85, "y": 0.37 },
+        { "id": "broccoli", "name": "브로콜리","x": 0.32, "y": 0.83 }
+      ]
+    },
+    {
+      "id": 5,
+      "image": "/hidden_picture_puzzle/5.png",
+      "items": [
+        { "id": "carrot", "name": "당근",   "x": 0.29, "y": 0.40 },
+        { "id": "key",    "name": "열쇠",   "x": 0.58, "y": 0.56 },
+        { "id": "ladle",  "name": "국자",   "x": 0.84, "y": 0.41 },
+        { "id": "cane",   "name": "지팡이", "x": 0.80, "y": 0.80 },
+        { "id": "shoes",  "name": "구두",   "x": 0.13, "y": 0.82 }
+      ]
+    },
+    {
+      "id": 6,
+      "image": "/hidden_picture_puzzle/6.png",
+      "items": [
+        { "id": "hat",      "name": "중절모", "x": 0.67, "y": 0.24 },
+        { "id": "cleaver",  "name": "식칼",   "x": 0.18, "y": 0.87 },
+        { "id": "cucumber", "name": "오이",   "x": 0.37, "y": 0.38 },
+        { "id": "pencil",   "name": "연필",   "x": 0.79, "y": 0.35 },
+        { "id": "grapes",   "name": "포도",   "x": 0.61, "y": 0.80 }
+      ]
+    },
+    {
+      "id": 7,
+      "image": "/hidden_picture_puzzle/7.png",
+      "items": [
+        { "id": "sweetpotato","name": "고구마",  "x": 0.54, "y": 0.75 },
+        { "id": "broccoli",  "name": "브로콜리","x": 0.73, "y": 0.38 },
+        { "id": "brush",     "name": "붓",      "x": 0.45, "y": 0.46 },
+        { "id": "gimbap",    "name": "김밥",    "x": 0.14, "y": 0.44 },
+        { "id": "broom",     "name": "빗자루",  "x": 0.74, "y": 0.74 }
+      ]
+    },
+    {
+      "id": 8,
+      "image": "/hidden_picture_puzzle/8.png",
+      "items": [
+        { "id": "needle",     "name": "바늘",     "x": 0.17, "y": 0.81 },
+        { "id": "sunglasses", "name": "썬글라스", "x": 0.74, "y": 0.54 },
+        { "id": "goldfish",   "name": "붕어",     "x": 0.43, "y": 0.89 },
+        { "id": "leaf",       "name": "나뭇잎",   "x": 0.47, "y": 0.63 },
+        { "id": "rollcake",   "name": "롤케익",   "x": 0.62, "y": 0.48 }
+      ]
+    }
+  ]
+}

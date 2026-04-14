@@ -47,10 +47,10 @@ All games share these features:
 
 ### Physics Game
 
-`box_stacking_game/` uses **Matter.js 0.20.0** for physics simulation — unlike the other games which are pure React state.
+`box_stacking_game/` uses **Planck.js (`planck-js`)** for physics simulation with a Canvas-based renderer — unlike the other four games which are pure React state. It runs a fixed-timestep physics loop, handles device tilt and touch input, and renders dust/score effects on the canvas.
 
 ### Deployment
 
 - Static export (`next.config.ts` sets `output: 'export'`)
-- GitHub Actions deploys to **Azure Static Web Apps** and two self-hosted Ubuntu servers via SSH + PM2
-- Environment: `.env.local` for API base URLs
+- GitHub Actions deploys to two self-hosted Ubuntu servers via SSH + PM2 (`npx serve out -l 3000`)
+- Environment variables in `.env.local`: `NEXT_PUBLIC_BACK_API_URL`, `NEXT_PUBLIC_AUTHORIZATION_NAME`, `NEXT_PUBLIC_AUTHORIZATION_PASSWORD`
