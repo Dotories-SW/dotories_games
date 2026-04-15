@@ -2,7 +2,7 @@
   "puzzles": [
     {
       "id": 1,
-      "image": "/hidden_picture_puzzle/1.png",
+      "image": "/hidden_picture_puzzle/1.webp",
       "items": [
         { "id": "hat",     "name": "중절모", "x": 0.40, "y": 0.35 },
         { "id": "boot",    "name": "장화",   "x": 0.56, "y": 0.54 },
@@ -13,7 +13,7 @@
     },
     {
       "id": 2,
-      "image": "/hidden_picture_puzzle/2.png",
+      "image": "/hidden_picture_puzzle/2.webp",
       "items": [
         { "id": "banana",   "name": "바나나", "x": 0.81, "y": 0.53 },
         { "id": "cone",     "name": "고깔",   "x": 0.75, "y": 0.28 },
@@ -24,7 +24,7 @@
     },
     {
       "id": 3,
-      "image": "/hidden_picture_puzzle/3.png",
+      "image": "/hidden_picture_puzzle/3.webp",
       "items": [
         { "id": "map",   "name": "대한민국 지도", "x": 0.12, "y": 0.28 },
         { "id": "apple", "name": "사과",         "x": 0.43, "y": 0.85 },
@@ -34,7 +34,7 @@
     },
     {
       "id": 4,
-      "image": "/hidden_picture_puzzle/4.png",
+      "image": "/hidden_picture_puzzle/4.webp",
       "items": [
         { "id": "umbrella", "name": "우산",    "x": 0.28, "y": 0.42 },
         { "id": "ladle",    "name": "국자",    "x": 0.21, "y": 0.65 },
@@ -44,7 +44,7 @@
     },
     {
       "id": 5,
-      "image": "/hidden_picture_puzzle/5.png",
+      "image": "/hidden_picture_puzzle/5.webp",
       "items": [
         { "id": "carrot", "name": "당근",   "x": 0.29, "y": 0.40 },
         { "id": "key",    "name": "열쇠",   "x": 0.58, "y": 0.56 },
@@ -55,7 +55,7 @@
     },
     {
       "id": 6,
-      "image": "/hidden_picture_puzzle/6.png",
+      "image": "/hidden_picture_puzzle/6.webp",
       "items": [
         { "id": "hat",      "name": "중절모", "x": 0.67, "y": 0.24 },
         { "id": "cleaver",  "name": "식칼",   "x": 0.18, "y": 0.87 },
@@ -66,7 +66,7 @@
     },
     {
       "id": 7,
-      "image": "/hidden_picture_puzzle/7.png",
+      "image": "/hidden_picture_puzzle/7.webp",
       "items": [
         { "id": "sweetpotato","name": "고구마",  "x": 0.54, "y": 0.75 },
         { "id": "broccoli",  "name": "브로콜리","x": 0.73, "y": 0.38 },
@@ -77,7 +77,7 @@
     },
     {
       "id": 8,
-      "image": "/hidden_picture_puzzle/8.png",
+      "image": "/hidden_picture_puzzle/8.webp",
       "items": [
         { "id": "needle",     "name": "바늘",     "x": 0.17, "y": 0.81 },
         { "id": "sunglasses", "name": "썬글라스", "x": 0.74, "y": 0.54 },
