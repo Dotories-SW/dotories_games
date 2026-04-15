@@ -4,7 +4,8 @@
       "Bash(wc:*)",
       "Bash(git -C /c/dotories_games log --oneline -10)",
       "Bash(npm run:*)",
-      "Bash(node -e \"require\\('sharp'\\)\")"
+      "Bash(node -e \"require\\('sharp'\\)\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

@@ -173,6 +173,48 @@ function HiddenPicturePuzzle() {
         </div>
       </div>
 
+      <div className="flex justify-center">그림 속에서, 숨겨진 단어들을 찾아보세요!</div>
+
+      {/* 단어 목록 */}
+      <div
+        style={{
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2vh 4vw",
+          backgroundColor: "#F5F1E8",
+        }}
+      >
+        <div className="flex flex-wrap gap-[1.5vw] justify-center content-center">
+          {currentPuzzle?.items.map((item) => {
+            const found = foundItemIds.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                style={{
+                  fontSize: "clamp(13px, 3.3vw, 17px)",
+                  padding: "0.6vh 3vw",
+                  borderRadius: "999px",
+                  fontWeight: found ? "bold" : "500",
+                  backgroundColor: found ? "#22c55e" : "white",
+                  color: found ? "white" : "#374151",
+                  border: found ? "2px solid #22c55e" : "2px solid #d1d5db",
+                  textDecoration: found ? "line-through" : "none",
+                  transition: "all 0.3s ease",
+                  boxShadow: found
+                    ? "0 2px 8px rgba(34,197,94,0.35)"
+                    : "0 1px 3px rgba(0,0,0,0.08)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {item.name}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 이미지 영역 */}
       <div
         style={{
@@ -181,7 +223,7 @@ function HiddenPicturePuzzle() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "3vh 2vw 0",
+          padding: "0 2vw 12vh",
         }}
       >
         <div style={{ position: "relative", maxHeight: "100%", lineHeight: 0 }}>
@@ -191,7 +233,7 @@ function HiddenPicturePuzzle() {
               style={{
                 width: "calc(100vw - 4vw)",
                 maxWidth: "calc(100vw - 4vw)",
-                height: "calc(100vh - 9vh - 19vh - 2vh)",
+                height: "calc(100vh - 9vh - 10vh)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -216,7 +258,7 @@ function HiddenPicturePuzzle() {
             alt="숨은 그림 찾기 퍼즐"
             style={{
               display: imageLoaded ? "block" : "none",
-              maxHeight: "calc(100vh - 9vh - 19vh - 2vh)",
+              maxHeight: "calc(100vh - 9vh - 10vh)",
               maxWidth: "calc(100vw - 4vw)",
               width: "auto",
               height: "auto",
@@ -273,46 +315,6 @@ function HiddenPicturePuzzle() {
         </div>
       </div>
 
-      {/* 하단 단어 목록 */}
-      <div
-        style={{
-          height: "19vh",
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "0 4vw 2vh",
-          backgroundColor: "#F5F1E8",
-        }}
-      >
-        <div className="flex flex-wrap gap-[1.5vw] justify-center content-center">
-          {currentPuzzle?.items.map((item) => {
-            const found = foundItemIds.includes(item.id);
-            return (
-              <div
-                key={item.id}
-                style={{
-                  fontSize: "clamp(13px, 3.3vw, 17px)",
-                  padding: "0.6vh 3vw",
-                  borderRadius: "999px",
-                  fontWeight: found ? "bold" : "500",
-                  backgroundColor: found ? "#22c55e" : "white",
-                  color: found ? "white" : "#374151",
-                  border: found ? "2px solid #22c55e" : "2px solid #d1d5db",
-                  textDecoration: found ? "line-through" : "none",
-                  transition: "all 0.3s ease",
-                  boxShadow: found
-                    ? "0 2px 8px rgba(34,197,94,0.35)"
-                    : "0 1px 3px rgba(0,0,0,0.08)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {found ? "✓ " : ""}{item.name}
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
