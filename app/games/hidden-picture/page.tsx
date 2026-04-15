@@ -22,6 +22,8 @@ function HiddenPicturePuzzle() {
     foundCircles,
     missMarkers,
     missCount,
+    imageLoaded,
+    setImageLoaded,
     imageRef,
     startGame,
     handleImagePointerDown,
@@ -125,6 +127,10 @@ function HiddenPicturePuzzle() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
         @keyframes circleAppear {
           0%   { transform: translate(-50%, -50%) scale(0);    opacity: 0; }
           55%  { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
@@ -179,13 +185,37 @@ function HiddenPicturePuzzle() {
         }}
       >
         <div style={{ position: "relative", maxHeight: "100%", lineHeight: 0 }}>
+          {/* 이미지 로딩 중 스피너 */}
+          {!imageLoaded && (
+            <div
+              style={{
+                width: "calc(100vw - 4vw)",
+                maxWidth: "calc(100vw - 4vw)",
+                height: "calc(100vh - 9vh - 19vh - 2vh)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  border: "4px solid #d1fae5",
+                  borderTopColor: "#22c55e",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                }}
+              />
+            </div>
+          )}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={imageRef}
             src={currentPuzzle?.image}
             alt="숨은 그림 찾기 퍼즐"
             style={{
-              display: "block",
+              display: imageLoaded ? "block" : "none",
               maxHeight: "calc(100vh - 9vh - 19vh - 2vh)",
               maxWidth: "calc(100vw - 4vw)",
               width: "auto",
@@ -197,6 +227,7 @@ function HiddenPicturePuzzle() {
               borderRadius: "8px",
               boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
             }}
+            onLoad={() => setImageLoaded(true)}
             onPointerDown={handleImagePointerDown}
             draggable={false}
           />

@@ -18,6 +18,7 @@ export function useHiddenPicturePuzzle() {
   const [missMarkers, setMissMarkers] = useState<MissMarker[]>([]);
   const [missCount, setMissCount] = useState(0);
 
+  const [imageLoaded, setImageLoaded] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
 
@@ -26,6 +27,14 @@ export function useHiddenPicturePuzzle() {
     return () => {
       successSoundRef.current = null;
     };
+  }, []);
+
+  // 시작 화면에서 모든 이미지 미리 preload
+  useEffect(() => {
+    allPuzzles.forEach((puzzle) => {
+      const img = new window.Image();
+      img.src = puzzle.image;
+    });
   }, []);
 
   // 모든 아이템 찾으면 완료
@@ -49,6 +58,7 @@ export function useHiddenPicturePuzzle() {
     setMissMarkers([]);
     setMissCount(0);
     setGameCompleted(false);
+    setImageLoaded(false);
 
     setGameStarted(true);
   }, []);
@@ -97,6 +107,8 @@ export function useHiddenPicturePuzzle() {
     foundCircles,
     missMarkers,
     missCount,
+    imageLoaded,
+    setImageLoaded,
     imageRef,
     startGame,
     handleImagePointerDown,
