@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import LoadingSpinner from "../_component/LoadingSpinner";
+import LoadingSpinner from "../../_component/LoadingSpinner";
 import { useOxQuiz } from "./useOxQuiz";
 import { DIFFICULTY_LABEL } from "./utils";
 import type { Difficulty } from "./types";

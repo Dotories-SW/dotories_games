@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import LoadingSpinner from "../_component/LoadingSpinner";
+import LoadingSpinner from "../../_component/LoadingSpinner";
 import { useHiddenPicturePuzzle } from "./useHiddenPicturePuzzle";
 import { HIT_RADIUS } from "./utils";
 
