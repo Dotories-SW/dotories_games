@@ -1,0 +1,39 @@
+name: Deploy dotories_games (Azure Static Web Apps)
+
+on:
+  push:
+    branches:
+      - master          # master에 push될 때 자동 배포
+  workflow_dispatch:    # 필요하면 Actions에서 수동 실행도 가능
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: install deps
+        run: npm ci
+
+      - name: build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BACK_API_URL: ${{ secrets.NEXT_PUBLIC_BACK_API_URL }}
+          NEXT_PUBLIC_AUTHORIZATION_NAME: ${{ secrets.NEXT_PUBLIC_AUTHORIZATION_NAME }}
+          NEXT_PUBLIC_AUTHORIZATION_PASSWORD: ${{ secrets.NEXT_PUBLIC_AUTHORIZATION_PASSWORD }}
+
+      # 빌드된 out/ 폴더를 그대로 업로드 (SWA 쪽 빌드는 건너뜀)
+      - name: deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: out
+          skip_app_build: true
+          skip_api_build: true
