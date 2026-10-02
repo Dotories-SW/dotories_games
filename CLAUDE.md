@@ -52,5 +52,5 @@ All games share these features:
 ### Deployment
 
 - Static export (`next.config.ts` sets `output: 'export'`)
-- GitHub Actions deploys to two self-hosted Ubuntu servers via SSH + PM2 (`npx serve out -l 3000`)
-- Environment variables in `.env.local`: `NEXT_PUBLIC_BACK_API_URL`, `NEXT_PUBLIC_AUTHORIZATION_NAME`, `NEXT_PUBLIC_AUTHORIZATION_PASSWORD`
+- GitHub Actions (`.github/workflows/deploy-azure.yml`) builds on push to `master` and uploads `out/` to Azure Static Web Apps (`braincash-games` in `braincash-rg`), served at `https://games.braincash.dotories.com` (DNS CNAME managed in Imweb)
+- Environment variables in `.env.local`: `NEXT_PUBLIC_BACK_API_URL`, `NEXT_PUBLIC_AUTHORIZATION_NAME`, `NEXT_PUBLIC_AUTHORIZATION_PASSWORD` — baked in at build time, so CI reads them from GitHub repository secrets of the same names
